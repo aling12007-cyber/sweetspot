@@ -554,10 +554,18 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   .site-header .brand{gap:12px;font-size:16.8px}
   .site-header .brand-logo{width:41px;height:41px;flex-basis:41px}
 }
+.founder-caption{right:28px;padding-right:82px}
+.founder-caption:after{
+  content:"";position:absolute;right:0;bottom:0;width:64px;height:64px;
+  background:url("assets/images/site-e8a84d6c8ba9.webp") center/cover no-repeat;
+  border:1px solid rgba(255,235,137,.38);border-radius:9px;box-shadow:0 8px 22px rgba(0,0,0,.32)
+}
 .section-title .section-kicker-icon[data-section]{
   width:38px!important;height:38px!important;flex-basis:38px!important
 }
 @media(max-width:760px){
+  .founder-caption{right:22px;padding-right:68px}
+  .founder-caption:after{width:54px;height:54px}
   html[lang="ja"] #points .section-title p,html[lang="ja"] .founder-copy .section-title p,html[lang="ja"] #experience .section-title p,html[lang="ja"] #network .section-title p,html[lang="ja"] #capabilities .section-title p,html[lang="ja"] #offers .section-title p{font-size:clamp(13px,3.8vw,17px);letter-spacing:-.045em}
   html[lang="zh"] #points .section-title p,html[lang="zh"] .founder-copy .section-title p,html[lang="zh"] #experience .section-title p,html[lang="zh"] #network .section-title p,html[lang="zh"] #capabilities .section-title p,html[lang="zh"] #offers .section-title p{font-size:clamp(16px,4.8vw,20px);letter-spacing:-.035em}
   .capability-grid article{

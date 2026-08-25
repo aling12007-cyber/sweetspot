@@ -1,0 +1,46 @@
+name: Add responsive hamburger menu
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add mobile navigation
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),p='index.html';let s=fs.readFileSync(p,'utf8');
+          if(!s.includes('className:"menu-toggle"')){
+            const nav='(0,f.jsxs)("nav",{"aria-label":"Main navigation"';
+            const controls='(0,f.jsx)("input",{className:"nav-toggle",type:"checkbox",id:"nav-toggle",tabIndex:-1}),(0,f.jsxs)("label",{className:"menu-toggle",htmlFor:"nav-toggle","aria-label":"Toggle navigation",children:[(0,f.jsx)("span",{}),(0,f.jsx)("span",{}),(0,f.jsx)("span",{})]}),'+nav;
+            if(!s.includes(nav)) throw new Error('Navigation component not found');
+            s=s.replace(nav,controls);
+            const mapped='e.map(([n,i])=>(0,f.jsx)("a",{href:"#"+n,children:z(l,i)},n))';
+            const mappedClose='e.map(([n,i])=>(0,f.jsx)("a",{href:"#"+n,onClick:()=>{let a=document.getElementById("nav-toggle");a&&(a.checked=!1)},children:z(l,i)},n))';
+            if(!s.includes(mapped)) throw new Error('Navigation links not found');
+            s=s.replace(mapped,mappedClose);
+            const contact='className:"contact-mini",href:"#contact",children:z(l,{en:"Contact"';
+            const contactClose='className:"contact-mini",href:"#contact",onClick:()=>{let a=document.getElementById("nav-toggle");a&&(a.checked=!1)},children:z(l,{en:"Contact"';
+            if(!s.includes(contact)) throw new Error('Contact navigation link not found');
+            s=s.replace(contact,contactClose);
+          }
+          if(!s.includes('/* Responsive hamburger navigation */')){
+            const css='\n/* Responsive hamburger navigation */\n.nav-toggle,.menu-toggle{display:none}\n@media(max-width:1050px){\n.site-header{justify-content:flex-start;gap:12px}\n.site-header .brand{margin-right:auto}\n.header-actions{order:2}\n.menu-toggle{order:3;display:flex;width:42px;height:42px;align-items:center;justify-content:center;flex-direction:column;gap:5px;border:1px solid rgba(215,169,54,.48);cursor:pointer;background:rgba(7,9,13,.72)}\n.menu-toggle span{display:block;width:19px;height:1.5px;background:var(--gold-pale);transition:transform .25s,opacity .2s}\n.site-header nav{position:fixed;z-index:60;top:66px;left:14px;right:14px;display:none;flex-direction:column;align-items:stretch;gap:0;padding:10px;background:rgba(7,9,13,.97);border:1px solid rgba(215,169,54,.28);box-shadow:0 20px 55px rgba(0,0,0,.52);backdrop-filter:blur(18px)}\n.nav-toggle:checked~nav{display:flex}\n.nav-toggle:checked+.menu-toggle span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}\n.nav-toggle:checked+.menu-toggle span:nth-child(2){opacity:0}\n.nav-toggle:checked+.menu-toggle span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}\n.site-header nav a{width:100%;padding:13px 15px;border-bottom:1px solid var(--line);font-size:12px;letter-spacing:.1em}\n.site-header nav a:last-child{border-bottom:0}\n.site-header nav .contact-mini{display:flex;justify-content:flex-start;margin-top:7px;border:1px solid rgba(215,169,54,.55);padding:13px 15px}\n}\n@media(max-width:760px){.site-header nav{top:64px}}\n';
+            s=s.replace('</style>',css+'</style>');
+          }
+          fs.writeFileSync(p,s);
+          NODE
+      - name: Commit update and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/add-responsive-hamburger-menu.yml
+          git add index.html
+          git commit -m "Add responsive hamburger navigation"
+          git push

@@ -512,6 +512,24 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   .menu-toggle.is-open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 }
 @media(max-width:760px){
+  #points .section-title,.founder-copy .section-title,#experience .section-title,#network .section-title,#capabilities .section-title,#offers .section-title{
+    width:100%;justify-items:center;text-align:center;gap:13px
+  }
+  #points .section-title>div:first-child,.founder-copy .section-title>div:first-child,#experience .section-title>div:first-child,#network .section-title>div:first-child,#capabilities .section-title>div:first-child,#offers .section-title>div:first-child{
+    width:100%;flex-direction:column;align-items:center;justify-content:center;gap:12px
+  }
+  #points .section-title p,.founder-copy .section-title p,#experience .section-title p,#network .section-title p,#capabilities .section-title p,#offers .section-title p{
+    max-width:100%;margin:0;color:#fff;font-size:clamp(21px,6.35vw,26px);font-weight:800;line-height:1.08;letter-spacing:-.025em;white-space:nowrap;text-align:center
+  }
+  #points .section-heading-row,.founder-copy .section-heading-row,#experience .section-heading-row,#network .section-heading-row,#capabilities .section-heading-row,#offers .section-heading-row{
+    width:100%;display:flex;justify-content:center;text-align:center
+  }
+  #points .section-title h2,#experience .section-title h2,#network .section-title h2,#capabilities .section-title h2,#offers .section-title h2{
+    width:auto;max-width:100%;margin:0;font-size:clamp(11px,3.35vw,14px);line-height:1.2;letter-spacing:.12em;white-space:nowrap;text-align:center
+  }
+  .founder-copy .section-title h2{
+    width:auto;max-width:100%;margin:0;font-size:clamp(27px,8vw,32px);line-height:1.05;letter-spacing:.01em;white-space:nowrap;text-align:center
+  }
   .solution-cta>div{align-items:flex-start;flex-direction:column;padding:26px 22px}
   .solution-cta .button{width:100%}
   footer{gap:16px}

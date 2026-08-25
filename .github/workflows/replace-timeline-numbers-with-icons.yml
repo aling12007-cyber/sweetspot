@@ -1,0 +1,42 @@
+name: Replace timeline numbers with icons
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add refined timeline icons
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require('fs');
+          const path='index.html';
+          let s=fs.readFileSync(path,'utf8');
+          const oldNode='(0,f.jsx)("span",{className:"timeline-dot",children:String(i+1).padStart(2,"0")})';
+          const newNode='(0,f.jsx)("span",{className:"timeline-dot",children:(0,f.jsx)(ge,{type:["rugby","baseball","tennis","golf","basketball","cycling","swimming","boxing","trophy"][i]})})';
+          if(!s.includes(newNode)){
+            if(!s.includes(oldNode)) throw new Error('Timeline number node not found');
+            s=s.replace(oldNode,newNode);
+          }
+          const oldCss='.timeline-dot{display:grid;place-items:center;width:34px;height:34px;color:#1a1e24;background:#d8aa36;border-radius:50%;font:900 10px monospace}';
+          const newCss='.timeline-dot{display:grid;place-items:center;width:38px;height:38px;color:var(--gold-pale);background:linear-gradient(145deg,rgba(215,169,54,.14),rgba(215,169,54,.035));border:1px solid rgba(215,169,54,.48);border-radius:50%;box-shadow:inset 0 0 15px rgba(215,169,54,.07),0 0 18px rgba(215,169,54,.06)}.timeline-dot .sport-icon{width:21px;height:21px}';
+          if(!s.includes(newCss)){
+            if(!s.includes(oldCss)) throw new Error('Timeline dot CSS not found');
+            s=s.replace(oldCss,newCss);
+          }
+          fs.writeFileSync(path,s);
+          NODE
+      - name: Commit update and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/replace-timeline-numbers-with-icons.yml
+          git add index.html
+          git commit -m "Replace timeline numbers with refined sport icons"
+          git push

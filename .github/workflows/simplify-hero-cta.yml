@@ -1,0 +1,34 @@
+name: Simplify hero call to action
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Swap hero CTA and remove secondary link
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),p='index.html'; let s=fs.readFileSync(p,'utf8');
+          const oldCta=String.raw`className:"hero-cta",children:[(0,f.jsxs)("a",{className:"button gold-button",href:"#offers",children:[z(l,{en:"Explore Solutions",ja:"\u30B5\u30FC\u30D3\u30B9\u3092\u898B\u308B",zh:"\u67E5\u770B\u89E3\u51B3\u65B9\u6848"}),(0,f.jsx)("span",{className:"button-arrow",children:(0,f.jsx)(Cd,{})})]}),(0,f.jsxs)("a",{className:"text-link",href:"#founder",children:[z(l,{en:"Meet the Founder",ja:"\u5275\u8A2D\u8005\u306B\u3064\u3044\u3066",zh:"\u8BA4\u8BC6\u521B\u529E\u4EBA"})," ",(0,f.jsx)("span",{children:"\u2193"})]})]`;
+          const newCta=String.raw`className:"hero-cta",children:(0,f.jsxs)("a",{className:"button gold-button",href:"#founder",children:[z(l,{en:"Meet the Founder",ja:"\u5275\u8A2D\u8005\u306B\u3064\u3044\u3066",zh:"\u8BA4\u8BC6\u521B\u529E\u4EBA"}),(0,f.jsx)("span",{className:"button-arrow",children:(0,f.jsx)(Cd,{})})]})`;
+          if(!s.includes(newCta)){
+            if(!s.includes(oldCta)) throw new Error('Hero CTA block not found');
+            s=s.replace(oldCta,newCta);
+          }
+          fs.writeFileSync(p,s);
+          NODE
+      - name: Commit update and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/simplify-hero-cta.yml
+          git add index.html
+          git commit -m "Make founder the primary hero action"
+          git push

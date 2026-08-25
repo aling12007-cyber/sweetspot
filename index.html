@@ -452,15 +452,11 @@ footer .brand-logo{width:46px;height:41px;flex-basis:46px;border-radius:5px}
 .section-kicker-icon[data-section="05"] i{background:#65a9ef;-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M5 2h14v5c0 5-2 8-5 9v3h4v3H6v-3h4v-3C7 15 5 12 5 7V2zm-3 2h3v3c0 3 1 5 3 7-4-1-6-4-6-8V4zm17 0h3v2c0 4-2 7-6 8 2-2 3-4 3-7V4z%27/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M5 2h14v5c0 5-2 8-5 9v3h4v3H6v-3h4v-3C7 15 5 12 5 7V2zm-3 2h3v3c0 3 1 5 3 7-4-1-6-4-6-8V4zm17 0h3v2c0 4-2 7-6 8 2-2 3-4 3-7V4z%27/%3E%3C/svg%3E")}
 
 
-/* Unified type scale, contrast and interaction states */
+/* Improved contrast and interaction states */
 :root{--muted:#aab4c1;--body-text:#b9c3cf;--support-text:#98a4b2}
-.section-title h2{font-size:clamp(56px,5vw,72px)}
-.section-title.compact h2{font-size:clamp(42px,4vw,56px)}
-.feature-card h3,.network-grid h3,.partner-grid h3,.solutions-grid h3{font-size:clamp(24px,2vw,30px)}
-.capability-grid h3,.timeline h3{font-size:24px}
-.feature-card p,.founder-copy>p,.network-grid p,.partner-grid p,.partner-grid li,.capability-grid p,.solutions-grid li,.solutions-grid p,.work-step p,.insight-card>div>p:last-child{color:var(--body-text);font-size:18px;line-height:1.65}
-.timeline p,.timeline-body{color:var(--body-text);font-size:18px}
-.timeline time,.network-grid article>span,.capability-grid article>span,.solutions-grid article>span{color:var(--support-text);font-size:14px}
+.feature-card p,.founder-copy>p,.network-grid p,.partner-grid p,.partner-grid li,.capability-grid p,.solutions-grid li,.solutions-grid p,.work-step p,.insight-card>div>p:last-child{color:var(--body-text)}
+.timeline p,.timeline-body{color:var(--body-text)}
+.timeline time,.network-grid article>span,.capability-grid article>span,.solutions-grid article>span{color:var(--support-text)}
 .hero-note,.language-note small,.section-title p{color:var(--support-text)}
 
 .career-toggle-wrap{display:flex;justify-content:center;padding-top:28px}
@@ -485,12 +481,6 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   .menu-toggle.is-open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 }
 @media(max-width:760px){
-  .section-title h2,.section-title.compact h2{font-size:clamp(36px,11vw,44px)}
-  #experience .section-title h2{font-size:16px}
-  .section-title p{font-size:14px}
-  .feature-card h3,.network-grid h3,.partner-grid h3,.solutions-grid h3,.capability-grid h3,.timeline h3{font-size:22px}
-  .feature-card p,.founder-copy>p,.network-grid p,.partner-grid p,.partner-grid li,.capability-grid p,.solutions-grid li,.solutions-grid p,.work-step p,.timeline p,.timeline-body{font-size:17px}
-  .timeline time,.network-grid article>span,.capability-grid article>span,.solutions-grid article>span{font-size:14px}
   .solution-cta>div{align-items:flex-start;flex-direction:column;padding:26px 22px}
   .solution-cta .button{width:100%}
   footer{gap:16px}

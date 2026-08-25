@@ -1,0 +1,34 @@
+name: Compact network card layout
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Align network icons and reduce spacing
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),p='index.html'; let s=fs.readFileSync(p,'utf8');
+          const needle='.network-icon{margin-bottom:28px}';
+          const rules=needle+'\n/* Compact network cards: icon beside title and role */\n.network-grid article{min-height:0;padding:22px 24px 24px;display:grid;grid-template-columns:68px minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:16px;align-content:start}\n.network-grid .network-icon{grid-column:1;grid-row:1/3;width:56px;height:56px;margin:0}\n.network-grid h3{grid-column:2;grid-row:1;align-self:end;margin:0 110px 3px 0}\n.network-grid h4{grid-column:2;grid-row:2;align-self:start;margin:0 110px 0 0}\n.network-grid p{grid-column:1/-1;grid-row:3;margin:14px 0 0}\n.network-grid article>span{top:22px;right:24px}';
+          if(!s.includes('/* Compact network cards: icon beside title and role */')){
+            if(!s.includes(needle)) throw new Error('Network layout insertion point not found');
+            s=s.replace(needle,rules);
+          }
+          fs.writeFileSync(p,s);
+          NODE
+      - name: Commit update and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/compact-network-card-layout.yml
+          git add index.html
+          git commit -m "Compact network cards and align icons with headings"
+          git push

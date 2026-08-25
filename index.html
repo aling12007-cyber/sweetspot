@@ -562,12 +562,21 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
 }
 .site-header nav a.is-active{color:var(--gold-pale)}
 .site-header nav a.is-active:after{content:"";display:block;height:2px;margin-top:5px;background:var(--gold)}
+.difference-grid .feature-card{
+  min-height:220px!important;padding:26px 24px!important;display:grid;grid-template-columns:28px minmax(0,1fr);column-gap:8px;row-gap:12px;align-content:center;align-items:start
+}
+.feature-card .card-top{grid-column:1;grid-row:1;display:block;margin:0!important}
+.feature-card .card-top span{color:var(--gold)!important;font-size:12px;line-height:1.6}
+.feature-card h3{grid-column:2;grid-row:1;margin:0!important;line-height:1.25}
+.feature-card p{grid-column:2;grid-row:2;margin:0!important;line-height:1.55}
+.feature-card .card-line{grid-column:2;grid-row:3;margin-top:5px}
 .section-title .section-kicker-icon[data-section]{
   width:38px!important;height:38px!important;flex-basis:38px!important
 }
 @media(max-width:760px){
   .founder-caption{right:22px;padding-right:68px}
   .founder-caption:after{width:54px;height:54px}
+  .difference-grid .feature-card{min-height:180px!important;padding:22px 20px!important;grid-template-columns:26px minmax(0,1fr);column-gap:7px;row-gap:9px}
   html[lang="ja"] #points .section-title p,html[lang="ja"] .founder-copy .section-title p,html[lang="ja"] #experience .section-title p,html[lang="ja"] #network .section-title p,html[lang="ja"] #capabilities .section-title p,html[lang="ja"] #offers .section-title p{font-size:clamp(13px,3.8vw,17px);letter-spacing:-.045em}
   html[lang="zh"] #points .section-title p,html[lang="zh"] .founder-copy .section-title p,html[lang="zh"] #experience .section-title p,html[lang="zh"] #network .section-title p,html[lang="zh"] #capabilities .section-title p,html[lang="zh"] #offers .section-title p{font-size:clamp(16px,4.8vw,20px);letter-spacing:-.035em}
   .capability-grid article{

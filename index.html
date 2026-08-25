@@ -498,6 +498,12 @@ footer .brand-logo{width:46px;height:41px;flex-basis:46px;border-radius:5px}
 .solution-cta>div{display:flex;align-items:center;justify-content:space-between;gap:30px;padding:32px 36px;border:1px solid rgba(215,169,54,.38);background:linear-gradient(110deg,rgba(215,169,54,.12),rgba(10,102,194,.08))}
 .solution-cta p{margin:0;color:#f2f4f7;font-size:clamp(24px,2.4vw,34px);font-weight:800;line-height:1.2;letter-spacing:-.025em}
 .footer-cta{max-width:360px;color:#bdc6d1;font-size:13px;line-height:1.4}
+@media(min-width:761px){
+  .solution-cta{padding-block:18px}
+  .solution-cta>div{padding:20px 28px;gap:22px}
+  .solution-cta p{font-size:clamp(20px,1.65vw,24px);line-height:1.1;white-space:nowrap}
+  .solution-cta .button{flex:0 0 auto;min-width:230px;white-space:nowrap}
+}
 
 /* Remove redundant circular icons inside content cards */
 .feature-card .card-top i,.capability-grid article>i,.solution-icon{display:none}

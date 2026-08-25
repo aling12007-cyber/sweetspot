@@ -1,0 +1,32 @@
+name: Apply golf inspired section icons
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Design simple golf icon set
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),p='index.html';let s=fs.readFileSync(p,'utf8');
+          if(!s.includes('/* Golf-inspired section symbols */')){
+            const css='\n/* Golf-inspired section symbols */\n.section-title .section-kicker-icon{width:34px;height:34px;flex-basis:34px;border-radius:50%;background:#111b28;box-shadow:inset 0 0 0 1px rgba(74,145,223,.22)}\n.section-title .section-kicker-icon i{position:relative;display:block;transform:none;clip-path:none;box-shadow:none;background:transparent}\n.section-kicker-icon[data-section="01"] i{width:17px;height:17px;border-radius:50%;background:radial-gradient(circle at 35% 32%,#a7b2be 0 1px,transparent 1.5px),radial-gradient(circle at 65% 38%,#a7b2be 0 1px,transparent 1.5px),radial-gradient(circle at 48% 64%,#a7b2be 0 1px,transparent 1.5px),#f2f4f7}\n.section-kicker-icon[data-section="01"] i:before,.section-kicker-icon[data-section="01"] i:after{content:none}\n.section-kicker-icon[data-section="02"] i{width:18px;height:20px;background:transparent}\n.section-kicker-icon[data-section="02"] i:before{content:"";position:absolute;left:3px;top:0;width:12px;height:12px;border-radius:50%;background:#f2f4f7}\n.section-kicker-icon[data-section="02"] i:after{content:"";position:absolute;left:5px;top:11px;width:8px;height:9px;background:#e2ba4c;clip-path:polygon(0 0,100% 0,58% 100%,42% 100%)}\n.section-kicker-icon[data-section="career"] i{width:19px;height:19px;background:linear-gradient(90deg,transparent 0 5px,#e2ba4c 5px 8px,transparent 8px)}\n.section-kicker-icon[data-section="career"] i:before{content:"";position:absolute;left:7px;top:1px;width:11px;height:8px;background:#4a91df;clip-path:polygon(0 0,100% 22%,0 100%)}\n.section-kicker-icon[data-section="career"] i:after{content:"";position:absolute;left:2px;bottom:0;width:12px;height:4px;border-radius:50%;background:#263b54}\n.section-kicker-icon[data-section="03"] i{width:20px;height:20px;background:transparent}\n.section-kicker-icon[data-section="03"] i:before{content:"";position:absolute;left:9px;top:0;width:4px;height:16px;border-radius:3px;background:#e2ba4c;transform:rotate(38deg);transform-origin:bottom}\n.section-kicker-icon[data-section="03"] i:after{content:"";position:absolute;left:1px;bottom:1px;width:11px;height:6px;border-radius:2px 5px 5px 2px;background:#4a91df;transform:rotate(-8deg)}\n.section-kicker-icon[data-section="04"] i{width:21px;height:16px;border-radius:50%;background:#294f72;transform:none}\n.section-kicker-icon[data-section="04"] i:before{content:"";position:absolute;left:10px;top:1px;width:3px;height:11px;background:#e2ba4c}\n.section-kicker-icon[data-section="04"] i:after{content:"";position:absolute;left:8px;bottom:2px;width:7px;height:3px;border-radius:50%;background:#07101a}\n.section-kicker-icon[data-section="05"] i{width:18px;height:20px;background:#4a91df;clip-path:polygon(18% 15%,82% 15%,100% 100%,0 100%);border-radius:0}\n.section-kicker-icon[data-section="05"] i:before{content:"";position:absolute;left:3px;top:0;width:3px;height:9px;background:#e2ba4c;box-shadow:5px -1px 0 #e2ba4c,10px 1px 0 #e2ba4c}\n.section-kicker-icon[data-section="05"] i:after{content:"";position:absolute;left:5px;bottom:3px;width:8px;height:3px;border-radius:2px;background:#0d1824}\n';
+            s=s.replace('</style>',css+'</style>');
+          }
+          fs.writeFileSync(p,s);
+          NODE
+      - name: Commit update and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/apply-golf-inspired-section-icons.yml
+          git add index.html
+          git commit -m "Redesign section icons with golf motifs"
+          git push

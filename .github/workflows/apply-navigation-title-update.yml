@@ -1,0 +1,44 @@
+name: Apply navigation title update
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update navigation titles
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require('fs');
+          const path='index.html';
+          let s=fs.readFileSync(path,'utf8');
+          const oldNav=[["points",{en:"Difference",ja:"強み",zh:"優勢"}],["founder",{en:"Founder",ja:"創設者",zh:"創辦人"}],["experience",{en:"Experience",ja:"実績",zh:"經歷"}],["network",{en:"Network",ja:"ネットワーク",zh:"合作网络"}],["offers",{en:"Solutions",ja:"サービス",zh:"解决方案"}]];
+          const newNav=[["points",{en:"What Sets Us Apart",ja:"選ばれる理由",zh:"与众不同的特质"}],["founder",{en:"Sam L. Pearson",ja:"Sam L. Pearson",zh:"Sam L. Pearson"}],["experience",{en:"Built across APAC",ja:"APACで築いたキャリア",zh:"深耕亚太的职业生涯"}],["network",{en:"Connected where it counts",ja:"価値あるつながり",zh:"连接关键资源"}],["offers",{en:"Sweet Spot Offers Customized Solutions",ja:"Sweet Spotが提供するカスタムソリューション",zh:"Sweet Spot 提供客制化解决方案"}]];
+          const oldText='let e='+JSON.stringify(oldNav);
+          const newText='let e='+JSON.stringify(newNav);
+          if(!s.includes(newText)){
+            if(!s.includes(oldText)) throw new Error('Navigation data not found');
+            s=s.replace(oldText,newText);
+          }
+          const oldCss='.site-header nav{display:flex;align-items:center;gap:27px}.site-header nav a{color:#c6ccd4;font-size:11px;font-weight:800;letter-spacing:.1em;';
+          const newCss='.site-header nav{display:flex;align-items:center;gap:clamp(10px,1.4vw,22px)}.site-header nav a{color:#c6ccd4;font-size:clamp(8px,.72vw,10px);font-weight:800;letter-spacing:.07em;white-space:nowrap;';
+          if(!s.includes(newCss)){
+            if(!s.includes(oldCss)) throw new Error('Navigation CSS not found');
+            s=s.replace(oldCss,newCss);
+          }
+          fs.writeFileSync(path,s);
+          NODE
+      - name: Commit update and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/apply-navigation-title-update.yml
+          git add index.html
+          git commit -m "Match navigation labels to section titles"
+          git push

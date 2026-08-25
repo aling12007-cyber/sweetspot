@@ -558,8 +558,10 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
 .founder-caption:after{
   content:"";position:absolute;right:0;bottom:0;width:64px;height:64px;
   background:url("assets/images/site-e8a84d6c8ba9.webp") center/cover no-repeat;
-  border:1px solid rgba(255,235,137,.38);border-radius:9px;box-shadow:0 8px 22px rgba(0,0,0,.32)
+  border:1px solid rgba(255,235,137,.3);border-radius:9px;box-shadow:0 8px 22px rgba(0,0,0,.32);opacity:.82;filter:brightness(.84) saturate(.82)
 }
+.site-header nav a.is-active{color:var(--gold-pale)}
+.site-header nav a.is-active:after{content:"";display:block;height:2px;margin-top:5px;background:var(--gold)}
 .section-title .section-kicker-icon[data-section]{
   width:38px!important;height:38px!important;flex-basis:38px!important
 }
@@ -576,6 +578,12 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   }
   .capability-grid h3{grid-column:2;grid-row:1;margin:0!important;line-height:1.3}
   .capability-grid p{grid-column:2;grid-row:2;margin:0!important;line-height:1.5}
+}
+@media(max-width:430px){
+  #points .section-title p,.founder-copy .section-title p,#experience .section-title p,#network .section-title p,#capabilities .section-title p,#offers .section-title p{font-size:clamp(17px,5.25vw,22px);max-width:100%;white-space:nowrap}
+  #points .section-title h2,#experience .section-title h2,#network .section-title h2,#capabilities .section-title h2,#offers .section-title h2{font-size:clamp(9px,3vw,12px);letter-spacing:.09em}
+  html[lang="ja"] #points .section-title p,html[lang="ja"] .founder-copy .section-title p,html[lang="ja"] #experience .section-title p,html[lang="ja"] #network .section-title p,html[lang="ja"] #capabilities .section-title p,html[lang="ja"] #offers .section-title p{font-size:clamp(12px,3.55vw,15px)}
+  html[lang="zh"] #points .section-title p,html[lang="zh"] .founder-copy .section-title p,html[lang="zh"] #experience .section-title p,html[lang="zh"] #network .section-title p,html[lang="zh"] #capabilities .section-title p,html[lang="zh"] #offers .section-title p{font-size:clamp(15px,4.45vw,18px)}
 }
 </style>
 </head>
@@ -648,6 +656,52 @@ react/cjs/react-jsx-runtime.production.js:
    * LICENSE file in the root directory of this source tree.
    *)
 */
+</script>
+<script>
+(()=>{
+  const init=()=>{
+    const dimensions={
+      "site-0bea4d652740.webp":[1333,1180],
+      "site-569ad95d8272.webp":[800,800],
+      "site-5fa8ee41a447.webp":[1024,1536],
+      "site-e8a84d6c8ba9.webp":[438,388]
+    };
+    document.querySelectorAll("img").forEach(img=>{
+      const file=img.getAttribute("src")?.split("/").pop();
+      const size=dimensions[file];
+      if(size&&!img.hasAttribute("width")){img.width=size[0];img.height=size[1]}
+      img.decoding="async";
+      if(img.classList.contains("hero-city-image")){img.loading="eager";img.fetchPriority="high"}
+      else if(!img.closest(".site-header")){img.loading="lazy"}
+    });
+
+    const links=[...document.querySelectorAll('.site-header nav a[href^="#"]')];
+    const linkById=new Map(links.map(link=>[link.getAttribute("href").slice(1),link]));
+    const sections=[...linkById.keys()].map(id=>document.getElementById(id)).filter(Boolean);
+    const setActive=id=>links.forEach(link=>{
+      const active=link===linkById.get(id);
+      link.classList.toggle("is-active",active);
+      if(active)link.setAttribute("aria-current","location");else link.removeAttribute("aria-current");
+    });
+    if("IntersectionObserver" in window){
+      const visible=new Map();
+      const observer=new IntersectionObserver(entries=>{
+        entries.forEach(entry=>visible.set(entry.target.id,entry.isIntersecting?entry.intersectionRatio:0));
+        const current=[...visible].sort((a,b)=>b[1]-a[1])[0];
+        if(current&&current[1]>0)setActive(current[0]);
+      },{rootMargin:"-25% 0px -55%",threshold:[0,.15,.4,.7]});
+      sections.forEach(section=>observer.observe(section));
+    }
+
+    document.querySelectorAll('.solution-cta a,.contact-buttons a,.insight-link').forEach(link=>link.addEventListener("click",()=>{
+      const detail={label:link.textContent.trim(),href:link.getAttribute("href")};
+      window.dataLayer=window.dataLayer||[];
+      window.dataLayer.push({event:"sweetspot_cta_click",...detail});
+      window.dispatchEvent(new CustomEvent("sweetspot:cta",{detail}));
+    }));
+  };
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+})();
 </script>
 </body>
 </html>

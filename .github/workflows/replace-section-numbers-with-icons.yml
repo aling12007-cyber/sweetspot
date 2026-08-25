@@ -1,0 +1,38 @@
+name: Replace section numbers with icons
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Move section icons into number positions
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),p='index.html';let s=fs.readFileSync(p,'utf8');
+          const oldComponent='function vu({number:l,kicker:t,title:a,lang:u,compact:e=!1}){let n={"01":"rugby","02":"golf","03":"track","04":"baseball","05":"tennis","06":"football"};return(0,f.jsxs)("div",{className:"section-title "+(e?"compact":""),children:[(0,f.jsxs)("div",{children:[(0,f.jsx)("span",{children:l}),(0,f.jsx)("p",{children:z(u,t)})]}),(0,f.jsxs)("div",{className:"section-heading-row",children:[(0,f.jsx)("h2",{children:z(u,a)}),(0,f.jsx)("span",{className:"section-sport-icon",children:(0,f.jsx)(ge,{type:n[l]||"rugby"})})]})]})}';
+          const newComponent='function vu({number:l,kicker:t,title:a,lang:u,compact:e=!1}){let n={"01":"rugby","02":"golf","03":"track","04":"baseball","05":"tennis","06":"football"};return(0,f.jsxs)("div",{className:"section-title "+(e?"compact":""),children:[(0,f.jsxs)("div",{children:[(0,f.jsx)("span",{className:"section-kicker-icon",children:(0,f.jsx)(ge,{type:n[l]||"compass"})}),(0,f.jsx)("p",{children:z(u,t)})]}),(0,f.jsx)("div",{className:"section-heading-row",children:(0,f.jsx)("h2",{children:z(u,a)})})]})}';
+          if(!s.includes(newComponent)){
+            if(!s.includes(oldComponent)) throw new Error('Section title component not found');
+            s=s.replace(oldComponent,newComponent);
+          }
+          if(!s.includes('/* Section kicker icons replace numeric labels */')){
+            const css='\n/* Section kicker icons replace numeric labels */\n.section-title .section-kicker-icon{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;color:var(--gold-pale);background:rgba(215,169,54,.07);border:1px solid rgba(215,169,54,.42);border-radius:50%;font-size:inherit;line-height:1;letter-spacing:0}\n.section-title .section-kicker-icon .sport-icon{width:20px;height:20px}\n';
+            s=s.replace('</style>',css+'</style>');
+          }
+          fs.writeFileSync(p,s);
+          NODE
+      - name: Commit update and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/replace-section-numbers-with-icons.yml
+          git add index.html
+          git commit -m "Replace section numbers with refined icons"
+          git push

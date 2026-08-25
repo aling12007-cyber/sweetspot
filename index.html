@@ -504,6 +504,7 @@ footer .brand-logo{width:46px;height:41px;flex-basis:46px;border-radius:5px}
 .feature-card .card-top{justify-content:flex-start;margin-bottom:32px}
 .capability-grid article{min-height:150px;padding-top:58px}
 .solutions-grid article,.solutions-full article{min-height:auto;padding-top:58px}
+.network-grid article>span{display:none}
 
 .menu-toggle b{font-size:8px;line-height:1;color:var(--gold-pale);letter-spacing:.12em}
 button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4px}
@@ -518,6 +519,11 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   .menu-toggle.is-open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 }
 @media(max-width:760px){
+  .network-grid article{display:block;padding:20px 18px}
+  .network-grid .network-icon{width:48px;height:48px;margin:0 0 16px}
+  .network-grid h3{display:block;max-width:none;margin:0 0 8px;font-size:21px;line-height:1.25}
+  .network-grid h4{display:block;max-width:none;margin:0 0 14px;font-size:14px;line-height:1.45}
+  .network-grid p{display:block;margin:0;line-height:1.6}
   .partner-grid{gap:10px}
   .partner-grid article{min-height:0!important;height:auto;padding:20px 18px}
   .partner-grid h3{margin:0 0 9px}

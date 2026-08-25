@@ -1,0 +1,32 @@
+name: Simplify section title icons
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply minimal geometric symbols
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),p='index.html';let s=fs.readFileSync(p,'utf8');
+          if(!s.includes('/* Minimal section symbols */')){
+            const css='\n/* Minimal section symbols */\n.section-title .section-kicker-icon{width:32px;height:32px;flex-basis:32px;border-radius:8px;background:#111b28;box-shadow:none}\n.section-title .section-kicker-icon i{width:12px;height:12px;transform:none;clip-path:none;box-shadow:none;border-radius:0;background:#e2ba4c}\n.section-title .section-kicker-icon i:before,.section-title .section-kicker-icon i:after{content:none}\n.section-kicker-icon[data-section="01"] i{border-radius:50%;background:#e2ba4c;transform:none}\n.section-kicker-icon[data-section="02"] i{border-radius:2px;background:#4a91df;clip-path:none}\n.section-kicker-icon[data-section="career"] i{width:16px;height:12px;border-radius:1px;background:linear-gradient(90deg,#e2ba4c 0 44%,transparent 44% 56%,#4a91df 56%)}\n.section-kicker-icon[data-section="03"] i{width:14px;height:13px;background:#e2ba4c;clip-path:polygon(50% 0,100% 100%,0 100%)}\n.section-kicker-icon[data-section="04"] i{width:16px;height:16px;border-radius:0;background:linear-gradient(#4a91df 0 0) center/4px 16px no-repeat,linear-gradient(#4a91df 0 0) center/16px 4px no-repeat;box-shadow:none}\n.section-kicker-icon[data-section="05"] i{width:11px;height:11px;border-radius:1px;background:#e2ba4c;transform:rotate(45deg)}\n';
+            s=s.replace('</style>',css+'</style>');
+          }
+          fs.writeFileSync(p,s);
+          NODE
+      - name: Commit update and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/simplify-section-title-icons.yml
+          git add index.html
+          git commit -m "Simplify section icons to minimal symbols"
+          git push

@@ -306,6 +306,33 @@ footer .brand-logo{width:46px;height:41px;flex-basis:46px;border-radius:5px}
 .section-title h2,.section-title.compact h2,#network .section-title h2{color:#9da7b4;font-size:12.5px;font-weight:900;line-height:normal;letter-spacing:.15em}
 #experience .section-title h2{color:#fff;font-size:clamp(51.84px,7.2vw,92.16px);line-height:.98;letter-spacing:-.05em}
 @media(max-width:760px){.section-title p{font-size:33.6px}.section-title>div>span{font-size:26.88px}#experience .section-title h2{font-size:60.48px}}
+
+/* Founder name and section 03 subtitle alignment */
+.founder-copy .section-title h2{
+  color:#fff;
+  font-size:clamp(23.04px,3.2vw,40.96px);
+  font-weight:700;
+  line-height:.98;
+  letter-spacing:-.05em;
+  -webkit-text-stroke:1px var(--gold);
+  paint-order:stroke fill;
+  text-shadow:
+    1px 0 0 var(--gold),-1px 0 0 var(--gold),
+    0 1px 0 var(--gold),0 -1px 0 var(--gold);
+}
+#experience .section-title h2{
+  color:#9da7b4;
+  font-size:12.5px;
+  font-weight:900;
+  line-height:normal;
+  letter-spacing:.15em;
+  -webkit-text-stroke:0;
+  text-shadow:none;
+}
+@media(max-width:760px){
+  .founder-copy .section-title h2{font-size:26.88px}
+  #experience .section-title h2{font-size:12.5px}
+}
 </style>
 </head>
 <body>

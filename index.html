@@ -499,6 +499,12 @@ footer .brand-logo{width:46px;height:41px;flex-basis:46px;border-radius:5px}
 .solution-cta p{margin:0;color:#f2f4f7;font-size:clamp(24px,2.4vw,34px);font-weight:800;line-height:1.2;letter-spacing:-.025em}
 .footer-cta{max-width:360px;color:#bdc6d1;font-size:13px;line-height:1.4}
 
+/* Remove redundant circular icons inside content cards */
+.feature-card .card-top i,.capability-grid article>i,.solution-icon{display:none}
+.feature-card .card-top{justify-content:flex-start;margin-bottom:32px}
+.capability-grid article{min-height:150px;padding-top:58px}
+.solutions-grid article,.solutions-full article{min-height:auto;padding-top:58px}
+
 .menu-toggle b{font-size:8px;line-height:1;color:var(--gold-pale);letter-spacing:.12em}
 button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4px}
 .menu-toggle:focus-visible{outline-color:var(--gold-pale)}

@@ -30,7 +30,7 @@ jobs:
           h1 = text[h1_start:h2_start-1]
           h2 = text[h2_start:p_start-1]
 
-          if 'children:"Welcome to"' not in h2:
+          if 'Welcome to' not in h2:
               raise SystemExit('Expected Welcome to heading not found')
 
           updated = text[:h1_start] + h2 + ',' + h1 + ',' + text[p_start:]

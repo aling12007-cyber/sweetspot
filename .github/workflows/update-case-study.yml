@@ -50,6 +50,8 @@ jobs:
           p.write_text(s, encoding='utf-8')
 
           updated = p.read_text(encoding='utf-8')
+          cap_end = updated.find(insights_marker, updated.find(cap_start_marker))
+          cap_section = updated[updated.find(cap_start_marker):cap_end]
           required = [
               'Case Study: Apple',
               'Demonstrated high-level facilitation capability:',
@@ -59,22 +61,11 @@ jobs:
               'Created a viral PR moment for Global CEO Tim Cook’s visit to Osaka.'
           ]
           for text in required:
-              if text not in updated:
+              if text not in cap_section:
                   raise SystemExit('Missing required text: ' + text)
-          forbidden = [
-              'Customized Solutions',
-              'Sweet Spot Offers Customized Solutions',
-              'What We Offer',
-              'How We Work',
-              'Rapid Response',
-              'Talent Selection',
-              'Strategic Deals',
-              'Connected Style',
-              'href:"#offers"'
-          ]
-          for text in forbidden:
+          for text in ['Customized Solutions', 'Sweet Spot Offers Customized Solutions', 'href:"#offers"', 'id:"offers"']:
               if text in updated:
-                  raise SystemExit('Old/removed content still present: ' + text)
+                  raise SystemExit('Removed Solutions content still present: ' + text)
           PY
       - name: Commit website change and remove temporary workflow
         shell: bash

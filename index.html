@@ -1622,6 +1622,182 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
 }
 /* Heading alignment founder cleanup END */
 
+
+/* Hierarchy heading roles START */
+#company .section-title,
+#points .section-title,
+.founder-copy .section-title,
+#experience .section-title,
+#network .section-title,
+#capabilities .section-title{
+  display:block!important;
+  width:100%!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  text-align:left!important;
+  justify-items:start!important;
+  align-items:start!important;
+}
+
+#company .section-title *,
+#points .section-title *,
+.founder-copy .section-title *,
+#experience .section-title *,
+#network .section-title *,
+#capabilities .section-title *{
+  text-align:left!important;
+}
+
+.section-title.hierarchy-applied .section-kicker-icon,
+.section-title.hierarchy-applied .section-sport-icon,
+.section-title.hierarchy-applied .hierarchy-kicker::before,
+.section-title.hierarchy-applied p::before{
+  display:none!important;
+  content:none!important;
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+.section-title.hierarchy-applied .hierarchy-kicker-row{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:14px!important;
+  width:100%!important;
+  margin:0 0 20px!important;
+}
+.section-title.hierarchy-applied .hierarchy-kicker-row::before{
+  content:""!important;
+  display:block!important;
+  flex:0 0 42px!important;
+  width:42px!important;
+  height:2px!important;
+  background:linear-gradient(90deg,#b77a12,#e5c668)!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.section-title.hierarchy-applied .hierarchy-kicker{
+  margin:0!important;
+  padding:0!important;
+  color:#c8b56e!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  line-height:1.3!important;
+  letter-spacing:.17em!important;
+  text-transform:none!important;
+  white-space:normal!important;
+}
+.section-title.hierarchy-applied .hierarchy-heading{
+  display:block!important;
+  width:100%!important;
+  max-width:1100px!important;
+  margin:0!important;
+  padding:0!important;
+  color:#f7f5ef!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-weight:800!important;
+  text-align:left!important;
+  white-space:normal!important;
+  -webkit-text-stroke:0!important;
+  text-shadow:none!important;
+}
+
+#company .section-title.hierarchy-applied .hierarchy-heading,
+#network .section-title.hierarchy-applied .hierarchy-heading{
+  font-size:clamp(40px,4.7vw,62px)!important;
+  line-height:.98!important;
+  letter-spacing:-.045em!important;
+}
+
+#points .section-title.hierarchy-applied .hierarchy-heading,
+.founder-copy .section-title.hierarchy-applied .hierarchy-heading,
+#capabilities .section-title.hierarchy-applied .hierarchy-heading{
+  font-size:clamp(34px,4vw,54px)!important;
+  line-height:.99!important;
+  letter-spacing:-.04em!important;
+}
+
+#experience .section-title.hierarchy-applied .hierarchy-heading{
+  font-size:clamp(28px,3vw,40px)!important;
+  line-height:1!important;
+  letter-spacing:-.035em!important;
+}
+
+.section-title.hierarchy-applied .hierarchy-support{
+  display:block!important;
+  width:100%!important;
+  max-width:920px!important;
+  margin:14px 0 0!important;
+  padding:0!important;
+  color:#9da7b4!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-size:14px!important;
+  font-weight:600!important;
+  line-height:1.5!important;
+  letter-spacing:.01em!important;
+}
+
+#network .section-title.hierarchy-applied .hierarchy-support,
+#capabilities .section-title.hierarchy-applied .hierarchy-support{
+  font-size:13px!important;
+  line-height:1.45!important;
+  letter-spacing:.015em!important;
+}
+
+.founder-copy .section-title.hierarchy-applied .founder-name-support{
+  margin-top:12px!important;
+  color:#9da7b4!important;
+  font-size:17px!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+  letter-spacing:.02em!important;
+}
+
+@media(max-width:760px){
+  .section-title.hierarchy-applied .hierarchy-kicker-row{
+    gap:10px!important;
+    margin-bottom:16px!important;
+  }
+  .section-title.hierarchy-applied .hierarchy-kicker-row::before{
+    flex-basis:28px!important;
+    width:28px!important;
+    height:1.5px!important;
+  }
+  .section-title.hierarchy-applied .hierarchy-kicker{
+    font-size:10.5px!important;
+    line-height:1.35!important;
+    letter-spacing:.145em!important;
+  }
+  #company .section-title.hierarchy-applied .hierarchy-heading,
+  #network .section-title.hierarchy-applied .hierarchy-heading{
+    font-size:clamp(34px,10.5vw,46px)!important;
+  }
+  #points .section-title.hierarchy-applied .hierarchy-heading,
+  .founder-copy .section-title.hierarchy-applied .hierarchy-heading,
+  #capabilities .section-title.hierarchy-applied .hierarchy-heading{
+    font-size:clamp(31px,9vw,40px)!important;
+  }
+  #experience .section-title.hierarchy-applied .hierarchy-heading{
+    font-size:clamp(27px,7.8vw,34px)!important;
+  }
+  .section-title.hierarchy-applied .hierarchy-support{
+    margin-top:11px!important;
+    font-size:13px!important;
+  }
+  #network .section-title.hierarchy-applied .hierarchy-support,
+  #capabilities .section-title.hierarchy-applied .hierarchy-support{
+    font-size:12px!important;
+    line-height:1.45!important;
+  }
+  .founder-copy .section-title.hierarchy-applied .founder-name-support{
+    display:none!important;
+  }
+}
+/* Hierarchy heading roles END */
+
 </style>
 </head>
 <body>
@@ -1986,6 +2162,114 @@ react/cjs/react-jsx-runtime.production.js:
 })();
 </script>
 <!-- Reference major heading fallback END -->
+
+
+<!-- Hierarchy heading roles START -->
+<script>
+(function(){
+  var copy = {
+    en: {
+      company: ["Company","Company Features",""],
+      points: ["Difference","Points of Difference",""],
+      founder: ["Founder","Introducing the Founder","Sam L. Pearson"],
+      experience: ["Career","Career Playbook",""],
+      network: ["Network","Broad Influence and Access","Services rendered to:"],
+      capabilities: ["Case Study","Case Study Apple","Demonstrated high-level facilitation capability"]
+    },
+    ja: {
+      company: ["会社","会社の特徴",""],
+      points: ["強み","私たちの強み",""],
+      founder: ["創業者","創業者紹介","Sam L. Pearson"],
+      experience: ["キャリア","キャリア・プレイブック",""],
+      network: ["ネットワーク","幅広い影響力とアクセス","サービス提供先："],
+      capabilities: ["ケーススタディ","ケーススタディ Apple","高水準のファシリテーション能力を実証："]
+    },
+    zh: {
+      company: ["公司","公司特色",""],
+      points: ["差異","核心優勢",""],
+      founder: ["創辦人","創辦人介紹","Sam L. Pearson"],
+      experience: ["職涯","職涯藍圖",""],
+      network: ["網絡","廣泛的影響力與資源管道","曾服務的對象包括："],
+      capabilities: ["案例研究","案例研究 Apple","展現高水準的協調促成能力："]
+    }
+  };
+
+  function detectLang(){
+    var probe = document.querySelector("#network .section-title");
+    var text = probe ? (probe.textContent || "") : "";
+    if(/幅広い|サービス提供先|ネットワーク/.test(text)) return "ja";
+    if(/廣泛|曾服務|網絡/.test(text)) return "zh";
+    var htmlLang = (document.documentElement.getAttribute("lang") || "").toLowerCase();
+    if(htmlLang.indexOf("ja") === 0) return "ja";
+    if(htmlLang.indexOf("zh") === 0) return "zh";
+    return "en";
+  }
+
+  function sectionTitle(key){
+    if(key === "founder") return document.querySelector(".founder-copy .section-title");
+    return document.querySelector("#" + key + " .section-title");
+  }
+
+  function renderOne(key, lang){
+    var title = sectionTitle(key);
+    if(!title) return;
+    var data = copy[lang][key];
+    var expected = data[0] + "|" + data[1] + "|" + data[2];
+    if(title.dataset.hierarchySignature === expected &&
+       title.querySelector(".hierarchy-heading") &&
+       title.querySelector(".hierarchy-kicker")) return;
+
+    title.classList.add("hierarchy-applied");
+    title.dataset.hierarchySignature = expected;
+    title.innerHTML =
+      '<div class="hierarchy-kicker-row"><span class="hierarchy-kicker"></span></div>' +
+      '<h2 class="hierarchy-heading"></h2>' +
+      (data[2] ? '<div class="hierarchy-support"></div>' : '');
+
+    title.querySelector(".hierarchy-kicker").textContent = data[0];
+    title.querySelector(".hierarchy-heading").textContent = data[1];
+    if(data[2]){
+      var support = title.querySelector(".hierarchy-support");
+      support.textContent = data[2];
+      if(key === "founder") support.classList.add("founder-name-support");
+    }
+  }
+
+  function applyHierarchy(){
+    var lang = detectLang();
+    ["company","points","founder","experience","network","capabilities"].forEach(function(key){
+      renderOne(key, lang);
+    });
+  }
+
+  var queued = false;
+  function queue(){
+    if(queued) return;
+    queued = true;
+    requestAnimationFrame(function(){
+      queued = false;
+      applyHierarchy();
+    });
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", queue, {once:true});
+  } else {
+    queue();
+  }
+
+  new MutationObserver(queue).observe(document.body, {
+    childList:true,
+    subtree:true,
+    characterData:true
+  });
+
+  document.addEventListener("click", function(e){
+    if(e.target.closest && e.target.closest(".lang-switch")) setTimeout(queue, 0);
+  });
+})();
+</script>
+<!-- Hierarchy heading roles END -->
 
 </body>
 </html>

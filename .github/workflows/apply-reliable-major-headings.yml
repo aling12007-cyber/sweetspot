@@ -1,0 +1,99 @@
+name: Apply reliable major headings
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/apply-reliable-major-headings.yml']
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply rebuilt major headings
+        shell: bash
+        run: echo 'CmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aAppbXBvcnQgcmUKCnAgPSBQYXRoKCJpbmRleC5odG1sIikKdCA9IHAucmVhZF90ZXh0KGVuY29kaW5nPSJ1dGYtOCIpCgpmb3Igc3RhcnQsIGVuZCBpbiBbCiAgICAoIi8qIE1ham9yIGhlYWRpbmdzIG1hdGNoIEluc2lnaHRzIFNUQVJUICovIiwgIi8qIE1ham9yIGhlYWRpbmdzIG1hdGNoIEluc2lnaHRzIEVORCAqLyIpLAogICAgKCIvKiBDb3JyZWN0IHRvcC1sZXZlbCBtYWpvciBoZWFkaW5ncyBTVEFSVCAqLyIsICIvKiBDb3JyZWN0IHRvcC1sZXZlbCBtYWpvciBoZWFkaW5ncyBFTkQgKi8iKSwKICAgICgiLyogUmVsaWFibGUgbWFqb3IgSW5zaWdodHMgaGVhZGluZ3MgU1RBUlQgKi8iLCAiLyogUmVsaWFibGUgbWFqb3IgSW5zaWdodHMgaGVhZGluZ3MgRU5EICovIiksCl06CiAgICB0ID0gcmUuc3ViKHJlLmVzY2FwZShzdGFydCkgKyByIi4qPyIgKyByZS5lc2NhcGUoZW5kKSwgIiIsIHQsIGZsYWdzPXJlLlMpCgpmb3Igc3RhcnQsIGVuZCBpbiBbCiAgICAoIjwhLS0gQ29ycmVjdCB0b3AtbGV2ZWwgbWFqb3IgaGVhZGluZ3MgU1RBUlQgLS0+IiwgIjwhLS0gQ29ycmVjdCB0b3AtbGV2ZWwgbWFqb3IgaGVhZGluZ3MgRU5EIC0tPiIpLAogICAgKCI8IS0tIFJlbGlhYmxlIG1ham9yIEluc2lnaHRzIGhlYWRpbmdzIFNUQVJUIC0tPiIsICI8IS0tIFJlbGlhYmxlIG1ham9yIEluc2lnaHRzIGhlYWRpbmdzIEVORCAtLT4iKSwKXToKICAgIHQgPSByZS5zdWIocmUuZXNjYXBlKHN0YXJ0KSArIHIiLio/IiArIHJlLmVzY2FwZShlbmQpLCAiIiwgdCwgZmxhZ3M9cmUuUykKCmNzcyA9IHIiJwonCi8qIFJlbGlhYmxlIG1ham9yIEluc2lnaHRzIGhlYWRpbmdzIFNUQVJUICovCiNjb21wYW55ID4gLm1ham9yLWluc2lnaHRzLXRpdGxlLAojbmV0d29yayA+IC5tYWpvci1pbnNpZ2h0cy10aXRsZXsKICBwb3NpdGlvbjpyZWxhdGl2ZTsKICB6LWluZGV4OjY7CiAgZGlzcGxheTpibG9jazsKICB3aWR0aDoxMDAlOwogIGJveC1zaXppbmc6Ym9yZGVyLWJveDsKICBtYXJnaW46MCAwIDM2cHggMDsKICBwYWRkaW5nOjA7CiAgdGV4dC1hbGlnbjpsZWZ0Owp9CiNjb21wYW55ID4gLm1ham9yLWluc2lnaHRzLXRpdGxlICosCiNuZXR3b3JrID4gLm1ham9yLWluc2lnaHRzLXRpdGxlICp7CiAgYm94LXNpemluZzpib3JkZXItYm94OwogIHRleHQtYWxpZ246bGVmdDsKfQojY29tcGFueSA+IC5tYWpvci1pbnNpZ2h0cy10aXRsZSAubWFqb3Ita2lja2VyLXJvdywKI25ldHdvcmsgPiAubWFqb3ItaW5zaWdodHMtdGl0bGUgLm1ham9yLWtpY2tlci1yb3d7CiAgZGlzcGxheTpmbGV4OwogIGFsaWduLWl0ZW1zOmNlbnRlcjsKICBqdXN0aWZ5LWNvbnRlbnQ6ZmxleC1zdGFydDsKICBnYXA6MjhweDsKICB3aWR0aDoxMDAlOwogIG1hcmdpbjowIDAgMzhweCAwOwogIHBhZGRpbmc6MDsKfQojY29tcGFueSA+IC5tYWpvci1pbnNpZ2h0cy10aXRsZSAubWFqb3Ita2lja2VyLWxpbmUsCiNuZXR3b3JrID4gLm1ham9yLWluc2lnaHRzLXRpdGxlIC5tYWpvci1raWNrZXItbGluZXsKICBkaXNwbGF5OmJsb2NrOwogIGZsZXg6MCAwIDg0cHg7CiAgd2lkdGg6ODRweDsKICBoZWlnaHQ6M3B4OwogIG1hcmdpbjowOwogIHBhZGRpbmc6MDsKICBib3JkZXI6MDsKICBib3JkZXItcmFkaXVzOjA7CiAgYmFja2dyb3VuZDojYzk5YjM1OwogIGJveC1zaGFkb3c6bm9uZTsKfQojY29tcGFueSA+IC5tYWpvci1pbnNpZ2h0cy10aXRsZSAubWFqb3Ita2lja2VyLAojbmV0d29yayA+IC5tYWpvci1pbnNpZ2h0cy10aXRsZSAubWFqb3Ita2lja2VyewogIGRpc3BsYXk6YmxvY2s7CiAgbWFyZ2luOjA7CiAgcGFkZGluZzowOwogIGNvbG9yOiNjOGI1NmU7CiAgZm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7CiAgZm9udC1zaXplOmNsYW1wKDE3cHgsMnZ3LDMwcHgpOwogIGZvbnQtd2VpZ2h0OjgwMDsKICBsaW5lLWhlaWdodDoxLjE1OwogIGxldHRlci1zcGFjaW5nOi4xOGVtOwogIHRleHQtdHJhbnNmb3JtOm5vbmU7CiAgd2hpdGUtc3BhY2U6bm9ybWFsOwp9CiNjb21wYW55ID4gLm1ham9yLWluc2lnaHRzLXRpdGxlIGgyLAojbmV0d29yayA+IC5tYWpvci1pbnNpZ2h0cy10aXRsZSBoMnsKICBkaXNwbGF5OmJsb2NrOwogIHdpZHRoOjEwMCU7CiAgbWF4LXdpZHRoOjExMjBweDsKICBtYXJnaW46MDsKICBwYWRkaW5nOjA7CiAgY29sb3I6I2Y3ZjVlZjsKICBmb250LWZhbWlseTpBcmlhbCxIZWx2ZXRpY2Esc2Fucy1zZXJpZjsKICBmb250LXNpemU6Y2xhbXAoNTRweCw3dncsOTZweCk7CiAgZm9udC13ZWlnaHQ6ODAwOwogIGxpbmUtaGVpZ2h0Oi45ODsKICBsZXR0ZXItc3BhY2luZzotLjA1NWVtOwogIHRleHQtYWxpZ246bGVmdDsKICB3aGl0ZS1zcGFjZTpub3JtYWw7CiAgLXdlYmtpdC10ZXh0LXN0cm9rZTowOwogIHRleHQtc2hhZG93Om5vbmU7Cn0KI25ldHdvcmsgPiAubWFqb3ItaW5zaWdodHMtdGl0bGUgLm1ham9yLXN1cHBvcnR7CiAgZGlzcGxheTpibG9jazsKICB3aWR0aDoxMDAlOwogIG1heC13aWR0aDo5MjBweDsKICBtYXJnaW46MjhweCAwIDA7CiAgcGFkZGluZzowOwogIGNvbG9yOiM5ZGE3YjQ7CiAgZm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7CiAgZm9udC1zaXplOmNsYW1wKDE1cHgsMS40NXZ3LDIwcHgpOwogIGZvbnQtd2VpZ2h0OjUwMDsKICBsaW5lLWhlaWdodDoxLjQ1OwogIGxldHRlci1zcGFjaW5nOjA7Cn0KI2NvbXBhbnkgPiAuc2VjdGlvbi10aXRsZS5tYWpvci1zb3VyY2UtdGl0bGUtaGlkZGVuLAojbmV0d29yayA+IC5zZWN0aW9uLXRpdGxlLm1ham9yLXNvdXJjZS10aXRsZS1oaWRkZW57CiAgZGlzcGxheTpub25lIWltcG9ydGFudDsKfQpAbWVkaWEobWF4LXdpZHRoOjc2MHB4KXsKICAjY29tcGFueSA+IC5tYWpvci1pbnNpZ2h0cy10aXRsZSwKICAjbmV0d29yayA+IC5tYWpvci1pbnNpZ2h0cy10aXRsZXsKICAgIG1hcmdpbi1ib3R0b206MjhweDsKICB9CiAgI2NvbXBhbnkgPiAubWFqb3ItaW5zaWdodHMtdGl0bGUgLm1ham9yLWtpY2tlci1yb3csCiAgI25ldHdvcmsgPiAubWFqb3ItaW5zaWdodHMtdGl0bGUgLm1ham9yLWtpY2tlci1yb3d7CiAgICBnYXA6MTZweDsKICAgIG1hcmdpbi1ib3R0b206MjRweDsKICB9CiAgI2NvbXBhbnkgPiAubWFqb3ItaW5zaWdodHMtdGl0bGUgLm1ham9yLWtpY2tlci1saW5lLAogICNuZXR3b3JrID4gLm1ham9yLWluc2lnaHRzLXRpdGxlIC5tYWpvci1raWNrZXItbGluZXsKICAgIGZsZXgtYmFzaXM6NDhweDsKICAgIHdpZHRoOjQ4cHg7CiAgICBoZWlnaHQ6MnB4OwogIH0KICAjY29tcGFueSA+IC5tYWpvci1pbnNpZ2h0cy10aXRsZSAubWFqb3Ita2lja2VyLAogICNuZXR3b3JrID4gLm1ham9yLWluc2lnaHRzLXRpdGxlIC5tYWpvci1raWNrZXJ7CiAgICBmb250LXNpemU6Y2xhbXAoMTRweCw0LjR2dywxOHB4KTsKICAgIGxldHRlci1zcGFjaW5nOi4xNmVtOwogIH0KICAjY29tcGFueSA+IC5tYWpvci1pbnNpZ2h0cy10aXRsZSBoMiwKICAjbmV0d29yayA+IC5tYWpvci1pbnNpZ2h0cy10aXRsZSBoMnsKICAgIG1heC13aWR0aDoxMDAlOwogICAgZm9udC1zaXplOmNsYW1wKDQycHgsMTN2dyw2MnB4KTsKICAgIGxpbmUtaGVpZ2h0Oi45ODsKICAgIGxldHRlci1zcGFjaW5nOi0uMDUyZW07CiAgfQogICNuZXR3b3JrID4gLm1ham9yLWluc2lnaHRzLXRpdGxlIC5tYWpvci1zdXBwb3J0ewogICAgbWFyZ2luLXRvcDoyMnB4OwogICAgbWF4LXdpZHRoOjEwMCU7CiAgICBmb250LXNpemU6Y2xhbXAoMTNweCw0dncsMTZweCk7CiAgICBsaW5lLWhlaWdodDoxLjQ1OwogIH0KfQovKiBSZWxpYWJsZSBtYWpvciBJbnNpZ2h0cyBoZWFkaW5ncyBFTkQgKi8KJycnCnQgPSB0LnJlcGxhY2UoIjwvc3R5bGU+IiwgY3NzICsgIlxuPC9zdHlsZT4iLCAxKQoKanMgPSByJycnCjwhLS0gUmVsaWFibGUgbWFqb3IgSW5zaWdodHMgaGVhZGluZ3MgU1RBUlQgLS0+CjxzY3JpcHQ+CihmdW5jdGlvbigpewogIHZhciBjb3B5ID0gewogICAgY29tcGFueTogewogICAgICBraWNrZXI6IHtlbjo"Q29tcGFueSIsIGphOiLkvJrnpL4iLCB6aDoi5YWs5Y-4In0sCiAgICAgIHRpdGxlOiAge2VuOiJDb21wYW55IEZlYXR1cmVzIiwgamE6IuS8muekvuOBruinhue+uSIsIHpoOiLlhazlj7jnibnoibIifQogICAgfSwKICAgIG5ldHdvcms6IHsKICAgICAga2lja2VyOiB7ZW46Ik5ldHdvcmsiLCBqYToi44ON44OD44OI44Ov44O844KvIiwgemg6Iue2sui3ryJ9LAogICAgICB0aXRsZToge2VuOiJCcm9hZCBJbmZsdWVuY2UgYW5kIEFjY2VzcyIsIGphOiLluYXluoPjgYTlvbH 響力とアクセス", zh:"廣泛的影響力與資源管道"},
+      support:{en:"Services rendered to:", ja:"サービス提供先：", zh:"曾服務的對象包括："}
+    }
+  };
+
+  function currentLang(){
+    var lang=(document.documentElement.lang||"en").toLowerCase();
+    if(lang.indexOf("ja")===0) return "ja";
+    if(lang.indexOf("zh")===0) return "zh";
+    return "en";
+  }
+
+  function setText(el, value){
+    if(el && el.textContent !== value) el.textContent = value;
+  }
+
+  function applyOne(id){
+    var section=document.getElementById(id);
+    if(!section) return;
+    var source=section.querySelector(":scope > .section-title") || section.querySelector(".section-title");
+    if(!source) return;
+
+    source.classList.add("major-source-title-hidden");
+
+    var custom=section.querySelector(":scope > .major-insights-title[data-major-id='"+id+"']");
+    if(!custom){
+      custom=document.createElement("div");
+      custom.className="major-insights-title";
+      custom.setAttribute("data-major-id", id);
+      custom.innerHTML=
+        '<div class="major-kicker-row"><span class="major-kicker-line" aria-hidden="true"></span><p class="major-kicker"></p></div>'+
+        '<h2></h2>'+
+        (id==="network" ? '<p class="major-support"></p>' : '');
+      section.insertBefore(custom, source);
+    }
+
+    var lang=currentLang();
+    setText(custom.querySelector(".major-kicker"), copy[id].kicker[lang] || copy[id].kicker.en);
+    setText(custom.querySelector("h2"), copy[id].title[lang] || copy[id].title.en);
+    if(copy[id].support){
+      setText(custom.querySelector(".major-support"), copy[id].support[lang] || copy[id].support.en);
+    }
+  }
+
+  function apply(){
+    applyOne("company");
+    applyOne("network");
+  }
+
+  var queued=false;
+  function queue(){
+    if(queued) return;
+    queued=true;
+    requestAnimationFrame(function(){
+      queued=false;
+      apply();
+    });
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded", queue, {once:true});
+  } else {
+    queue();
+  }
+
+  new MutationObserver(queue).observe(document.body,{childList:true,subtree:true,characterData:true});
+  document.addEventListener("click",function(e){
+    if(e.target.closest && e.target.closest(".lang-switch")) setTimeout(queue,0);
+  });
+})();
+</script>
+<!-- Reliable major Insights headings END -->
+'''
+t = t.replace("</body>", js + "\n</body>", 1)
+p.write_text(t, encoding="utf-8")
+' | base64 -d | python
+      - name: Commit website update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/apply-reliable-major-headings.yml
+          git rm -f .github/heading-diag.txt
+          git add index.html
+          git commit -m "Rebuild top-level headings to match Insights"
+          git push

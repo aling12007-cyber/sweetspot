@@ -1,0 +1,33 @@
+name: Update homepage ribbon text
+on:
+  push:
+    paths:
+      - '.github/workflows/home-ribbon-text-update.yml'
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update homepage image caption in all languages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = 'en:"Authentic sports passion · Exciting and innovative unlocks · Win-win solution focus",ja:"\\u6226\\u7565\\u3002\\u3064\\u306A\\u304C\\u308A\\u3002\\u5B9F\\u884C\\u529B\\u3002",zh:"\\u7B56\\u7565\\u3002\\u8FDE\\u63A5\\u3002\\u6267\\u884C\\u3002"'
+          new = 'en:"策略。连接。执行。",ja:"策略。连接。执行。",zh:"策略。连接。执行。"'
+          if old not in s:
+              raise SystemExit('Target strategy ribbon text block not found')
+          s = s.replace(old, new, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit update and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/home-ribbon-text-update.yml
+          git add index.html
+          git commit -m "Update homepage ribbon text"
+          git push

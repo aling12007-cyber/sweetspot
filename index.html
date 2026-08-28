@@ -1959,6 +1959,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   z-index:6!important;
   display:block!important;
   width:100%!important;
+  max-width:none!important;
   box-sizing:border-box!important;
   margin:0 0 36px 0!important;
   padding:0!important;
@@ -1973,6 +1974,65 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   box-sizing:border-box!important;
   text-align:left!important;
 }
+/* Kill every legacy square / icon / decorative marker in these headings. */
+#points .section-title.hierarchy-applied::before,
+#points .section-title.hierarchy-applied::after,
+.founder-copy .section-title.hierarchy-applied::before,
+.founder-copy .section-title.hierarchy-applied::after,
+#experience .section-title.hierarchy-applied::before,
+#experience .section-title.hierarchy-applied::after,
+#capabilities .section-title.hierarchy-applied::before,
+#capabilities .section-title.hierarchy-applied::after,
+#points .section-title.hierarchy-applied .hierarchy-kicker::before,
+#points .section-title.hierarchy-applied .hierarchy-kicker::after,
+.founder-copy .section-title.hierarchy-applied .hierarchy-kicker::before,
+.founder-copy .section-title.hierarchy-applied .hierarchy-kicker::after,
+#experience .section-title.hierarchy-applied .hierarchy-kicker::before,
+#experience .section-title.hierarchy-applied .hierarchy-kicker::after,
+#capabilities .section-title.hierarchy-applied .hierarchy-kicker::before,
+#capabilities .section-title.hierarchy-applied .hierarchy-kicker::after{
+  content:none!important;
+  display:none!important;
+  width:0!important;
+  height:0!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  background:none!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+#points .section-title.hierarchy-applied .section-kicker-icon,
+#points .section-title.hierarchy-applied .section-sport-icon,
+#points .section-title.hierarchy-applied svg,
+#points .section-title.hierarchy-applied i,
+.founder-copy .section-title.hierarchy-applied .section-kicker-icon,
+.founder-copy .section-title.hierarchy-applied .section-sport-icon,
+.founder-copy .section-title.hierarchy-applied svg,
+.founder-copy .section-title.hierarchy-applied i,
+#experience .section-title.hierarchy-applied .section-kicker-icon,
+#experience .section-title.hierarchy-applied .section-sport-icon,
+#experience .section-title.hierarchy-applied svg,
+#experience .section-title.hierarchy-applied i,
+#capabilities .section-title.hierarchy-applied .section-kicker-icon,
+#capabilities .section-title.hierarchy-applied .section-sport-icon,
+#capabilities .section-title.hierarchy-applied svg,
+#capabilities .section-title.hierarchy-applied i{
+  display:none!important;
+  visibility:hidden!important;
+  width:0!important;
+  height:0!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  background:none!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
 #points .section-title.hierarchy-applied .hierarchy-kicker-row,
 .founder-copy .section-title.hierarchy-applied .hierarchy-kicker-row,
 #experience .section-title.hierarchy-applied .hierarchy-kicker-row,
@@ -1984,12 +2044,13 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   width:100%!important;
   margin:0 0 38px 0!important;
   padding:0!important;
+  text-align:left!important;
 }
 #points .section-title.hierarchy-applied .hierarchy-kicker-row::before,
 .founder-copy .section-title.hierarchy-applied .hierarchy-kicker-row::before,
 #experience .section-title.hierarchy-applied .hierarchy-kicker-row::before,
 #capabilities .section-title.hierarchy-applied .hierarchy-kicker-row::before{
-  content:""!important;
+  content:''!important;
   display:block!important;
   flex:0 0 84px!important;
   width:84px!important;
@@ -2007,6 +2068,13 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   box-shadow:none!important;
   transform:none!important;
 }
+#points .section-title.hierarchy-applied .hierarchy-kicker-row::after,
+.founder-copy .section-title.hierarchy-applied .hierarchy-kicker-row::after,
+#experience .section-title.hierarchy-applied .hierarchy-kicker-row::after,
+#capabilities .section-title.hierarchy-applied .hierarchy-kicker-row::after{
+  content:none!important;
+  display:none!important;
+}
 #points .section-title.hierarchy-applied .hierarchy-kicker,
 .founder-copy .section-title.hierarchy-applied .hierarchy-kicker,
 #experience .section-title.hierarchy-applied .hierarchy-kicker,
@@ -2016,7 +2084,9 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   padding:0!important;
   color:#c8b56e!important;
   background:none!important;
+  background-image:none!important;
   border:0!important;
+  border-radius:0!important;
   box-shadow:none!important;
   font-family:Arial,Helvetica,sans-serif!important;
   font-size:clamp(17px,2vw,30px)!important;
@@ -2025,40 +2095,6 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   letter-spacing:.18em!important;
   text-transform:none!important;
   white-space:normal!important;
-}
-#points .section-title.hierarchy-applied .hierarchy-kicker::before,
-#points .section-title.hierarchy-applied .hierarchy-kicker::after,
-.founder-copy .section-title.hierarchy-applied .hierarchy-kicker::before,
-.founder-copy .section-title.hierarchy-applied .hierarchy-kicker::after,
-#experience .section-title.hierarchy-applied .hierarchy-kicker::before,
-#experience .section-title.hierarchy-applied .hierarchy-kicker::after,
-#capabilities .section-title.hierarchy-applied .hierarchy-kicker::before,
-#capabilities .section-title.hierarchy-applied .hierarchy-kicker::after{
-  display:none!important;
-  content:none!important;
-  width:0!important;
-  height:0!important;
-  border:0!important;
-  background:none!important;
-  box-shadow:none!important;
-}
-#points .section-title.hierarchy-applied .section-kicker-icon,
-#points .section-title.hierarchy-applied .section-sport-icon,
-.founder-copy .section-title.hierarchy-applied .section-kicker-icon,
-.founder-copy .section-title.hierarchy-applied .section-sport-icon,
-#experience .section-title.hierarchy-applied .section-kicker-icon,
-#experience .section-title.hierarchy-applied .section-sport-icon,
-#capabilities .section-title.hierarchy-applied .section-kicker-icon,
-#capabilities .section-title.hierarchy-applied .section-sport-icon{
-  display:none!important;
-  content:none!important;
-  width:0!important;
-  height:0!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  background:none!important;
-  box-shadow:none!important;
 }
 #points .section-title.hierarchy-applied .hierarchy-heading,
 .founder-copy .section-title.hierarchy-applied .hierarchy-heading,
@@ -2071,6 +2107,9 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   padding:0!important;
   color:#f7f5ef!important;
   background:none!important;
+  background-image:none!important;
+  border:0!important;
+  box-shadow:none!important;
   font-family:Arial,Helvetica,sans-serif!important;
   font-size:clamp(54px,7vw,96px)!important;
   font-weight:800!important;
@@ -2101,9 +2140,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   #points .section-title.hierarchy-applied,
   .founder-copy .section-title.hierarchy-applied,
   #experience .section-title.hierarchy-applied,
-  #capabilities .section-title.hierarchy-applied{
-    margin-bottom:28px!important;
-  }
+  #capabilities .section-title.hierarchy-applied{margin-bottom:28px!important}
   #points .section-title.hierarchy-applied .hierarchy-kicker-row,
   .founder-copy .section-title.hierarchy-applied .hierarchy-kicker-row,
   #experience .section-title.hierarchy-applied .hierarchy-kicker-row,
@@ -2146,6 +2183,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
     font-size:clamp(13px,4vw,16px)!important;
     line-height:1.45!important;
   }
+  .founder-copy .section-title.hierarchy-applied .founder-name-support{display:none!important}
 }
 /* Remaining top-level headings — exact Insights pattern END */
 

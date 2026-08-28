@@ -1,0 +1,66 @@
+name: Update Broad Influence and Access section
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reconfigure network section only
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          start_marker = '(0,f.jsx)("section",{id:"network",className:"content-section network-section"'
+          next_marker = ',(0,f.jsxs)("section",{id:"capabilities"'
+          start = s.find(start_marker)
+          if start < 0:
+              raise SystemExit('network section start not found')
+          end = s.find(next_marker, start)
+          if end < 0:
+              raise SystemExit('capabilities section marker not found')
+
+          old = s[start:end]
+          if 'Trusted Partnerships' not in old and 'International Motorsports Team' not in old:
+              print('Network section already appears updated; no content replacement needed.')
+          else:
+              new = '''(0,f.jsx)("section",{id:"network",className:"content-section network-section",children:(0,f.jsxs)("div",{className:"section-shell",children:[(0,f.jsx)(vu,{number:"03",kicker:{en:"Broad Influence and Access",ja:"幅広い影響力とアクセス",zh:"廣泛的影響力與資源管道"},title:{en:"Services rendered to:",ja:"サービス提供先：",zh:"曾服務的對象包括："},lang:l}),(0,f.jsxs)("div",{className:"network-grid",children:[(0,f.jsxs)("article",{children:[(0,f.jsx)("div",{className:"network-icon",children:"01"}),(0,f.jsx)("h3",{children:z(l,{en:"Government",ja:"政府機関",zh:"政府"})}),(0,f.jsx)("p",{children:z(l,{en:"Japan Sports Agency, JSPIN Advisor.",ja:"スポーツ庁、JSPINアドバイザー。",zh:"日本體育廳、JSPIN 顧問。"})})]}),(0,f.jsxs)("article",{children:[(0,f.jsx)("div",{className:"network-icon",children:"02"}),(0,f.jsx)("h3",{children:z(l,{en:"Rights holders",ja:"権利保有者",zh:"權利持有方"})}),(0,f.jsx)("p",{children:z(l,{en:"baseball, cricket, golf, football, Formula One, rugby, and tennis.",ja:"野球、クリケット、ゴルフ、サッカー、F1、ラグビー、テニス。",zh:"棒球、板球、高爾夫、足球、一級方程式賽車、橄欖球及網球。"})})]}),(0,f.jsxs)("article",{children:[(0,f.jsx)("div",{className:"network-icon",children:"03"}),(0,f.jsx)("h3",{children:z(l,{en:"Brands",ja:"ブランド",zh:"品牌"})}),(0,f.jsx)("p",{children:z(l,{en:"finance, payment services, sportswear, tech & wearables.",ja:"金融、決済サービス、スポーツウェア、テクノロジー＆ウェアラブル。",zh:"金融、支付服務、運動服飾、科技與穿戴式裝置。"})})]}),(0,f.jsxs)("article",{children:[(0,f.jsx)("div",{className:"network-icon",children:"04"}),(0,f.jsx)("h3",{children:z(l,{en:"Elite athletes",ja:"トップアスリート",zh:"頂尖運動員"})}),(0,f.jsx)("p",{children:z(l,{en:"active and retired.",ja:"現役および引退選手。",zh:"現役及退役。"})})]})]})]})})'''
+              s = s[:start] + new + s[end:]
+              p.write_text(s, encoding='utf-8')
+              print('Reconfigured Broad Influence and Access section.')
+
+          # Safety assertions: desired copy must be present; unrelated old cards must be gone from this section.
+          updated = p.read_text(encoding='utf-8')
+          ns = updated[updated.find(start_marker):updated.find(next_marker, updated.find(start_marker))]
+          required = [
+              'Japan Sports Agency, JSPIN Advisor.',
+              'baseball, cricket, golf, football, Formula One, rugby, and tennis.',
+              'finance, payment services, sportswear, tech & wearables.',
+              'active and retired.'
+          ]
+          for text in required:
+              if text not in ns:
+                  raise SystemExit('Missing required text: ' + text)
+          for text in ['Trusted Partnerships','International Motorsports Team','Professional Sports Clubs','Agency M&A','Global Tech Leader']:
+              if text in ns:
+                  raise SystemExit('Old unrelated content still present: ' + text)
+          PY
+      - name: Commit website change and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f .github/workflows/update-network-section.yml || true
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Reconfigure Broad Influence and Access section"
+          git push

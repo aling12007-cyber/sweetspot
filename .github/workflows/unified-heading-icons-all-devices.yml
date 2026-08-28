@@ -1,0 +1,215 @@
+name: One-time unified heading styles all devices
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/unified-heading-icons-all-devices.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  unify-headings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unify heading styles and icons across desktop and mobile
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from textwrap import dedent
+
+          p = Path('index.html')
+          t = p.read_text(encoding='utf-8')
+
+          # Replace the previous mobile-only heading hierarchy and icon rules
+          # with one shared cross-device system. Keep the earlier mobile-only
+          # Founder placement override intact.
+          marker = '/* Mobile unified heading hierarchy */'
+          if marker in t:
+              s = t.index(marker)
+              e = t.index('</style>', s)
+              t = t[:s] + t[e:]
+          else:
+              for fallback in ('/* Mobile heading icon bullets */','/* Unified heading hierarchy and icons */'):
+                  if fallback in t:
+                      s = t.index(fallback)
+                      e = t.index('</style>', s)
+                      t = t[:s] + t[e:]
+                      break
+
+          css = dedent(r'''
+          /* Unified heading hierarchy and icons */
+          #company .section-title,
+          #points .section-title,
+          .founder-copy .section-title,
+          #experience .section-title,
+          #network .section-title,
+          #capabilities .section-title{
+            display:block!important;
+            width:100%!important;
+            margin-left:0!important;
+            margin-right:0!important;
+            text-align:left!important;
+            justify-items:start!important;
+            align-items:start!important;
+          }
+
+          #company .section-title>div,
+          #points .section-title>div,
+          .founder-copy .section-title>div,
+          #experience .section-title>div,
+          #network .section-title>div,
+          #capabilities .section-title>div{
+            display:flex!important;
+            width:100%!important;
+            justify-content:flex-start!important;
+            align-items:flex-start!important;
+            text-align:left!important;
+            gap:0!important;
+          }
+
+          #company .section-title p,
+          #points .section-title p,
+          .founder-copy .section-title p,
+          #experience .section-title p,
+          #network .section-title p,
+          #capabilities .section-title p{
+            display:flex!important;
+            align-items:flex-start!important;
+            justify-content:flex-start!important;
+            gap:12px!important;
+            width:100%!important;
+            margin:0!important;
+            padding:0!important;
+            text-align:left!important;
+            justify-self:start!important;
+            font-family:Arial,Helvetica,sans-serif!important;
+            font-weight:800!important;
+            line-height:1.08!important;
+            letter-spacing:-.03em!important;
+            text-transform:none!important;
+            white-space:normal!important;
+          }
+
+          /* Large titles */
+          #company .section-title p,
+          #network .section-title p{
+            color:#fff!important;
+            font-size:clamp(32px,3.1vw,44px)!important;
+            margin-bottom:17px!important;
+          }
+
+          /* Medium titles */
+          #points .section-title p,
+          .founder-copy .section-title p,
+          #capabilities .section-title p{
+            color:#f2f4f7!important;
+            font-size:clamp(25px,2.45vw,34px)!important;
+            margin-bottom:15px!important;
+          }
+
+          /* Small title */
+          #experience .section-title p{
+            color:#d7dde5!important;
+            font-size:clamp(20px,1.8vw,26px)!important;
+            margin-bottom:13px!important;
+          }
+
+          /* Shared icon foundation */
+          #company .section-title p::before,
+          #points .section-title p::before,
+          .founder-copy .section-title p::before,
+          #experience .section-title p::before,
+          #network .section-title p::before,
+          #capabilities .section-title p::before{
+            content:""!important;
+            display:block!important;
+            flex:0 0 auto!important;
+            background-position:center!important;
+            background-size:contain!important;
+            background-repeat:no-repeat!important;
+          }
+
+          #company .section-title p::before,
+          #network .section-title p::before{
+            width:32px!important;
+            height:32px!important;
+            margin-top:1px!important;
+          }
+          #points .section-title p::before,
+          .founder-copy .section-title p::before,
+          #capabilities .section-title p::before{
+            width:28px!important;
+            height:28px!important;
+          }
+          #experience .section-title p::before{
+            width:24px!important;
+            height:24px!important;
+          }
+
+          /* Company Features — building */
+          #company .section-title p::before{
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' rx='7' fill='none' stroke='%23d7a936' stroke-width='1.5'/%3E%3Cpath d='M9 24V10l7-3 7 3v14M7 24h18M13 12h2m2 0h2m-6 4h2m2 0h2m-6 4h2m2 0h2' fill='none' stroke='%23f0d16a' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;
+          }
+
+          /* Points of Difference — spark */
+          #points .section-title p::before{
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' rx='7' fill='none' stroke='%23d7a936' stroke-width='1.5'/%3E%3Cpath d='M16 7l2.2 5.8L24 15l-5.8 2.2L16 23l-2.2-5.8L8 15l5.8-2.2L16 7Z' fill='none' stroke='%23f0d16a' stroke-width='1.7' stroke-linejoin='round'/%3E%3Cpath d='M24.5 8v4M22.5 10h4' stroke='%23f0d16a' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E")!important;
+          }
+
+          /* Introducing the Founder — person */
+          .founder-copy .section-title p::before{
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' rx='7' fill='none' stroke='%23d7a936' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='11' r='4' fill='none' stroke='%23f0d16a' stroke-width='1.7'/%3E%3Cpath d='M9 24c.7-5 3.1-7.5 7-7.5S22.3 19 23 24' fill='none' stroke='%23f0d16a' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E")!important;
+          }
+
+          /* Career Playbook — open book */
+          #experience .section-title p::before{
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' rx='7' fill='none' stroke='%23d7a936' stroke-width='1.5'/%3E%3Cpath d='M7.5 9.5h6c1.4 0 2.5 1 2.5 2.2v12.8c0-1.2-1.1-2.2-2.5-2.2h-6V9.5Zm17 0h-6c-1.4 0-2.5 1-2.5 2.2v12.8c0-1.2 1.1-2.2 2.5-2.2h6V9.5Z' fill='none' stroke='%23f0d16a' stroke-width='1.55' stroke-linejoin='round'/%3E%3Cpath d='M10.5 14h2.8m-2.8 3h2.8m5.4-3h2.8m-2.8 3h2.8' stroke='%23f0d16a' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E")!important;
+          }
+
+          /* Broad Influence and Access — globe */
+          #network .section-title p::before{
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' rx='7' fill='none' stroke='%23d7a936' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='16' r='8.5' fill='none' stroke='%23f0d16a' stroke-width='1.55'/%3E%3Cpath d='M7.8 16h16.4M16 7.5c2.5 2.3 3.8 5.1 3.8 8.5S18.5 22.2 16 24.5M16 7.5c-2.5 2.3-3.8 5.1-3.8 8.5s1.3 6.2 3.8 8.5' fill='none' stroke='%23f0d16a' stroke-width='1.35' stroke-linecap='round'/%3E%3Ccircle cx='23.2' cy='10.2' r='1.4' fill='%23f0d16a'/%3E%3C/svg%3E")!important;
+          }
+
+          /* Case Study Apple — document */
+          #capabilities .section-title p::before{
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' rx='7' fill='none' stroke='%23d7a936' stroke-width='1.5'/%3E%3Cpath d='M9 8.5h10l4 4V24H9V8.5Zm10 0v4h4M12.5 16h7m-7 3h7' fill='none' stroke='%23f0d16a' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;
+          }
+
+          /* One consistent supporting-copy style beneath hierarchy headings. */
+          #company .section-title h2,
+          #points .section-title h2,
+          #experience .section-title h2,
+          #network .section-title h2,
+          #capabilities .section-title h2{
+            width:100%!important;
+            margin:0!important;
+            padding:0!important;
+            color:#9da7b4!important;
+            font-family:Arial,Helvetica,sans-serif!important;
+            font-size:13px!important;
+            font-weight:700!important;
+            line-height:1.4!important;
+            letter-spacing:.02em!important;
+            text-align:left!important;
+            justify-self:start!important;
+            white-space:normal!important;
+          }
+          ''')
+
+          t = t.replace('</style>', css + '\n</style>', 1)
+          p.write_text(t, encoding='utf-8')
+          PY
+      - name: Commit website update and remove workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/unified-heading-icons-all-devices.yml
+          git add index.html
+          git commit -m "Unify section headings across desktop and mobile"
+          git push

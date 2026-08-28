@@ -14,91 +14,86 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Rename Company Introduction and left-align headings
+      - name: Rename company section and left-align headings
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
-
+          from textwrap import dedent
           path = Path('index.html')
           text = path.read_text(encoding='utf-8')
-
-          # Rename the Company Introduction label consistently in all three languages.
-          replacements = {
+          for old, new in {
               'Company Introduction': 'Company Features',
               '会社紹介': '会社の特徴',
               '公司介紹': '公司特色',
-          }
-          for old, new in replacements.items():
+          }.items():
               text = text.replace(old, new)
-
           marker = '/* Unified left-aligned section heading system */'
           if marker in text:
               start = text.index(marker)
               end = text.index('</style>', start)
               text = text[:start] + text[end:]
-
-          css = r'''
-/* Unified left-aligned section heading system */
-.section-title,
-.section-title.compact{
-  grid-template-columns:1fr!important;
-  justify-items:start!important;
-  align-items:start!important;
-  text-align:left!important;
-  gap:9px!important;
-}
-.section-title>div,
-.section-title.compact>div{
-  width:100%!important;
-  justify-content:flex-start!important;
-  text-align:left!important;
-}
-.section-title p,
-.section-title h2,
-.section-title.compact p,
-.section-title.compact h2{
-  margin-left:0!important;
-  margin-right:0!important;
-  text-align:left!important;
-  justify-self:start!important;
-  white-space:normal!important;
-}
-#company .section-title,
-#points .section-title,
-.founder-copy .section-title,
-#experience .section-title,
-#network .section-title,
-#capabilities .section-title,
-#offers .section-title{
-  justify-items:start!important;
-  text-align:left!important;
-}
-#company .section-title>div,
-#points .section-title>div,
-.founder-copy .section-title>div,
-#experience .section-title>div,
-#network .section-title>div,
-#capabilities .section-title>div,
-#offers .section-title>div{
-  justify-content:flex-start!important;
-}
-@media(max-width:760px){
-  .section-title,
-  .section-title.compact{
-    justify-items:start!important;
-    text-align:left!important;
-    gap:8px!important;
-  }
-  .section-title p,
-  .section-title h2,
-  .section-title.compact p,
-  .section-title.compact h2{
-    text-align:left!important;
-    white-space:normal!important;
-  }
-}
-'''
+          css = dedent('''
+          /* Unified left-aligned section heading system */
+          .section-title,
+          .section-title.compact{
+            grid-template-columns:1fr!important;
+            justify-items:start!important;
+            align-items:start!important;
+            text-align:left!important;
+            gap:9px!important;
+          }
+          .section-title>div,
+          .section-title.compact>div{
+            width:100%!important;
+            justify-content:flex-start!important;
+            text-align:left!important;
+          }
+          .section-title p,
+          .section-title h2,
+          .section-title.compact p,
+          .section-title.compact h2{
+            margin-left:0!important;
+            margin-right:0!important;
+            text-align:left!important;
+            justify-self:start!important;
+            white-space:normal!important;
+          }
+          #company .section-title,
+          #points .section-title,
+          .founder-copy .section-title,
+          #experience .section-title,
+          #network .section-title,
+          #capabilities .section-title,
+          #offers .section-title{
+            justify-items:start!important;
+            text-align:left!important;
+          }
+          #company .section-title>div,
+          #points .section-title>div,
+          .founder-copy .section-title>div,
+          #experience .section-title>div,
+          #network .section-title>div,
+          #capabilities .section-title>div,
+          #offers .section-title>div{
+            justify-content:flex-start!important;
+          }
+          @media(max-width:760px){
+            .section-title,
+            .section-title.compact{
+              justify-items:start!important;
+              text-align:left!important;
+              gap:8px!important;
+            }
+            .section-title p,
+            .section-title h2,
+            .section-title.compact p,
+            .section-title.compact h2{
+              text-align:left!important;
+              white-space:normal!important;
+            }
+          }
+          ''')
           text = text.replace('</style>', css + '\n</style>', 1)
           path.write_text(text, encoding='utf-8')
           PY

@@ -1,0 +1,40 @@
+name: Fix major heading placement v3
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/fix-major-heading-placement-v3.yml']
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch Company and Network headings
+        shell: bash
+        run: echo 'H4sIALsJkmoC/71aW28bxxV+568Yr1GTtLlrkbpYWptOfQsSwJfC9ptrFMPdQ3GkvXV2lhItCaitGnGaGgmQAkXtAoV7AfqQJk3SFHHiuv+ltCTnqX+hZ3Znl0tydaOE6oFazjlzzneuc3aXpTb3XRJQ0XFYizA38LkgP8GvJXXNoVQKSDNeq2jMs2HV6AjX0aolgcuBwYHaPxOwKirgWb7NvMWmFom2Po8cpZPkNrh+F0jAocv8KCTCD3QHuuDovuf0CBUC3ECEJPSJ6ADxYEWicMAFT1DBfI+wkEQedVtsMUIBRqntcxIKykWNgGcT5pF7JYJ/Fe3saXKDLiG5g5gQSEje90K22EHxls85WAJscufupdt3yemzWo0cbMO1m1cle7U20HIbHEZbDhA33p1tysSMKNmXv0DH3dRRA67//OI3BFapJQYSAulA7o0qPNzmgfb7ZgxARpaDEUatCv6D0KIBVGKfV8kZwjXj9DuavMhoGIgqakbtGJW2QxfDJhLvYAbsHq0LJ3T9oJ7U9YvSsoNtkebIDZk3422T+DOv9vAuVRiO36dWGEph5XK5NHGilE5avhtQr0cuEiP2pM4Ury6YcKBWOumBWPH5suQIsRawGPWwA46z25Y1NDTwQyY5TQ4O1m8XTiSNhHriPJIf6HELMeeGl20WBg7tmS3Ht5aHSSvMFh2zPjX1o+H1lr+qh+wB2mu2fG4D13FlmMWlfJF55hSZItNzwSqZGiYH1JbuMkeWZS/TqcMWPdOBtsgTN/b1Gjk9gd/I6bWDGXQ0aGp1mVnLKJz7K5NAHROylgtf24ERxDFYnWGTD00LWzrwYfpSFArW7umWjzRPxBL0uCqG+RZpYDbmg9WD5UY+8PMHDPyhHegwD47uQSllbe8KkD6JbZmfKXbA+HoHpEZzOtilIg5UCEkWFq/qHFtNFI4RqbW8yP3Is82T1sJCa3p2N7rOXLoIpud7UFDXHWr7KwVEwakX4pHijtEOG74jR26foB3K05bv+Bw9Nt+anYNdPVrkq+II7eHBNhaa3qYuc3rmJc6oU3sPnC4IZtFaiM7VQ+CsXbAHWxOYlkPdoFI/F6zWGt2V2vRUsFot4F1J0m9+agSZTHZd5WbdqI8khwPyiNLDgFrSR0Z9HtyC/rd7DmA9dLDVxBJkanGXOkfJEdNsASqSVX7IfbQtjiHFcvqPKigGlE/Zcd+lLXiCyuo0JoHYaaxNdvS7dFVXtHpj6kg9TlVe+1x7FtqHqLzjKKNZbNu1c1hGC3OTl5GxML9nFenG1OxsYR0VzxH71RAhCKu1zLAOpZBQcH8ZCkeoXVrQxuTJHEaBFHPkrFnYNWka8bRADpU7CzY915r5P+dOfRZzp27MzGL6NPbuwrN7d+GZvbvwpMNxGtg4gGn8/IhbkCzpHWbb4O3TNw4oZa/GtlH6sQs2o5VB/M/NSY/JTfvfBCHPJLdBaUbhDC+E7xbMrhsHUF80sk8AqHhoT4bq+twosDHoM8cAPRmWj449HZeTqVhv0ZCF5sz8uA1JpIsoKvMbR7fqGAxStoxWtzwZZowZLO76/FhxF0xKc6Md/kDGyGN7EguSg3voHB7rtuNGzTRky5pGm+YaRTbtdagVHmuNQqOP4XDJKkD4eNfZKCqQwxhen5bRlLGc28fu8W68gf1rwud5Jfl8SD51EgYHbI0WVLQLZ0PRc0A+1ZIPkc4Q7adebq1eLZWWsmdLR3lsVroQWpwF4mKp0o68OAyVuON2KceDM+g1E0erFDWTb4SoeXUNPFO7ktC02hI1tTevnu38+bVWe9Axta3Hn219/K22UVOb4jgO7SHvAhURhzC/uf/w850PX269/kdeCq68/fArbSMWpSSqFCoEdTOhJXL7m0/7m5v9zSf9zS/6m6/6j75IRO/886udb14UArzMfWqj49pOBJ4FhHo2uWRZECqoWy8fb3232X/4y61/ffnDH/699avn/Yd/7T/6I8ruP/q+/+ilAv/9n7a/fr7zbMD29skHb7/+YPu7T3Y+f/HDw08HylViJ+rvAO8y1EY4eHjrCDYRvqmMefSNtGHzU1Sy/fEnb14/33r85L+vniUKt5+/3v79062Pfid1/v3p2y9fbP368fZHn0kG5TyZrudLcvpQEScO9RYjvM1PQp8EH/OGdaFp+1Ykn/EbP4+A9+6Ag7Xq84pmyD16uMKE1SGtCE8gz0i2aNXzmRCsz+VmJVk/dSr5b8jZ5EpyE7O+rl27qVUNwZlbUftYuxJvaza17d/+RauiCzBFPKItUW2M4823f8txPOhoA93y7UezkuFPL64l7yxi/KgePKnev+6vAL9CQ8ihkAKM+DHorXZFaq+ixqliPMO8iGOEN0OWLqDepG/k40CDwOnd8qDC7FwkVHschGIRUisu9963JXOG44RiTjUP3JGMY01FHwvn0ASn5QXG+8j6OlGXRkAxKcVN34ZxLQmtOcYZ5xtRIAzst2F4nYXCwIm9ou06L0ocmWgrCnHMaSYyR/CXC4+MezYVVFcUu6mVzzD7TFm7X86Zl0itpi1EKclcbXFsUKC8XdFs1k19k/ImxtykLjS1IhDaCHsI4pLAfMeawUY/hFCrZaHM2JnnAX/v7o3rTbVOSPkCwiCx2lTlYGLULpbPZJySF09ir5BZHmgaoXhjo7zd1ASPQLuIBw3uGZUTFAmRzEGes3zhLIIbXuk0kAs/couYs7J6VQPX3hkTr5qhkm+Wy5lfVPzRycDF5fi5SyXxVS3JIMW5McgcWerNQY8bZKv0flOecveYfT9ZVm4fLY8ho6v5FtaUQoyEck8qub++nlsywNtLcKdRJC3J3ryw5MYK8vWceKi5J+DUjYOEVyunTsVi1bdqKm0ciiIMgUmZEzgFLSw9R7J+pqn5IQUyIKQpUM1ESePQmgjsZps6IZzPi48JqXg0J2Ec7kNqs0zmtOfiUiguecyNX1W/y7FaR+ad3MZMa4Y0zZmNAUrUnTUJ+Wq9d0dgo5BJ7fjx/KUpsRkXtrprXbyQfQ+wqCva1Vs3lK+v4x7A+o8R1NZ8nDhMiV8pBAS0NrCtUk2n6D2EWw7mn1bLrISB0/AIxrkZsLs5foiOOXVqdGX4fNeqmCAg7jIX/EgkPq9NJSDiT/lrgBtR8juAWy0szC4iiNmqhp98H3ir5du92prVYY4t0cZ21sKoJTgkRtesDuU4KwC/itmW+WGjKu3G5qQG1snf9hZP3BKXHK6Xsnk7XZHjdmCscCYg+QVF/JJ89EcU/wNgeP7LoyEAAA==' | base64 -d | gzip -d | python
+      - name: Verify actual rendered headings
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src=Path('index.html').read_text(encoding='utf-8')
+          verifier='''<script>setTimeout(function(){var ok=true;["company","network"].forEach(function(id){var s=document.getElementById(id);var c=s&&s.querySelector(".major-insights-title[data-major-id='"+id+"']");var h=c&&c.querySelector("h2");var line=c&&c.querySelector(".major-kicker-line");var old=s&&s.querySelector(".section-title");ok=ok&&!!c&&!!h&&!!line&&!!old&&getComputedStyle(h).textAlign==="left"&&line.offsetWidth>20&&line.offsetHeight>0&&getComputedStyle(old).display==="none";});var p=document.createElement("pre");p.id="major-heading-verification";p.textContent=ok?"PASS":"FAIL";document.body.appendChild(p);},3000);</script>'''
+          Path('verify-headings.html').write_text(src.replace('</body>',verifier+'</body>',1),encoding='utf-8')
+          PY
+          CHROME=$(command -v google-chrome || command -v chromium || command -v chromium-browser)
+          test -n "$CHROME"
+          "$CHROME" --headless --no-sandbox --disable-gpu --allow-file-access-from-files --virtual-time-budget=7000 --dump-dom "file://$PWD/verify-headings.html" > /tmp/rendered.html
+          grep -F '<pre id="major-heading-verification">PASS</pre>' /tmp/rendered.html
+          rm verify-headings.html
+      - name: Commit verified website update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/fix-major-heading-placement-v3.yml
+          git rm -f .github/workflows/fix-major-heading-placement.yml
+          git rm -f .github/workflows/verify-major-heading-dom.yml
+          git rm -f .github/rendered-heading-report.txt
+          git add index.html
+          git commit -m "Fix and verify top-level Insights headings"
+          git push

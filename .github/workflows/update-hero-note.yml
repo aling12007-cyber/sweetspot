@@ -1,0 +1,40 @@
+name: Update hero note text
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  update-copy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace hero note text
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = 'en:"Led by Sam Pearson, an award-winning sports marketing leader with 15+ years of success across APAC."'
+          new = 'en:"Focused on raising the level of ports business connectivity and capability."'
+          count = s.count(old)
+          if count != 1:
+              raise SystemExit(f'Expected exactly 1 old hero note, found {count}')
+          s = s.replace(old, new, 1)
+          if old in s:
+              raise SystemExit('Old hero note still present after replacement')
+          if new not in s:
+              raise SystemExit('New hero note not present after replacement')
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit text change and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f .github/workflows/update-hero-note.yml || true
+          git add index.html
+          git commit -m "Update hero note text"
+          git push

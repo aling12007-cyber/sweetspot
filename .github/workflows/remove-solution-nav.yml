@@ -1,0 +1,37 @@
+name: Remove deleted Solution navigation item
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove Solution navigation item
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          pattern = r',\["offers",\{en:"Solution",ja:"(?:\\.|[^"\\])*",zh:"(?:\\.|[^"\\])*"\}\]'
+          updated, count = re.subn(pattern, '', s, count=1)
+          if count != 1:
+              raise SystemExit(f'Expected to remove 1 Solution nav item, removed {count}')
+          if '["offers",{en:"Solution"' in updated:
+              raise SystemExit('Solution nav item still present')
+          p.write_text(updated, encoding='utf-8')
+          PY
+      - name: Commit cleanup and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f .github/workflows/remove-solution-nav.yml || true
+          git add index.html
+          git commit -m "Remove deleted Solution navigation item"
+          git push

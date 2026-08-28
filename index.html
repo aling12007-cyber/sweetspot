@@ -1799,9 +1799,14 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
 /* Hierarchy heading roles END */
 
 
-/* Major headings match Insights START */
+
+
+
+/* Major headings Insights corrected START */
 #company .section-title,
-#network .section-title{
+#network .section-title,
+#company .section-title.hierarchy-applied,
+#network .section-title.hierarchy-applied{
   display:block!important;
   width:100%!important;
   margin-left:0!important;
@@ -1810,34 +1815,66 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   justify-items:start!important;
   align-items:start!important;
 }
-#company .section-title>div:first-child,
-#network .section-title>div:first-child{
+#company .section-title.hierarchy-applied .hierarchy-kicker-row,
+#network .section-title.hierarchy-applied .hierarchy-kicker-row{
   display:flex!important;
   align-items:center!important;
   justify-content:flex-start!important;
   width:100%!important;
-  gap:28px!important;
-  margin:0 0 34px!important;
+  gap:14px!important;
+  margin:0 0 22px!important;
   padding:0!important;
   text-align:left!important;
 }
-#company .section-title>div:first-child::before,
-#network .section-title>div:first-child::before{
+#company .section-title.hierarchy-applied .hierarchy-kicker-row::before,
+#network .section-title.hierarchy-applied .hierarchy-kicker-row::before{
   content:""!important;
   display:block!important;
-  flex:0 0 84px!important;
-  width:84px!important;
-  height:3px!important;
+  flex:0 0 52px!important;
+  width:52px!important;
+  height:2px!important;
   border:0!important;
   border-radius:0!important;
-  background:#c99b35!important;
+  background:linear-gradient(90deg,#b77a12,#e5c668)!important;
   box-shadow:none!important;
   transform:none!important;
+}
+#company .section-title.hierarchy-applied .hierarchy-kicker,
+#network .section-title.hierarchy-applied .hierarchy-kicker{
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  color:#c8b56e!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  line-height:1.3!important;
+  letter-spacing:.17em!important;
+  text-align:left!important;
+  text-transform:none!important;
+}
+#company .section-title.hierarchy-applied .hierarchy-heading,
+#network .section-title.hierarchy-applied .hierarchy-heading{
+  display:block!important;
+  width:100%!important;
+  max-width:1100px!important;
+  margin:0!important;
+  padding:0!important;
+  color:#f7f5ef!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-size:clamp(40px,4.7vw,62px)!important;
+  font-weight:800!important;
+  line-height:.98!important;
+  letter-spacing:-.045em!important;
+  text-align:left!important;
+  white-space:normal!important;
 }
 #company .section-title .section-kicker-icon,
 #network .section-title .section-kicker-icon,
 #company .section-title .section-sport-icon,
 #network .section-title .section-sport-icon,
+#company .section-title.hierarchy-applied .hierarchy-kicker::before,
+#network .section-title.hierarchy-applied .hierarchy-kicker::before,
 #company .section-title p::before,
 #network .section-title p::before{
   display:none!important;
@@ -1848,76 +1885,90 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   background:none!important;
   box-shadow:none!important;
 }
-#company .section-title p,
-#network .section-title p{
+#company .section-title:not(.hierarchy-applied)>div:first-child,
+#network .section-title:not(.hierarchy-applied)>div:first-child{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  width:100%!important;
+  gap:14px!important;
+  margin:0 0 22px!important;
+  padding:0!important;
+  text-align:left!important;
+}
+#company .section-title:not(.hierarchy-applied)>div:first-child::before,
+#network .section-title:not(.hierarchy-applied)>div:first-child::before{
+  content:""!important;
   display:block!important;
-  width:auto!important;
+  flex:0 0 52px!important;
+  width:52px!important;
+  height:2px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:linear-gradient(90deg,#b77a12,#e5c668)!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+#company .section-title:not(.hierarchy-applied) p,
+#network .section-title:not(.hierarchy-applied) p{
   margin:0!important;
   padding:0!important;
   color:#c8b56e!important;
-  font-family:Arial,Helvetica,sans-serif!important;
-  font-size:clamp(18px,2vw,30px)!important;
-  font-weight:800!important;
-  line-height:1.15!important;
-  letter-spacing:.18em!important;
-  text-align:left!important;
-  text-transform:none!important;
-  white-space:normal!important;
-  -webkit-text-stroke:0!important;
-  text-shadow:none!important;
-}
-#company .section-title .section-heading-row,
-#network .section-title .section-heading-row{
-  display:block!important;
-  width:100%!important;
-  margin:0!important;
-  padding:0!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  line-height:1.3!important;
+  letter-spacing:.17em!important;
   text-align:left!important;
 }
-#company .section-title h2,
-#network .section-title h2{
+#company .section-title:not(.hierarchy-applied) h2,
+#network .section-title:not(.hierarchy-applied) h2{
   display:block!important;
   width:100%!important;
   max-width:1100px!important;
   margin:0!important;
   padding:0!important;
   color:#f7f5ef!important;
-  font-family:Arial,Helvetica,sans-serif!important;
-  font-size:clamp(54px,7vw,96px)!important;
+  font-size:clamp(40px,4.7vw,62px)!important;
   font-weight:800!important;
   line-height:.98!important;
-  letter-spacing:-.055em!important;
+  letter-spacing:-.045em!important;
   text-align:left!important;
   white-space:normal!important;
-  -webkit-text-stroke:0!important;
-  text-shadow:none!important;
 }
 @media(max-width:760px){
-  #company .section-title>div:first-child,
-  #network .section-title>div:first-child{
-    gap:16px!important;
-    margin-bottom:24px!important;
+  #company .section-title.hierarchy-applied .hierarchy-kicker-row,
+  #network .section-title.hierarchy-applied .hierarchy-kicker-row,
+  #company .section-title:not(.hierarchy-applied)>div:first-child,
+  #network .section-title:not(.hierarchy-applied)>div:first-child{
+    gap:11px!important;
+    margin-bottom:18px!important;
   }
-  #company .section-title>div:first-child::before,
-  #network .section-title>div:first-child::before{
-    flex-basis:48px!important;
-    width:48px!important;
-    height:2px!important;
+  #company .section-title.hierarchy-applied .hierarchy-kicker-row::before,
+  #network .section-title.hierarchy-applied .hierarchy-kicker-row::before,
+  #company .section-title:not(.hierarchy-applied)>div:first-child::before,
+  #network .section-title:not(.hierarchy-applied)>div:first-child::before{
+    flex-basis:36px!important;
+    width:36px!important;
+    height:1.5px!important;
   }
-  #company .section-title p,
-  #network .section-title p{
-    font-size:15px!important;
-    line-height:1.2!important;
-    letter-spacing:.16em!important;
+  #company .section-title.hierarchy-applied .hierarchy-kicker,
+  #network .section-title.hierarchy-applied .hierarchy-kicker,
+  #company .section-title:not(.hierarchy-applied) p,
+  #network .section-title:not(.hierarchy-applied) p{
+    font-size:11px!important;
+    line-height:1.35!important;
+    letter-spacing:.15em!important;
   }
-  #company .section-title h2,
-  #network .section-title h2{
-    font-size:clamp(42px,13vw,62px)!important;
-    line-height:.98!important;
-    letter-spacing:-.05em!important;
+  #company .section-title.hierarchy-applied .hierarchy-heading,
+  #network .section-title.hierarchy-applied .hierarchy-heading,
+  #company .section-title:not(.hierarchy-applied) h2,
+  #network .section-title:not(.hierarchy-applied) h2{
+    font-size:clamp(36px,10.5vw,48px)!important;
+    line-height:1!important;
+    letter-spacing:-.045em!important;
   }
 }
-/* Major headings match Insights END */
+/* Major headings Insights corrected END */
 
 </style>
 </head>

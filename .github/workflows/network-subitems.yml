@@ -1,0 +1,140 @@
+name: One-time Broad Influence subitem styling
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/network-subitems.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  style-network-subitems:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Split Broad Influence descriptions into framed subitems
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          css_marker = '/* Broad Influence framed subitems */'
+          if css_marker in text:
+              start = text.index(css_marker)
+              end = text.index('</style>', start)
+              text = text[:start] + text[end:]
+
+          js_marker = '<!-- Broad Influence framed subitems -->'
+          if js_marker in text:
+              start = text.index(js_marker)
+              end = text.index('<!-- /Broad Influence framed subitems -->', start) + len('<!-- /Broad Influence framed subitems -->')
+              text = text[:start] + text[end:]
+
+          css = r'''
+/* Broad Influence framed subitems */
+#network .network-grid p.network-subitem-list{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:flex-start!important;
+  gap:7px!important;
+  max-width:64%!important;
+  margin-top:0!important;
+  line-height:1!important;
+}
+#network .network-subitem{
+  display:inline-flex;
+  align-items:center;
+  min-height:29px;
+  padding:6px 10px 5px;
+  border:1px solid rgba(215,169,54,.38);
+  border-radius:3px;
+  background:linear-gradient(135deg,rgba(215,169,54,.09),rgba(255,255,255,.018));
+  color:#e8dfbf;
+  font-family:"Arial Narrow","Avenir Next Condensed","DIN Condensed",Arial,sans-serif;
+  font-size:12px;
+  font-weight:700;
+  line-height:1.18;
+  letter-spacing:.025em;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+  white-space:normal;
+}
+#network .network-subitem:before{
+  content:"";
+  width:4px;
+  height:4px;
+  margin-right:7px;
+  flex:0 0 4px;
+  border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 8px rgba(215,169,54,.28);
+}
+#network .network-grid article:nth-child(1) .network-subitem{border-color:rgba(234,190,72,.46)}
+#network .network-grid article:nth-child(2) .network-subitem{border-color:rgba(215,169,54,.34);background:rgba(12,19,27,.78)}
+#network .network-grid article:nth-child(3) .network-subitem{border-color:rgba(238,194,78,.42);background:linear-gradient(135deg,rgba(215,169,54,.105),rgba(10,16,23,.78))}
+#network .network-grid article:nth-child(4) .network-subitem{border-color:rgba(215,169,54,.36);background:rgba(13,18,25,.76)}
+@media(max-width:760px){
+  #network .network-grid p.network-subitem-list{max-width:64%!important;gap:6px!important}
+  #network .network-subitem{min-height:27px;padding:5px 8px 4px;font-size:11.5px;line-height:1.2}
+  #network .network-subitem:before{width:3px;height:3px;flex-basis:3px;margin-right:6px}
+  #network .network-grid article:nth-child(2){min-height:322px!important}
+}
+'''
+          text = text.replace('</style>', css + '\n</style>', 1)
+
+          script = r'''
+<!-- Broad Influence framed subitems -->
+<script>
+(function(){
+  function capFirst(value){
+    var s=(value||'').trim().replace(/[.。]+$/,'').replace(/^and\s+/i,'');
+    if(!s) return '';
+    return s.charAt(0).toLocaleUpperCase()+s.slice(1);
+  }
+  function enhanceNetworkItems(){
+    document.querySelectorAll('#network .network-grid article p').forEach(function(p){
+      if(p.querySelector('.network-subitem')) return;
+      var raw=(p.textContent||'').trim();
+      if(!raw) return;
+      var items=raw.split(/[,，、]/).map(capFirst).filter(Boolean);
+      if(!items.length) return;
+      p.textContent='';
+      p.classList.add('network-subitem-list');
+      items.forEach(function(item){
+        var span=document.createElement('span');
+        span.className='network-subitem';
+        span.textContent=item;
+        p.appendChild(span);
+      });
+    });
+  }
+  var queued=false;
+  function queueEnhance(){
+    if(queued) return;
+    queued=true;
+    requestAnimationFrame(function(){queued=false;enhanceNetworkItems();});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',queueEnhance);
+  else queueEnhance();
+  new MutationObserver(queueEnhance).observe(document.body,{childList:true,subtree:true,characterData:true});
+  document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.lang-switch')) setTimeout(queueEnhance,0);});
+})();
+</script>
+<!-- /Broad Influence framed subitems -->
+'''
+          text = text.replace('</body>', script + '\n</body>', 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit website update and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/network-subitems.yml
+          git add index.html
+          git commit -m "Style Broad Influence subitems as framed lists"
+          git push

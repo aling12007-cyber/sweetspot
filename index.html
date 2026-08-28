@@ -901,89 +901,17 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   #network .network-grid article:nth-child(2){min-height:322px!important}
 }
 
-/* Introduce navigation hierarchy */
-.intro-nav-main{color:var(--gold-pale)!important;font-weight:900!important}
-.intro-nav-subitem{position:relative!important;color:#9fa8b6!important;font-weight:700!important}
-.intro-nav-subitem:before{content:"";position:absolute;left:0;top:50%;width:11px;height:1px;background:rgba(215,169,54,.7);transform:translateY(-50%)}
-.site-header nav .intro-nav-subitem{padding-left:15px!important;font-size:clamp(7px,.62vw,9px)!important;letter-spacing:.08em!important}
-@media(max-width:760px){
-  .intro-menu-subrow{margin-left:34px!important;width:calc(100% - 34px)!important}
-  .intro-menu-subrow>a.intro-nav-subitem{padding-left:28px!important;font-size:.72em!important;letter-spacing:.14em!important;color:#9aa4b1!important}
-  .intro-menu-subrow>a.intro-nav-subitem:before{left:4px;width:14px;background:var(--gold)}
-  .intro-menu-parent>a.intro-nav-main{color:#f4d66d!important}
-}
 
+/* Section hierarchy system */
+.section-title .section-kicker-icon,
+.section-title .section-kicker-icon[data-section]{display:none!important}
 
-/* Unified left-aligned section heading system */
-.section-title,
-.section-title.compact{
-  grid-template-columns:1fr!important;
-  justify-items:start!important;
-  align-items:start!important;
-  text-align:left!important;
-  gap:9px!important;
-}
-.section-title>div,
-.section-title.compact>div{
-  width:100%!important;
-  justify-content:flex-start!important;
-  text-align:left!important;
-}
-.section-title p,
-.section-title h2,
-.section-title.compact p,
-.section-title.compact h2{
-  margin-left:0!important;
-  margin-right:0!important;
-  text-align:left!important;
-  justify-self:start!important;
-  white-space:normal!important;
-}
 #company .section-title,
 #points .section-title,
 .founder-copy .section-title,
 #experience .section-title,
 #network .section-title,
-#capabilities .section-title,
-#offers .section-title{
-  justify-items:start!important;
-  text-align:left!important;
-}
-#company .section-title>div,
-#points .section-title>div,
-.founder-copy .section-title>div,
-#experience .section-title>div,
-#network .section-title>div,
-#capabilities .section-title>div,
-#offers .section-title>div{
-  justify-content:flex-start!important;
-}
-@media(max-width:760px){
-  .section-title,
-  .section-title.compact{
-    justify-items:start!important;
-    text-align:left!important;
-    gap:8px!important;
-  }
-  .section-title p,
-  .section-title h2,
-  .section-title.compact p,
-  .section-title.compact h2{
-    text-align:left!important;
-    white-space:normal!important;
-  }
-}
-
-
-/* Final left-aligned headings without dart icons */
-.section-title .section-kicker-icon,
-.section-title .section-kicker-icon[data-section]{display:none!important}
-#company .section-title,
-#points .section-title,
-.founder-copy .section-title,
-#experience .section-title,
-#capabilities .section-title,
-#network .section-title{
+#capabilities .section-title{
   grid-template-columns:1fr!important;
   justify-items:start!important;
   align-items:start!important;
@@ -994,8 +922,8 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
 #points .section-title>div,
 .founder-copy .section-title>div,
 #experience .section-title>div,
-#capabilities .section-title>div,
-#network .section-title>div{
+#network .section-title>div,
+#capabilities .section-title>div{
   width:100%!important;
   justify-content:flex-start!important;
   text-align:left!important;
@@ -1005,29 +933,128 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
 #points .section-title p,
 .founder-copy .section-title p,
 #experience .section-title p,
-#capabilities .section-title p,
 #network .section-title p,
+#capabilities .section-title p,
 #company .section-title h2,
 #points .section-title h2,
 .founder-copy .section-title h2,
 #experience .section-title h2,
-#capabilities .section-title h2,
-#network .section-title h2{
+#network .section-title h2,
+#capabilities .section-title h2{
   margin-left:0!important;
   margin-right:0!important;
   text-align:left!important;
   justify-self:start!important;
+  white-space:normal!important;
 }
-@media(max-width:760px){
-  #company .section-title,
-  #points .section-title,
-  .founder-copy .section-title,
-  #experience .section-title,
-  #capabilities .section-title,
-  #network .section-title{
-    justify-items:start!important;
-    text-align:left!important;
+
+/* Large headings */
+#company .section-title p,
+#network .section-title p{
+  color:#fff!important;
+  font-size:clamp(36px,3.7vw,50px)!important;
+  font-weight:800!important;
+  line-height:1.02!important;
+  letter-spacing:-.045em!important;
+}
+
+/* Medium headings */
+#points .section-title p,
+.founder-copy .section-title p,
+#capabilities .section-title p{
+  color:#f1f3f6!important;
+  font-size:clamp(27px,2.8vw,38px)!important;
+  font-weight:760!important;
+  line-height:1.08!important;
+  letter-spacing:-.035em!important;
+}
+
+/* Small heading nested under Introducing the Founder */
+#experience .section-title p{
+  color:#d4dae2!important;
+  font-size:clamp(20px,2vw,27px)!important;
+  font-weight:750!important;
+  line-height:1.12!important;
+  letter-spacing:-.02em!important;
+}
+
+/* Keep secondary/supporting copy quieter than the hierarchy headings. */
+#company .section-title h2,
+#points .section-title h2,
+#experience .section-title h2,
+#network .section-title h2,
+#capabilities .section-title h2{
+  color:#9da7b4!important;
+}
+
+/* Header list hierarchy. Desktop stays concise; mobile menu shows full hierarchy. */
+@media(min-width:1051px){
+  .site-header nav a.nav-career{display:none!important}
+}
+@media(max-width:1050px){
+  .site-header nav a.nav-level-1{
+    margin-left:0!important;
+    width:100%!important;
+    padding-left:15px!important;
+    color:#f5f6f8!important;
+    font-size:13px!important;
+    font-weight:900!important;
+    letter-spacing:.105em!important;
   }
+  .site-header nav a.nav-level-1.nav-parent{
+    color:var(--gold-pale)!important;
+    border-top:1px solid rgba(215,169,54,.34)!important;
+  }
+  .site-header nav a.nav-level-2{
+    position:relative!important;
+    margin-left:24px!important;
+    width:calc(100% - 24px)!important;
+    padding-left:28px!important;
+    color:#b7c0cb!important;
+    font-size:11.5px!important;
+    font-weight:760!important;
+    letter-spacing:.09em!important;
+  }
+  .site-header nav a.nav-level-2:before{
+    content:"";
+    position:absolute;
+    left:8px;
+    top:50%;
+    width:11px;
+    height:1px;
+    background:rgba(215,169,54,.78);
+    transform:translateY(-50%);
+  }
+  .site-header nav a.nav-level-3{
+    position:relative!important;
+    margin-left:50px!important;
+    width:calc(100% - 50px)!important;
+    padding-left:25px!important;
+    color:#909ba8!important;
+    font-size:10.5px!important;
+    font-weight:720!important;
+    letter-spacing:.085em!important;
+  }
+  .site-header nav a.nav-level-3:before{
+    content:"";
+    position:absolute;
+    left:8px;
+    top:50%;
+    width:5px;
+    height:5px;
+    border:1px solid rgba(215,169,54,.72);
+    border-radius:50%;
+    transform:translateY(-50%);
+  }
+}
+
+@media(max-width:760px){
+  #company .section-title p,
+  #network .section-title p{font-size:clamp(30px,8vw,38px)!important}
+  #points .section-title p,
+  .founder-copy .section-title p,
+  #capabilities .section-title p{font-size:clamp(23px,6.3vw,30px)!important}
+  #experience .section-title p{font-size:clamp(18px,5vw,23px)!important}
 }
 
 </style>
@@ -1198,38 +1225,80 @@ react/cjs/react-jsx-runtime.production.js:
 </script>
 <!-- /Broad Influence framed subitems -->
 
-<!-- Introduce navigation hierarchy -->
+
+
+
+<!-- Section hierarchy navigation -->
 <script>
 (function(){
-  function localIntro(){
-    var active=document.querySelector('.lang-switch button.active');
-    var txt=(active&&active.textContent||'EN').trim();
-    if(txt==='日') return '紹介';
-    if(txt==='中') return '介紹';
-    return 'Introduce';
-  }
-  function apply(){
-    document.querySelectorAll('a[href="#company"]').forEach(function(a){
-      var v=(a.textContent||'').trim();
-      if(['Company','会社','公司','Introduce','紹介','介紹'].includes(v)){
-        a.textContent=localIntro();
-        a.classList.add('intro-nav-main');
-        if(!a.closest('.site-header nav')&&a.parentElement)a.parentElement.classList.add('intro-menu-parent');
-      }
-    });
-    document.querySelectorAll('a[href="#points"],a[href="#founder"]').forEach(function(a){
-      a.classList.add('intro-nav-subitem');
-      if(!a.closest('.site-header nav')&&a.parentElement)a.parentElement.classList.add('intro-menu-subrow');
-    });
-  }
   var queued=false;
-  function queue(){if(queued)return;queued=true;requestAnimationFrame(function(){queued=false;apply();});}
+  function lang(){
+    var active=document.querySelector('.lang-switch button.active');
+    var x=(active&&active.textContent||'EN').trim();
+    return x==='日'?'ja':x==='中'?'zh':'en';
+  }
+  var mobileLabels={
+    en:{company:'Company Features',points:'Points of Difference',founder:'Introducing the Founder',experience:'Career Playbook',network:'Broad Influence and Access',capabilities:'Case Study Apple'},
+    ja:{company:'会社の特徴',points:'私たちの強み',founder:'創業者紹介',experience:'キャリア・プレイブック',network:'幅広い影響力とアクセス',capabilities:'ケーススタディ Apple'},
+    zh:{company:'公司特色',points:'核心優勢',founder:'創辦人介紹',experience:'職涯軌跡',network:'廣泛的影響力與資源管道',capabilities:'案例研究 Apple'}
+  };
+  var desktopLabels={
+    en:{company:'Company',points:'Difference',founder:'Founder',network:'Network',capabilities:'Cases'},
+    ja:{company:'会社',points:'強み',founder:'創業者',network:'ネットワーク',capabilities:'事例'},
+    zh:{company:'公司',points:'優勢',founder:'創辦人',network:'資源網絡',capabilities:'案例'}
+  };
+  function setLabel(a,v){if(a&&a.textContent!==v)a.textContent=v;}
+  function apply(){
+    var nav=document.querySelector('.site-header nav');
+    if(!nav)return;
+    var founder=nav.querySelector('a[href="#founder"]');
+    var career=nav.querySelector('a[href="#experience"]');
+    if(!career&&founder){
+      career=document.createElement('a');
+      career.href='#experience';
+      career.className='nav-career';
+      founder.insertAdjacentElement('afterend',career);
+    }
+    var links={
+      company:nav.querySelector('a[href="#company"]'),
+      points:nav.querySelector('a[href="#points"]'),
+      founder:nav.querySelector('a[href="#founder"]'),
+      experience:nav.querySelector('a[href="#experience"]'),
+      network:nav.querySelector('a[href="#network"]'),
+      capabilities:nav.querySelector('a[href="#capabilities"]')
+    };
+    Object.keys(links).forEach(function(k){
+      var a=links[k]; if(!a)return;
+      a.classList.remove('intro-nav-main','intro-nav-subitem','nav-level-1','nav-level-2','nav-level-3','nav-parent');
+    });
+    if(links.company)links.company.classList.add('nav-level-1','nav-parent');
+    if(links.points)links.points.classList.add('nav-level-2');
+    if(links.founder)links.founder.classList.add('nav-level-2');
+    if(links.experience)links.experience.classList.add('nav-level-3','nav-career');
+    if(links.network)links.network.classList.add('nav-level-1','nav-parent');
+    if(links.capabilities)links.capabilities.classList.add('nav-level-2');
+
+    var l=lang();
+    if(window.innerWidth<=1050){
+      var m=mobileLabels[l];
+      Object.keys(m).forEach(function(k){setLabel(links[k],m[k]);});
+    }else{
+      var d=desktopLabels[l];
+      Object.keys(d).forEach(function(k){setLabel(links[k],d[k]);});
+    }
+  }
+  function queue(){
+    if(queued)return;
+    queued=true;
+    requestAnimationFrame(function(){queued=false;apply();});
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',queue);else queue();
-  new MutationObserver(queue).observe(document.body,{childList:true,subtree:true,characterData:true});
+  window.addEventListener('resize',queue,{passive:true});
   document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.lang-switch'))setTimeout(queue,0);});
+  new MutationObserver(queue).observe(document.body,{childList:true,subtree:true});
 })();
 </script>
-<!-- /Introduce navigation hierarchy -->
+<!-- /Section hierarchy navigation -->
 
 </body>
 </html>

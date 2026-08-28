@@ -1,0 +1,155 @@
+name: One-time heading alignment and founder title update
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-heading-alignment-founder.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-headings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply heading fixes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('index.html')
+          t = p.read_text(encoding='utf-8')
+
+          start = '/* Heading alignment founder cleanup START */'
+          end = '/* Heading alignment founder cleanup END */'
+          t = re.sub(re.escape(start) + r'.*?' + re.escape(end), '', t, flags=re.S)
+
+          css = r'''
+/* Heading alignment founder cleanup START */
+/* Keep every section title aligned to the same left edge. */
+#company .section-title,
+#points .section-title,
+.founder-copy .section-title,
+#experience .section-title,
+#network .section-title,
+#capabilities .section-title,
+.insight-intro{
+  text-align:left!important;
+  justify-items:start!important;
+  align-items:start!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+
+#company .section-title>div,
+#points .section-title>div,
+.founder-copy .section-title>div,
+#experience .section-title>div,
+#network .section-title>div,
+#capabilities .section-title>div,
+#company .section-title .section-heading-row,
+#points .section-title .section-heading-row,
+.founder-copy .section-title .section-heading-row,
+#experience .section-title .section-heading-row,
+#network .section-title .section-heading-row,
+#capabilities .section-title .section-heading-row{
+  width:100%!important;
+  justify-content:flex-start!important;
+  text-align:left!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+
+#company .section-title p,
+#points .section-title p,
+.founder-copy .section-title p,
+#experience .section-title p,
+#network .section-title p,
+#capabilities .section-title p,
+#company .section-title h2,
+#points .section-title h2,
+.founder-copy .section-title h2,
+#experience .section-title h2,
+#network .section-title h2,
+#capabilities .section-title h2,
+.insight-intro h2,
+.insight-intro p{
+  text-align:left!important;
+  justify-self:start!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+
+/* Remove all square/icon markers before section titles. */
+.section-title .section-kicker-icon,
+.section-title .section-sport-icon,
+.section-title p::before{
+  display:none!important;
+  content:none!important;
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+/* Introducing the Founder is the main large white heading. */
+.founder-copy .section-title>div:first-child{
+  margin-bottom:12px!important;
+}
+.founder-copy .section-title p{
+  display:block!important;
+  width:100%!important;
+  color:#f7f5ef!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-size:clamp(34px,4vw,54px)!important;
+  font-weight:800!important;
+  line-height:.98!important;
+  letter-spacing:-.04em!important;
+  text-transform:none!important;
+  white-space:normal!important;
+}
+/* Desktop keeps the founder name as supporting information, not as the main heading. */
+@media(min-width:761px){
+  .founder-copy .section-title h2{
+    display:block!important;
+    color:#9da7b4!important;
+    font-size:18px!important;
+    font-weight:700!important;
+    line-height:1.25!important;
+    letter-spacing:.02em!important;
+    -webkit-text-stroke:0!important;
+    text-shadow:none!important;
+  }
+}
+
+/* Mobile: remove Sam L. Pearson below the Founder title. */
+@media(max-width:760px){
+  .founder-copy .section-title p{
+    font-size:clamp(32px,10vw,44px)!important;
+    line-height:1!important;
+    letter-spacing:-.045em!important;
+  }
+  .founder-copy .section-title h2{
+    display:none!important;
+  }
+  .founder-copy .section-title>div:first-child{
+    margin-bottom:0!important;
+  }
+}
+/* Heading alignment founder cleanup END */
+'''
+          t = t.replace('</style>', css + '\n</style>', 1)
+          p.write_text(t, encoding='utf-8')
+          PY
+      - name: Commit website update and remove workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/fix-heading-alignment-founder.yml
+          git add index.html
+          git commit -m "Align headings and promote Founder title"
+          git push

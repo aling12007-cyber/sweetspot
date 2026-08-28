@@ -1,0 +1,85 @@
+name: One-time mobile founder title layout
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/mobile-founder-title.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-mobile-founder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Move founder title above photo on mobile
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from textwrap import dedent
+
+          p = Path('index.html')
+          t = p.read_text(encoding='utf-8')
+          marker = '/* Mobile founder title above portrait */'
+          if marker in t:
+              s = t.index(marker)
+              e = t.index('</style>', s)
+              t = t[:s] + t[e:]
+
+          css = dedent(r'''
+          /* Mobile founder title above portrait */
+          @media(max-width:760px){
+            .founder-grid{
+              display:grid!important;
+              grid-template-columns:1fr!important;
+              gap:0!important;
+            }
+            .founder-copy{
+              display:contents!important;
+            }
+            .founder-copy>*{
+              order:3;
+            }
+            .founder-copy .section-title{
+              order:1!important;
+              grid-column:1!important;
+              width:100%!important;
+              margin:0 0 18px!important;
+              justify-items:start!important;
+              text-align:left!important;
+            }
+            .founder-copy .section-title>div{
+              justify-content:flex-start!important;
+              text-align:left!important;
+            }
+            .founder-copy .section-title p{
+              margin:0!important;
+              text-align:left!important;
+              justify-self:start!important;
+            }
+            .founder-copy .section-title h2{
+              display:none!important;
+            }
+            .founder-visual{
+              order:2!important;
+              grid-column:1!important;
+              width:100%!important;
+              margin:0 0 26px!important;
+            }
+          }
+          ''')
+          t = t.replace('</style>', css + '\n</style>', 1)
+          p.write_text(t, encoding='utf-8')
+          PY
+      - name: Commit website update and remove workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/mobile-founder-title.yml
+          git add index.html
+          git commit -m "Adjust founder title layout on mobile"
+          git push

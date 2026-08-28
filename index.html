@@ -1057,6 +1057,48 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   #experience .section-title p{font-size:clamp(18px,5vw,23px)!important}
 }
 
+
+/* Mobile founder title above portrait */
+@media(max-width:760px){
+  .founder-grid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:0!important;
+  }
+  .founder-copy{
+    display:contents!important;
+  }
+  .founder-copy>*{
+    order:3;
+  }
+  .founder-copy .section-title{
+    order:1!important;
+    grid-column:1!important;
+    width:100%!important;
+    margin:0 0 18px!important;
+    justify-items:start!important;
+    text-align:left!important;
+  }
+  .founder-copy .section-title>div{
+    justify-content:flex-start!important;
+    text-align:left!important;
+  }
+  .founder-copy .section-title p{
+    margin:0!important;
+    text-align:left!important;
+    justify-self:start!important;
+  }
+  .founder-copy .section-title h2{
+    display:none!important;
+  }
+  .founder-visual{
+    order:2!important;
+    grid-column:1!important;
+    width:100%!important;
+    margin:0 0 26px!important;
+  }
+}
+
 </style>
 </head>
 <body>

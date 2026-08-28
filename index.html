@@ -602,6 +602,16 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
 #company .company-intro-grid .feature-card{align-content:center}
 #company .company-intro-grid .feature-card h3{max-width:none}
 @media(max-width:760px){#company .company-intro-grid .feature-card{min-height:180px!important}}
+
+/* Keep CTA in place while aligning only the Welcome to / SWEET SPOT headline upward. */
+@media(min-width:761px){
+  #home .hero-copy>h2,
+  #home .hero-copy>h1{transform:translateY(-95px)}
+}
+@media(max-width:760px){
+  #home .hero-copy>h2,
+  #home .hero-copy>h1{transform:translateY(-28px)}
+}
 </style>
 </head>
 <body>

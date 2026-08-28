@@ -1970,6 +1970,133 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
 }
 /* Major headings Insights corrected END */
 
+
+/* Reliable major Insights headings START */
+#company > .major-insights-title,
+#network > .major-insights-title{
+  position:relative;
+  z-index:6;
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  margin:0 0 36px 0;
+  padding:0;
+  text-align:left;
+}
+#company > .major-insights-title *,
+#network > .major-insights-title *{
+  box-sizing:border-box;
+  text-align:left;
+}
+#company > .major-insights-title .major-kicker-row,
+#network > .major-insights-title .major-kicker-row{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:28px;
+  width:100%;
+  margin:0 0 38px 0;
+  padding:0;
+}
+#company > .major-insights-title .major-kicker-line,
+#network > .major-insights-title .major-kicker-line{
+  display:block;
+  flex:0 0 84px;
+  width:84px;
+  height:3px;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:#c99b35;
+  box-shadow:none;
+}
+#company > .major-insights-title .major-kicker,
+#network > .major-insights-title .major-kicker{
+  display:block;
+  margin:0;
+  padding:0;
+  color:#c8b56e;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:clamp(17px,2vw,30px);
+  font-weight:800;
+  line-height:1.15;
+  letter-spacing:.18em;
+  text-transform:none;
+  white-space:normal;
+}
+#company > .major-insights-title h2,
+#network > .major-insights-title h2{
+  display:block;
+  width:100%;
+  max-width:1120px;
+  margin:0;
+  padding:0;
+  color:#f7f5ef;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:clamp(54px,7vw,96px);
+  font-weight:800;
+  line-height:.98;
+  letter-spacing:-.055em;
+  text-align:left;
+  white-space:normal;
+  -webkit-text-stroke:0;
+  text-shadow:none;
+}
+#network > .major-insights-title .major-support{
+  display:block;
+  width:100%;
+  max-width:920px;
+  margin:28px 0 0;
+  padding:0;
+  color:#9da7b4;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:clamp(15px,1.45vw,20px);
+  font-weight:500;
+  line-height:1.45;
+  letter-spacing:0;
+}
+#company > .section-title.major-source-title-hidden,
+#network > .section-title.major-source-title-hidden{
+  display:none!important;
+}
+@media(max-width:760px){
+  #company > .major-insights-title,
+  #network > .major-insights-title{
+    margin-bottom:28px;
+  }
+  #company > .major-insights-title .major-kicker-row,
+  #network > .major-insights-title .major-kicker-row{
+    gap:16px;
+    margin-bottom:24px;
+  }
+  #company > .major-insights-title .major-kicker-line,
+  #network > .major-insights-title .major-kicker-line{
+    flex-basis:48px;
+    width:48px;
+    height:2px;
+  }
+  #company > .major-insights-title .major-kicker,
+  #network > .major-insights-title .major-kicker{
+    font-size:clamp(14px,4.4vw,18px);
+    letter-spacing:.16em;
+  }
+  #company > .major-insights-title h2,
+  #network > .major-insights-title h2{
+    max-width:100%;
+    font-size:clamp(42px,13vw,62px);
+    line-height:.98;
+    letter-spacing:-.052em;
+  }
+  #network > .major-insights-title .major-support{
+    margin-top:22px;
+    max-width:100%;
+    font-size:clamp(13px,4vw,16px);
+    line-height:1.45;
+  }
+}
+/* Reliable major Insights headings END */
+
 </style>
 </head>
 <body>
@@ -2442,6 +2569,90 @@ react/cjs/react-jsx-runtime.production.js:
 })();
 </script>
 <!-- Hierarchy heading roles END -->
+
+
+<!-- Reliable major Insights headings START -->
+<script>
+(function(){
+  var copy = {
+    company: {
+      kicker: {en:"Company", ja:"会社", zh:"公司"},
+      title:  {en:"Company Features", ja:"会社の特徴", zh:"公司特色"}
+    },
+    network: {
+      kicker: {en:"Network", ja:"ネットワーク", zh:"網絡"},
+      title:  {en:"Broad Influence and Access", ja:"幅広い影響力とアクセス", zh:"廣泛的影響力與資源管道"},
+      support:{en:"Services rendered to:", ja:"サービス提供先：", zh:"曾服務的對象包括："}
+    }
+  };
+
+  function currentLang(){
+    var lang=(document.documentElement.lang||"en").toLowerCase();
+    if(lang.indexOf("ja")===0) return "ja";
+    if(lang.indexOf("zh")===0) return "zh";
+    return "en";
+  }
+
+  function setText(el, value){
+    if(el && el.textContent !== value) el.textContent = value;
+  }
+
+  function applyOne(id){
+    var section=document.getElementById(id);
+    if(!section) return;
+    var source=section.querySelector(":scope > .section-title") || section.querySelector(".section-title");
+    if(!source) return;
+
+    source.classList.add("major-source-title-hidden");
+
+    var custom=section.querySelector(":scope > .major-insights-title[data-major-id='"+id+"']");
+    if(!custom){
+      custom=document.createElement("div");
+      custom.className="major-insights-title";
+      custom.setAttribute("data-major-id", id);
+      custom.innerHTML=
+        '<div class="major-kicker-row"><span class="major-kicker-line" aria-hidden="true"></span><p class="major-kicker"></p></div>'+
+        '<h2></h2>'+
+        (id==="network" ? '<p class="major-support"></p>' : '');
+      section.insertBefore(custom, source);
+    }
+
+    var lang=currentLang();
+    setText(custom.querySelector(".major-kicker"), copy[id].kicker[lang] || copy[id].kicker.en);
+    setText(custom.querySelector("h2"), copy[id].title[lang] || copy[id].title.en);
+    if(copy[id].support){
+      setText(custom.querySelector(".major-support"), copy[id].support[lang] || copy[id].support.en);
+    }
+  }
+
+  function apply(){
+    applyOne("company");
+    applyOne("network");
+  }
+
+  var queued=false;
+  function queue(){
+    if(queued) return;
+    queued=true;
+    requestAnimationFrame(function(){
+      queued=false;
+      apply();
+    });
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded", queue, {once:true});
+  } else {
+    queue();
+  }
+
+  new MutationObserver(queue).observe(document.body,{childList:true,subtree:true,characterData:true});
+  document.addEventListener("click",function(e){
+    if(e.target.closest && e.target.closest(".lang-switch")) setTimeout(queue,0);
+  });
+})();
+</script>
+<!-- Reliable major Insights headings END -->
 
 </body>
 </html>

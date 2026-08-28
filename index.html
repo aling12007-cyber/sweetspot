@@ -853,42 +853,6 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
 }
 
 
-/* Broad Influence detail labels */
-#network .network-grid p.network-detail-list{
-  display:flex!important;
-  flex-wrap:wrap!important;
-  align-items:flex-start!important;
-  gap:8px 7px!important;
-  max-width:62%!important;
-  line-height:1!important;
-}
-#network .network-grid .network-detail-item{
-  display:inline-flex;
-  align-items:center;
-  min-height:30px;
-  padding:7px 10px 6px;
-  border:1px solid rgba(215,169,54,.38);
-  border-radius:3px;
-  background:linear-gradient(135deg,rgba(215,169,54,.085),rgba(255,255,255,.018));
-  color:#d7dde5;
-  font-family:"Arial Narrow","Helvetica Neue",Arial,sans-serif;
-  font-size:12px;
-  font-weight:700;
-  line-height:1.15;
-  letter-spacing:.045em;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
-}
-#network .network-grid .network-detail-item:first-child{
-  border-color:rgba(226,181,62,.55);
-  color:#f1e1a1;
-  background:linear-gradient(135deg,rgba(215,169,54,.14),rgba(215,169,54,.035));
-}
-@media(max-width:760px){
-  #network .network-grid p.network-detail-list{max-width:62%!important;gap:7px 6px!important}
-  #network .network-grid .network-detail-item{min-height:28px;padding:6px 9px 5px;font-size:11.5px;letter-spacing:.035em}
-}
-
-
 /* Broad Influence framed subitems */
 #network .network-grid p.network-subitem-list{
   display:flex!important;
@@ -908,11 +872,11 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   border-radius:3px;
   background:linear-gradient(135deg,rgba(215,169,54,.09),rgba(255,255,255,.018));
   color:#e8dfbf;
-  font-family:"Arial Narrow","Avenir Next Condensed","DIN Condensed",Arial,sans-serif;
-  font-size:12px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+  font-size:11.5px;
   font-weight:700;
-  line-height:1.18;
-  letter-spacing:.025em;
+  line-height:1.2;
+  letter-spacing:.035em;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
   white-space:normal;
 }
@@ -932,7 +896,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
 #network .network-grid article:nth-child(4) .network-subitem{border-color:rgba(215,169,54,.36);background:rgba(13,18,25,.76)}
 @media(max-width:760px){
   #network .network-grid p.network-subitem-list{max-width:64%!important;gap:6px!important}
-  #network .network-subitem{min-height:27px;padding:5px 8px 4px;font-size:11.5px;line-height:1.2}
+  #network .network-subitem{min-height:27px;padding:5px 8px 4px;font-size:11px;line-height:1.22}
   #network .network-subitem:before{width:3px;height:3px;flex-basis:3px;margin-right:6px}
   #network .network-grid article:nth-child(2){min-height:322px!important}
 }
@@ -1055,50 +1019,7 @@ react/cjs/react-jsx-runtime.production.js:
 })();
 </script>
 
-<script>
-/* Broad Influence detail label enhancer */
-(function(){
-  function enhanceNetworkDetails(){
-    document.querySelectorAll('#network .network-grid article p').forEach(function(p){
-      if(p.querySelector('.network-detail-item')) return;
-      var raw=(p.textContent||'').trim();
-      if(!raw) return;
-      var clean=raw.replace(/[。．.]\s*$/,'');
-      var parts=clean.split(/\s*[,，、]\s*/).map(function(s){return s.trim();}).filter(Boolean);
-      if(!parts.length) return;
-      p.textContent='';
-      p.classList.add('network-detail-list');
-      parts.forEach(function(part){
-        var span=document.createElement('span');
-        span.className='network-detail-item';
-        span.textContent=part;
-        p.appendChild(span);
-      });
-    });
-  }
-  function scheduleEnhance(){
-    requestAnimationFrame(function(){requestAnimationFrame(enhanceNetworkDetails);});
-    setTimeout(enhanceNetworkDetails,120);
-  }
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',scheduleEnhance,{once:true});
-  }else{
-    scheduleEnhance();
-  }
-  document.addEventListener('click',function(e){
-    if(e.target.closest('.lang-switch button')){
-      setTimeout(scheduleEnhance,0);
-      setTimeout(scheduleEnhance,80);
-    }
-  });
-  var attempts=0;
-  var timer=setInterval(function(){
-    enhanceNetworkDetails();
-    attempts++;
-    if(attempts>12 || document.querySelector('#network .network-detail-item')) clearInterval(timer);
-  },100);
-})();
-</script>
+
 
 
 <!-- Broad Influence framed subitems -->
@@ -1114,7 +1035,14 @@ react/cjs/react-jsx-runtime.production.js:
       if(p.querySelector('.network-subitem')) return;
       var raw=(p.textContent||'').trim();
       if(!raw) return;
-      var items=raw.split(/[,，、]/).map(capFirst).filter(Boolean);
+      var article=p.closest('article');
+      var cards=article&&article.parentElement?Array.prototype.slice.call(article.parentElement.children):[];
+      var cardIndex=cards.indexOf(article);
+      var parts=raw.replace(/[.。]+$/,'').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean);
+      if(cardIndex===3 && parts.length===1){
+        parts=raw.replace(/[.。]+$/,'').split(/\s+and\s+|および|及び|與|与|及/).map(function(s){return s.trim();}).filter(Boolean);
+      }
+      var items=parts.map(capFirst).filter(Boolean);
       if(!items.length) return;
       p.textContent='';
       p.classList.add('network-subitem-list');

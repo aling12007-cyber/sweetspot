@@ -1,0 +1,58 @@
+name: One-time content label update
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/content-label-update.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-content:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update navigation labels and localized strategy ribbon
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          nav_pattern = re.compile(
+              r'let e=\[\["company",\{.*?\}\]\];return\(0,f\.jsxs\)\("main"',
+              re.S,
+          )
+          nav_replacement = (
+              'let e=[["company",{en:"Company Introduction",ja:"会社紹介",zh:"公司介紹"}],'
+              '["points",{en:"Points of Difference",ja:"私たちの強み",zh:"核心優勢"}],'
+              '["founder",{en:"Introducing the Founder",ja:"創業者紹介",zh:"創辦人介紹"}],'
+              '["network",{en:"Broad Influence and Access",ja:"幅広い影響力とアクセス",zh:"廣泛的影響力與資源管道"}],'
+              '["capabilities",{en:"Case Study Apple",ja:"ケーススタディ Apple",zh:"案例研究 Apple"}],'
+              '["insights",{en:"Insights & Perspectives",ja:"洞察と視点",zh:"行業洞察"}]];'
+              'return(0,f.jsxs)("main"'
+          )
+          text, nav_count = nav_pattern.subn(nav_replacement, text, count=1)
+          if nav_count != 1:
+              raise SystemExit(f'Navigation replacement count was {nav_count}, expected 1')
+
+          strategy_old = 'z(l,{en:"策略。连接。执行。",ja:"策略。连接。执行。",zh:"策略。连接。执行。"})'
+          strategy_new = 'z(l,{en:"Strategy. Connect. Execute.",ja:"戦略。連携。実行。",zh:"策略。連結。執行。"})'
+          if strategy_old not in text:
+              raise SystemExit('Strategy ribbon source text not found')
+          text = text.replace(strategy_old, strategy_new, 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Align header labels with section content"
+          git push

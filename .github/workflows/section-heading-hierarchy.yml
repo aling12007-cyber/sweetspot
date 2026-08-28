@@ -1,0 +1,302 @@
+name: One-time section heading hierarchy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/section-heading-hierarchy.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-hierarchy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply heading and navigation hierarchy
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from textwrap import dedent
+
+          p = Path('index.html')
+          t = p.read_text(encoding='utf-8')
+
+          # Remove the older navigation/heading override tail so one hierarchy system owns these rules.
+          old_css = '/* Introduce navigation hierarchy */'
+          if old_css in t:
+              s = t.index(old_css)
+              e = t.index('</style>', s)
+              t = t[:s] + t[e:]
+          else:
+              for marker in (
+                  '/* Unified left-aligned section heading system */',
+                  '/* Final left-aligned headings without dart icons */',
+                  '/* Section hierarchy system */',
+              ):
+                  if marker in t:
+                      s = t.index(marker)
+                      e = t.index('</style>', s)
+                      t = t[:s] + t[e:]
+                      break
+
+          css = dedent(r'''
+          /* Section hierarchy system */
+          .section-title .section-kicker-icon,
+          .section-title .section-kicker-icon[data-section]{display:none!important}
+
+          #company .section-title,
+          #points .section-title,
+          .founder-copy .section-title,
+          #experience .section-title,
+          #network .section-title,
+          #capabilities .section-title{
+            grid-template-columns:1fr!important;
+            justify-items:start!important;
+            align-items:start!important;
+            text-align:left!important;
+            gap:8px!important;
+          }
+          #company .section-title>div,
+          #points .section-title>div,
+          .founder-copy .section-title>div,
+          #experience .section-title>div,
+          #network .section-title>div,
+          #capabilities .section-title>div{
+            width:100%!important;
+            justify-content:flex-start!important;
+            text-align:left!important;
+            gap:0!important;
+          }
+          #company .section-title p,
+          #points .section-title p,
+          .founder-copy .section-title p,
+          #experience .section-title p,
+          #network .section-title p,
+          #capabilities .section-title p,
+          #company .section-title h2,
+          #points .section-title h2,
+          .founder-copy .section-title h2,
+          #experience .section-title h2,
+          #network .section-title h2,
+          #capabilities .section-title h2{
+            margin-left:0!important;
+            margin-right:0!important;
+            text-align:left!important;
+            justify-self:start!important;
+            white-space:normal!important;
+          }
+
+          /* Large headings */
+          #company .section-title p,
+          #network .section-title p{
+            color:#fff!important;
+            font-size:clamp(36px,3.7vw,50px)!important;
+            font-weight:800!important;
+            line-height:1.02!important;
+            letter-spacing:-.045em!important;
+          }
+
+          /* Medium headings */
+          #points .section-title p,
+          .founder-copy .section-title p,
+          #capabilities .section-title p{
+            color:#f1f3f6!important;
+            font-size:clamp(27px,2.8vw,38px)!important;
+            font-weight:760!important;
+            line-height:1.08!important;
+            letter-spacing:-.035em!important;
+          }
+
+          /* Small heading nested under Introducing the Founder */
+          #experience .section-title p{
+            color:#d4dae2!important;
+            font-size:clamp(20px,2vw,27px)!important;
+            font-weight:750!important;
+            line-height:1.12!important;
+            letter-spacing:-.02em!important;
+          }
+
+          /* Keep secondary/supporting copy quieter than the hierarchy headings. */
+          #company .section-title h2,
+          #points .section-title h2,
+          #experience .section-title h2,
+          #network .section-title h2,
+          #capabilities .section-title h2{
+            color:#9da7b4!important;
+          }
+
+          /* Header list hierarchy. Desktop stays concise; mobile menu shows full hierarchy. */
+          @media(min-width:1051px){
+            .site-header nav a.nav-career{display:none!important}
+          }
+          @media(max-width:1050px){
+            .site-header nav a.nav-level-1{
+              margin-left:0!important;
+              width:100%!important;
+              padding-left:15px!important;
+              color:#f5f6f8!important;
+              font-size:13px!important;
+              font-weight:900!important;
+              letter-spacing:.105em!important;
+            }
+            .site-header nav a.nav-level-1.nav-parent{
+              color:var(--gold-pale)!important;
+              border-top:1px solid rgba(215,169,54,.34)!important;
+            }
+            .site-header nav a.nav-level-2{
+              position:relative!important;
+              margin-left:24px!important;
+              width:calc(100% - 24px)!important;
+              padding-left:28px!important;
+              color:#b7c0cb!important;
+              font-size:11.5px!important;
+              font-weight:760!important;
+              letter-spacing:.09em!important;
+            }
+            .site-header nav a.nav-level-2:before{
+              content:"";
+              position:absolute;
+              left:8px;
+              top:50%;
+              width:11px;
+              height:1px;
+              background:rgba(215,169,54,.78);
+              transform:translateY(-50%);
+            }
+            .site-header nav a.nav-level-3{
+              position:relative!important;
+              margin-left:50px!important;
+              width:calc(100% - 50px)!important;
+              padding-left:25px!important;
+              color:#909ba8!important;
+              font-size:10.5px!important;
+              font-weight:720!important;
+              letter-spacing:.085em!important;
+            }
+            .site-header nav a.nav-level-3:before{
+              content:"";
+              position:absolute;
+              left:8px;
+              top:50%;
+              width:5px;
+              height:5px;
+              border:1px solid rgba(215,169,54,.72);
+              border-radius:50%;
+              transform:translateY(-50%);
+            }
+          }
+
+          @media(max-width:760px){
+            #company .section-title p,
+            #network .section-title p{font-size:clamp(30px,8vw,38px)!important}
+            #points .section-title p,
+            .founder-copy .section-title p,
+            #capabilities .section-title p{font-size:clamp(23px,6.3vw,30px)!important}
+            #experience .section-title p{font-size:clamp(18px,5vw,23px)!important}
+          }
+          ''')
+          t = t.replace('</style>', css + '\n</style>', 1)
+
+          # Remove the previous runtime nav hierarchy script.
+          start_tag = '<!-- Introduce navigation hierarchy -->'
+          end_tag = '<!-- /Introduce navigation hierarchy -->'
+          if start_tag in t and end_tag in t:
+              s = t.index(start_tag)
+              e = t.index(end_tag, s) + len(end_tag)
+              t = t[:s] + t[e:]
+
+          new_start = '<!-- Section hierarchy navigation -->'
+          new_end = '<!-- /Section hierarchy navigation -->'
+          if new_start in t and new_end in t:
+              s = t.index(new_start)
+              e = t.index(new_end, s) + len(new_end)
+              t = t[:s] + t[e:]
+
+          js = dedent(r'''
+          <!-- Section hierarchy navigation -->
+          <script>
+          (function(){
+            var queued=false;
+            function lang(){
+              var active=document.querySelector('.lang-switch button.active');
+              var x=(active&&active.textContent||'EN').trim();
+              return x==='日'?'ja':x==='中'?'zh':'en';
+            }
+            var mobileLabels={
+              en:{company:'Company Features',points:'Points of Difference',founder:'Introducing the Founder',experience:'Career Playbook',network:'Broad Influence and Access',capabilities:'Case Study Apple'},
+              ja:{company:'会社の特徴',points:'私たちの強み',founder:'創業者紹介',experience:'キャリア・プレイブック',network:'幅広い影響力とアクセス',capabilities:'ケーススタディ Apple'},
+              zh:{company:'公司特色',points:'核心優勢',founder:'創辦人介紹',experience:'職涯軌跡',network:'廣泛的影響力與資源管道',capabilities:'案例研究 Apple'}
+            };
+            var desktopLabels={
+              en:{company:'Company',points:'Difference',founder:'Founder',network:'Network',capabilities:'Cases'},
+              ja:{company:'会社',points:'強み',founder:'創業者',network:'ネットワーク',capabilities:'事例'},
+              zh:{company:'公司',points:'優勢',founder:'創辦人',network:'資源網絡',capabilities:'案例'}
+            };
+            function setLabel(a,v){if(a&&a.textContent!==v)a.textContent=v;}
+            function apply(){
+              var nav=document.querySelector('.site-header nav');
+              if(!nav)return;
+              var founder=nav.querySelector('a[href="#founder"]');
+              var career=nav.querySelector('a[href="#experience"]');
+              if(!career&&founder){
+                career=document.createElement('a');
+                career.href='#experience';
+                career.className='nav-career';
+                founder.insertAdjacentElement('afterend',career);
+              }
+              var links={
+                company:nav.querySelector('a[href="#company"]'),
+                points:nav.querySelector('a[href="#points"]'),
+                founder:nav.querySelector('a[href="#founder"]'),
+                experience:nav.querySelector('a[href="#experience"]'),
+                network:nav.querySelector('a[href="#network"]'),
+                capabilities:nav.querySelector('a[href="#capabilities"]')
+              };
+              Object.keys(links).forEach(function(k){
+                var a=links[k]; if(!a)return;
+                a.classList.remove('intro-nav-main','intro-nav-subitem','nav-level-1','nav-level-2','nav-level-3','nav-parent');
+              });
+              if(links.company)links.company.classList.add('nav-level-1','nav-parent');
+              if(links.points)links.points.classList.add('nav-level-2');
+              if(links.founder)links.founder.classList.add('nav-level-2');
+              if(links.experience)links.experience.classList.add('nav-level-3','nav-career');
+              if(links.network)links.network.classList.add('nav-level-1','nav-parent');
+              if(links.capabilities)links.capabilities.classList.add('nav-level-2');
+
+              var l=lang();
+              if(window.innerWidth<=1050){
+                var m=mobileLabels[l];
+                Object.keys(m).forEach(function(k){setLabel(links[k],m[k]);});
+              }else{
+                var d=desktopLabels[l];
+                Object.keys(d).forEach(function(k){setLabel(links[k],d[k]);});
+              }
+            }
+            function queue(){
+              if(queued)return;
+              queued=true;
+              requestAnimationFrame(function(){queued=false;apply();});
+            }
+            if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',queue);else queue();
+            window.addEventListener('resize',queue,{passive:true});
+            document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.lang-switch'))setTimeout(queue,0);});
+            new MutationObserver(queue).observe(document.body,{childList:true,subtree:true});
+          })();
+          </script>
+          <!-- /Section hierarchy navigation -->
+          ''')
+          t = t.replace('</body>', js + '\n</body>', 1)
+          p.write_text(t, encoding='utf-8')
+          PY
+      - name: Commit website update and remove workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/section-heading-hierarchy.yml
+          git add index.html
+          git commit -m "Apply section and navigation hierarchy"
+          git push

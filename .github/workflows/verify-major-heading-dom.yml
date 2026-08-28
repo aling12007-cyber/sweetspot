@@ -1,0 +1,33 @@
+name: Verify major heading DOM
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/verify-major-heading-dom.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify rebuilt headings in rendered DOM
+        shell: bash
+        run: |
+          CHROME=$(command -v google-chrome || command -v chromium || command -v chromium-browser)
+          test -n "$CHROME"
+          "$CHROME" --headless --no-sandbox --disable-gpu --allow-file-access-from-files --virtual-time-budget=5000 --dump-dom "file://$PWD/index.html" > /tmp/rendered.html
+          grep -F 'class="major-insights-title" data-major-id="company"' /tmp/rendered.html
+          grep -F 'class="major-insights-title" data-major-id="network"' /tmp/rendered.html
+          grep -F '>Company</p>' /tmp/rendered.html
+          grep -F '>Company Features</h2>' /tmp/rendered.html
+          grep -F '>Network</p>' /tmp/rendered.html
+          grep -F '>Broad Influence and Access</h2>' /tmp/rendered.html
+          grep -F '>Services rendered to:</p>' /tmp/rendered.html
+          grep -F 'major-source-title-hidden' /tmp/rendered.html
+      - name: Remove verifier
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/verify-major-heading-dom.yml
+          git commit -m "Verify rebuilt heading DOM"
+          git push

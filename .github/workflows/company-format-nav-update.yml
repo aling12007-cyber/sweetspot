@@ -1,0 +1,78 @@
+name: Align company section format and navigation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/company-format-nav-update.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Update company section format and header navigation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          replacements = [
+              (
+                  'let e=[["points",',
+                  'let e=[["company",{en:"Company",ja:"会社",zh:"公司"}],["points",'
+              ),
+              (
+                  '(0,f.jsx)("div",{className:"section-title compact",children:(0,f.jsx)("h2",{children:z(l,{en:"Company Introduction",ja:"会社紹介",zh:"公司介紹"})})})',
+                  '(0,f.jsx)(vu,{number:"01",kicker:{en:"Company",ja:"会社",zh:"公司"},title:{en:"Introduction",ja:"紹介",zh:"介紹"},lang:l})'
+              ),
+              (
+                  'id:"points",className:"content-section section-shell",children:[(0,f.jsx)(vu,{number:"01",',
+                  'id:"points",className:"content-section section-shell",children:[(0,f.jsx)(vu,{number:"02",'
+              ),
+              (
+                  'id:"founder",className:"content-section founder-section",children:(0,f.jsxs)("div",{className:"section-shell founder-grid",children:[',
+                  'id:"founder",className:"content-section founder-section",children:(0,f.jsxs)("div",{className:"section-shell founder-grid",children:['
+              ),
+              (
+                  '(0,f.jsx)(vu,{number:"02",kicker:{en:"Introducing the Founder"',
+                  '(0,f.jsx)(vu,{number:"03",kicker:{en:"Introducing the Founder"'
+              ),
+              (
+                  'id:"network",className:"content-section network-section",children:(0,f.jsxs)("div",{className:"section-shell",children:[(0,f.jsx)(vu,{number:"03",',
+                  'id:"network",className:"content-section network-section",children:(0,f.jsxs)("div",{className:"section-shell",children:[(0,f.jsx)(vu,{number:"04",'
+              ),
+              (
+                  'id:"capabilities",className:"content-section section-shell",children:[(0,f.jsx)(vu,{number:"04",',
+                  'id:"capabilities",className:"content-section section-shell",children:[(0,f.jsx)(vu,{number:"05",'
+              ),
+          ]
+
+          changed = 0
+          for old, new in replacements:
+              if old == new:
+                  continue
+              count = s.count(old)
+              if count != 1:
+                  raise SystemExit(f'Expected exactly 1 match, found {count}: {old[:120]}')
+              s = s.replace(old, new, 1)
+              changed += 1
+
+          p.write_text(s, encoding='utf-8')
+          print(f'Applied {changed} targeted replacements')
+          PY
+      - name: Commit update and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/company-format-nav-update.yml
+          git add index.html
+          git commit -m "Match company section styling and header navigation"
+          git push origin main

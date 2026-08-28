@@ -1,0 +1,243 @@
+CHROME=/usr/bin/google-chrome
+CHROME_EXIT=0
+MAJOR_COUNT=27
+HIERARCHY_COUNT=74
+SOURCE_HIDDEN_COUNT=5
+COMPANY_H2_COUNT=2
+NETWORK_H2_COUNT=1
+
+===== id="company" =====
+e the Tokyo skyline at night" src="assets/images/site-5fa8ee41a447.webp" width="1024" height="1536" decoding="async" loading="eager" fetchpriority="high">
+<span class="photo-label">Tokyo / Japan</span>
+</div>
+<div class="strategy-ribbon">Strategy. Connect. Execute.</div>
+<div class="score-card">
+<span>Japan ↔ Global</span>
+</div>
+</div>
+</section>
+<section id="company" class="content-section section-shell">
+<div class="major-insights-title" data-major-id="company">
+<div class="major-kicker-row">
+<span class="major-kicker-line" aria-hidden="true">
+</span>
+<p class="major-kicker">Company</p>
+</div>
+<h2>Company Features</h2>
+</div>
+<div class="section-title hierarchy-applied major-source-title-hidden" data-hierarchy-signature="Company|Company Features|">
+<div class="hierarchy-kicker-row">
+<span class="hierarchy-kicker">Company</span>
+</div>
+<h2 class="hierarchy-heading">Company Features</h2>
+</div>
+<div class="company-intro-list">
+<article class="company-intro-item">
+<p>Created to facilitate innovation and growth opportunities within Japan’s sports &amp; entertainment industry.</p>
+</article>
+<article class="company-intro-item">
+<p>Focused on raising the level of sports business connectivity and capability.</p>
+</article>
+<article class="company-intro-highlight">
+<p>Powered by a network of sports and entertainment professionals with a strong commitment and long-term connection to Japan.</p>
+</article>
+</div>
+</section>
+<section id="points" class="content-section section-shell">
+<div class="section-title hierarchy-applied" data-hierarchy-signature="Difference|Point
+
+===== major-insights-title =====
+erarchy-heading,
+  #company .section-title:not(.hierarchy-applied) h2,
+  #network .section-title:not(.hierarchy-applied) h2{
+    font-size:clamp(36px,10.5vw,48px)!important;
+    line-height:1!important;
+    letter-spacing:-.045em!important;
+  }
+}
+/* Major headings Insights corrected END */
+
+
+/* Reliable major Insights headings START */
+#company > .major-insights-title,
+#network > .major-insights-title{
+  position:relative;
+  z-index:6;
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  margin:0 0 36px 0;
+  padding:0;
+  text-align:left;
+}
+#company > .major-insights-title *,
+#network > .major-insights-title *{
+  box-sizing:border-box;
+  text-align:left;
+}
+#company > .major-insights-title .major-kicker-row,
+#network > .major-insights-title .major-kicker-row{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:28px;
+  width:100%;
+  margin:0 0 38px 0;
+  padding:0;
+}
+#company > .major-insights-title .major-kicker-line,
+#network > .major-insights-title .major-kicker-line{
+  display:block;
+  flex:0 0 84px;
+  width:84px;
+  height:3px;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:#c99b35;
+  box-shadow:none;
+}
+#company > .major-insights-title .major-kicker,
+#network > .major-insights-title .major-kicker{
+  display:block;
+  margin:0;
+  padding:0;
+  color:#c8b56e;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:clamp(17px,2vw,30px);
+  font-weight:800;
+  line-height:1.15;
+  letter-spacing:.18em;
+  text-transform:none;
+  white-space:normal;
+}
+#company > .major-insights-title h2,
+#n
+
+===== id="network" =====
+ewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+<path d="M7 17 17 7M8 7h9v9">
+</path>
+</svg>
+</span>
+</article>
+</div>
+<div class="career-toggle-wrap">
+<button class="career-toggle" type="button" aria-expanded="false">View Full Career</button>
+</div>
+</section>
+<section id="network" class="content-section network-section">
+<div class="section-shell">
+<div class="section-title hierarchy-applied major-source-title-hidden" data-hierarchy-signature="Network|Broad Influence and Access|Services rendered to:">
+<div class="hierarchy-kicker-row">
+<span class="hierarchy-kicker">Network</span>
+</div>
+<h2 class="hierarchy-heading">Broad Influence and Access</h2>
+<div class="hierarchy-support">Services rendered to:</div>
+</div>
+<div class="network-grid">
+<article>
+<div class="network-icon">01</div>
+<h3>Government</h3>
+<p class="network-subitem-list">
+<span class="network-subitem">Japan Sports Agency</span>
+<span class="network-subitem">JSPIN Advisor</span>
+</p>
+</article>
+<article>
+<div class="network-icon">02</div>
+<h3>Rights Holders</h3>
+<p class="network-subitem-list">
+<span class="network-subitem">Baseball</span>
+<span class="network-subitem">Cricket</span>
+<span class="network-subitem">Golf</span>
+<span class="network-subitem">Football</span>
+<span class="network-subitem">Formula One</span>
+<span class="network-subitem">Rugby</span>
+<span class="network-subitem">Tennis</span>
+</p>
+</article>
+<article>
+<div class="network-icon">03</div>
+<h3>Brands</h3>
+<p class="network-subitem-list">
+<span
+
+===== hierarchy-applied =====
+ant;
+  margin-right:0!important;
+  text-align:left!important;
+  justify-items:start!important;
+  align-items:start!important;
+}
+
+#company .section-title *,
+#points .section-title *,
+.founder-copy .section-title *,
+#experience .section-title *,
+#network .section-title *,
+#capabilities .section-title *{
+  text-align:left!important;
+}
+
+.section-title.hierarchy-applied .section-kicker-icon,
+.section-title.hierarchy-applied .section-sport-icon,
+.section-title.hierarchy-applied .hierarchy-kicker::before,
+.section-title.hierarchy-applied p::before{
+  display:none!important;
+  content:none!important;
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+.section-title.hierarchy-applied .hierarchy-kicker-row{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:14px!important;
+  width:100%!important;
+  margin:0 0 20px!important;
+}
+.section-title.hierarchy-applied .hierarchy-kicker-row::before{
+  content:""!important;
+  display:block!important;
+  flex:0 0 42px!important;
+  width:42px!important;
+  height:2px!important;
+  background:linear-gradient(90deg,#b77a12,#e5c668)!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.section-title.hierarchy-applied .hierarchy-kicker{
+  margin:0!important;
+  padding:0!important;
+  color:#c8b56e!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  line-height:1.3!important;
+  letter-spacing:.17em!important;
+  tex
+===== CHROME STDERR =====
+[2238:2260:0828/221820.321177:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[2238:2260:0828/221820.321982:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[2238:2260:0828/221820.406716:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[2238:2260:0828/221820.462362:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[2238:2238:0828/221820.597220:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2238:2238:0828/221820.597359:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2238:2260:0828/221820.597374:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[2238:2260:0828/221820.597444:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[2238:2238:0828/221820.599127:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2238:2238:0828/221820.604806:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2238:2238:0828/221820.658481:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2238:2238:0828/221820.660457:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2238:2260:0828/221820.664676:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[2238:2238:0828/221820.705015:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2238:2260:0828/221820.705409:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[2238:2238:0828/221820.705452:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files
+[2238:2238:0828/221820.729481:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 
+[2238:2260:0828/221820.729843:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[2238:2238:0828/221820.757057:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: 

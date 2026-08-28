@@ -15,163 +15,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Convert Company Introduction to vertical list with highlighted network statement
+      - name: Redesign Company Introduction
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
+          import base64
 
-          path = Path('index.html')
-          text = path.read_text(encoding='utf-8')
+          path = Path("index.html")
+          text = path.read_text(encoding="utf-8")
 
-          start_marker = '(0,f.jsxs)("div",{className:"difference-grid company-intro-grid",children:['
-          end_marker = ']}),(0,f.jsxs)("section",{id:"points"'
-          if start_marker not in text:
-              raise SystemExit('Company Introduction grid start not found')
-          start = text.index(start_marker)
-          end = text.index(end_marker, start)
+          old = base64.b64decode("KDAsZi5qc3hzKSgiZGl2Iix7Y2xhc3NOYW1lOiJkaWZmZXJlbmNlLWdyaWQgY29tcGFueS1pbnRyby1ncmlkIixjaGlsZHJlbjpbKDAsZi5qc3hzKSgiYXJ0aWNsZSIse2NsYXNzTmFtZToiZmVhdHVyZS1jYXJkIixjaGlsZHJlbjpbKDAsZi5qc3hzKSgiZGl2Iix7Y2xhc3NOYW1lOiJjYXJkLXRvcCIsY2hpbGRyZW46WygwLGYuanN4KSgic3BhbiIse2NoaWxkcmVuOiIwMSJ9KSwoMCxmLmpzeCkoImkiLHtjaGlsZHJlbjooMCxmLmpzeCkoZ2Use3R5cGU6InRhcmdldCJ9KX0pXX0pLCgwLGYuanN4KSgiaDMiLHtjaGlsZHJlbjp6KGwse2VuOiJDcmVhdGVkIHRvIGZhY2lsaXRhdGUgaW5ub3ZhdGlvbiBhbmQgZ3Jvd3RoIG9wcG9ydHVuaXRpZXMgd2l0aGluIEphcGFu4oCZcyBzcG9ydHMgJiBlbnRlcnRhaW5tZW50IGluZHVzdHJ5LiIsamE6IuaXpeacrOOBruOCueODneODvOODhOODuOOCqOODs+OCvOODvOODhuOCpOODs+ODoeODs+ODiOalreeVjOOBq+OBiuOBkeOCi+OCpOODjuODmeODvOOCt+ODp+ODs+OBqOaIkOmVt+apn+S8muOBruWJteWHuuOCkuS/gOmAoOOBmeOCi+OBn+OCgeOBq+ioreeri+OBleOCjOOBvuOBl+OBn+OAgiIseng6IuiHtOWKm+mrmOaXpeacrOmBiOWLleeOi+WoseaokueUoualreeahOWJteaWsOiIh+aIkOmVt+aoppacguaeqaCJ9KX0pLCgwLGYuanN4KSgiZGl2Iix7Y2xhc3NOYW1lOiJjYXJkLWxpbmUifSldfSksKDAsZi5qc3hzKSgiYXJ0aWNsZSIse2NsYXNzTmFtZToiZmVhdHVyZS1jYXJkIixjaGlsZHJlbjpbKDAsZi5qc3hzKSgiZGl2Iix7Y2xhc3NOYW1lOiJjYXJkLXRvcCIsY2hpbGRyZW46WygwLGYuanN4KSgic3BhbiIse2NoaWxkcmVuOiIwMiJ9KSwoMCxmLmpzeCkoImkiLHtjaGlsZHJlbjooMCxmLmpzeCkoZ2Use3R5cGU6ImJyaWVmY2FzZSJ9KX0pXX0pLCgwLGYuanN4KSgiaDMiLHtjaGlsZHJlbjp6KGwse2VuOiJGb2N1c2VkIG9uIHJhaXNpbmcgdGhlIGxldmVsIG9mIHNwb3J0cyBidXNpbmVzcyBjb25uZWN0aXZpdHkgYW5kIGNhcGFiaWxpdHkuIixqYTrjgIzjgrnjg53jg7zjg4Tjg5Pjgrjjg43jgrnjgavjgYrjgZHjgovjgaTjgarjgYzjgorjgajog73lipvjga7msLTmuJbliJ3kuIrjgavms6jlipvjgZfjgabjgYTjgb7jgZnjgIIiLHpoOiLlsIjoqLXmlbzmr5PnlYzpgYvmpa3nmoTpgKPntZDnqIvluqboiIflsIjmpa3og73lipvjgIIifSl9KSwoMCxmLmpzeCkoImRpdiIse2NsYXNzTmFtZToiY2FyZC1saW5lIn0pXX0pLCgwLGYuanN4cykoImFydGljbGUiLHtjbGFzc05hbWU6ImZlYXR1cmUtY2FyZCIsY2hpbGRyZW46WygwLGYuanN4cykoImRpdiIse2NsYXNzTmFtZToiY2FyZC10b3AiLGNoaWxkcmVuOlsoMCxmLmpzeCkoInNwYW4iLHtjaGlsZHJlbjoiMDMifSksKDAsZi5qc3gpKCJpIix7Y2hpbGRyZW46KDAsZi5qc3gpKGdlLHt0eXBlOiJoYW5kc2hha2UifSl9KV19KSwoMCxmLmpzeCkoImgzIix7Y2hpbGRyZW46eihsLHtlbjpQb3dlcmVkIGJ5IGEgbmV0d29yayBvZiBzcG9ydHMgYW5kIGVudGVydGFpbm1lbnQgcHJvZmVzc2lvbmFscyB3aXRoIGEgc3Ryb25nIGNvbW1pdG1lbnQgYW5kIGxvbmctdGVybSBjb25uZWN0aW9uIHRvIEphcGFuLixqYTrom4bmnKzjgajjga7lvLfjgYTjgrPjg5/jg4Pjg4jjg6Hjg7Pjg4jjgajjgafmnJ/jgajjgoTjgYTjgaTjgarjgYzjgorjgpLmjIHjgaTjgIHjgrnjg53jg7zjg4TjgYrjgojjgbPjgqjjg7Pjgr/jg7zjg4bjgqTjg6Hjg7Pjg4jjga7jg5fjg63jg5Xjgqfjg4Pjgrfjg6fjg4rjg6vjg43jg4Pjg4jjg6/jg7zjgq/jgavjgojjgaPjgabmlK/jgYjjgonjgozjgabjgYTjgb7jgZnjgIIiLHpoOiLnlLHkuIDnvqTlrI/ml6XmnKzlhbfmnInpq5jluqbmipXlhaXkuKbosIflsI/ml6XmnKzkv53mjIHplbfmnJ/pgKPntZDnmoTpgYvli5XoiIflq5HmqILlsIjmpa3kurrlo6vmibDntYTmiJDnmoTntLLntZzmiJDkvpvmlK/mjIHjgIIifSl9KSwoMCxmLmpzeCkoImRpdiIse2NsYXNzTmFtZToiY2FyZC1saW5lIn0pXX0pXX0p").decode("utf-8")
+          new = base64.b64decode("KDAsZi5qc3hzKSgiZGl2Iix7Y2xhc3NOYW1lOiJjb21wYW55LWludHJvLWxpc3QiLGNoaWxkcmVuOlsoMCxmLmpzeCkoImFydGljbGUiLHtjbGFzc05hbWU6ImNvbXBhbnktaW50cm8taXRlbSIsY2hpbGRyZW46KDAsZi5qc3gpKCJwIix7Y2hpbGRyZW46eihsLHtlbjpDcmVhdGVkIHRvIGZhY2lsaXRhdGUgaW5ub3ZhdGlvbiBhbmQgZ3Jvd3RoIG9wcG9ydHVuaXRpZXMgd2l0aGluIEphcGFu4oCZcyBzcG9ydHMgJiBlbnRlcnRhaW5tZW50IGluZHVzdHJ5LixqYTrom4bmnKzjg6njgrnjg53jg7zjg4Tjg7vjgqjjg7Pjgr/jg7zjgpLjgqTjg7Pjg6Hjg7Pjg4jjgYvjgYvjgoPjgofjgZjjgYbjgajjgZnjgovjgrPjg5/jg6Xjg4vjg4bjgqPjgr/jga7liJ3kuIrjga7kv4PmjIHjgYnjgajjgq7jg7vjg5Pjgrjjg43jgrnjg7vjg6fjgq/jgqjjg4vjgrnjga7liJ3kuIrjgavms6jlipvjgZfjgabjgYTjgb7jgZnjgIIiLHpoOiLoh7Tlipvmlbzmr5PnlYzpgYvmpa3nmoTliJ3kuIrokI3lrpjpgIvlnIjnqIvml6XmnKzjgIIifSl9KX0pLCgwLGYuanN4KSgiYXJ0aWNsZSIse2NsYXNzTmFtZToiY29tcGFueS1pbnRyby1pdGVtIixjaGlsZHJlbjooMCxmLmpzeCkoInAiLHtjaGlsZHJlbjp6KGwse2VuOkZvY3VzZWQgb24gcmFpc2luZyB0aGUgbGV2ZWwgb2Ygc3BvcnRzIGJ1c2luZXNzIGNvbm5lY3Rpdml0eSBhbmQgY2FwYWJpbGl0eS4samE6IuOCueODneODvOODhOODk+OCuOODjeOCueOBq+OBiuOBkeOCi+OBpOOBquOBjOOCiuOBqOiDveWKm+OBruawtOW5s+WQkeS4iuOBq+azqOWKm+OBl+OBpuOBhOOBvuOBmeOAgiIsemg6IuWwiOazqOaWvOaPkOWNh+mBiOWLleeOi+WoseaokueUoualreeahOWiqOe1kOeoi+W6puiIh+WwiOalreeUqOaXtuiDveWKm+OAgiJ9KX0pfSksKDAsZi5qc3gpKCJhcnRpY2xlIix7Y2xhc3NOYW1lOiJjb21wYW55LWludHJvLWhpZ2hsaWdodCIsY2hpbGRyZW46KDAsZi5qc3gpKCJwIix7Y2hpbGRyZW46eihsLHtlbjpQb3dlcmVkIGJ5IGEgbmV0d29yayBvZiBzcG9ydHMgYW5kIGVudGVydGFpbm1lbnQgcHJvZmVzc2lvbmFscyB3aXRoIGEgc3Ryb25nIGNvbW1pdG1lbnQgYW5kIGxvbmctdGVybSBjb25uZWN0aW9uIHRvIEphcGFuLixqYTrom4bmnKzjgajjga7lvLfjgYTjgrPjg5/jg4Pjg4jjg6Hjg7Pjg4jjgajjgafmnJ/jgajjgoTjgYTjgaTjgarjgYzjgorjgpLmjIHjgaTjgIHjgrnjg53jg7zjg4TjgYrjgojjgbPjgqjjg7Pjgr/jg7zjg4bjgqTjg6Hjg7Pjg4jjga7jg5fjg63jg5Xjgqfjg4Pjgrfjg6fjg4rjg6vjg43jg4Pjg4jjg6/jg7zjgq/jgavjgojjgaPjgabmlK/jgYjjgonjgozjgabjgYTjgb7jgZnjgIIiLHpoOiLnlLHkuIDnvqTlrI/ml6XmnKzlhbfmnInpq5jluqbmipXlhaXkuKbosIflsI/ml6XmnKzkv53mjIHplbfmnJ/pgKPntZDnmoTpgYvli5XoiIflq5HmqILlsIjmpa3kurrlo6vmibDntYTmiJDnmoTntLLntZzmiJDkvpvmlK/mjIHjgIIifSl9KX0pXX0p").decode("utf-8")
+          css = base64.b64decode("LyogQ29tcGFueSBJbnRyb2R1Y3Rpb24gdmVydGljYWwgZWRpdG9yaWFsIGxheW91dCAqLwojY29tcGFueSAuY29tcGFueS1pbnRyby1saXN0ewogIHBvc2l0aW9uOnJlbGF0aXZlOwogIHotaW5kZXg6MjsKICB3aWR0aDptaW4oMTAwJSwxMDYwcHgpOwogIG1hcmdpbjowIGF1dG87CiAgZGlzcGxheTpncmlkOwogIGdyaWQtdGVtcGxhdGUtY29sdW1uczoxZnI7Cn0KI2NvbXBhbnkgLmNvbXBhbnktaW50cm8taXRlbXsKICBwb3NpdGlvbjpyZWxhdGl2ZTsKICBkaXNwbGF5OmdyaWQ7CiAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOjE4cHggbWlubWF4KDAsMWZyKTsKICBjb2x1bW4tZ2FwOjIycHg7CiAgYWxpZ24taXRlbXM6c3RhcnQ7CiAgcGFkZGluZzoyN3B4IDMwcHg7CiAgYm9yZGVyLXRvcDoxcHggc29saWQgcmdiYSgyNTUsMjU1LDI1NSwuMTIpOwogIGJhY2tncm91bmQ6bGluZWFyLWdyYWRpZW50KDkwZGVnLHJnYmEoMjU1LDI1NSwyNTUsLjAxOCksdHJhbnNwYXJlbnQgNzQlKTsKfQojY29tcGFueSAuY29tcGFueS1pbnRyby1pdGVtOm50aC1jaGlsZCgyKXsKICBib3JkZXItYm90dG9tOjFweCBzb2xpZCByZ2JhKDI1NSwyNTUsMjU1LC4xMik7Cn0KI2NvbXBhbnkgLmNvbXBhbnktaW50cm8taXRlbTpiZWZvcmV7CiAgY29udGVudDoiIjsKICB3aWR0aDo4cHg7CiAgaGVpZ2h0OjhweDsKICBtYXJnaW4tdG9wOi41NmVtOwogIGJvcmRlcjoycHggc29saWQgdmFyKC0tZ29sZCk7CiAgYm9yZGVyLXJhZGl1czo1MCU7CiAgYm94LXNoYWRvdzowIDAgMCA1cHggcmdiYSgyMTUsMTY5LDU0LC4wNyksMCAwIDE4cHggcmdiYSgyMTUsMTY5LDU0LC4xNik7Cn0KI2NvbXBhbnkgLmNvbXBhbnktaW50cm8taXRlbSBwewogIG1hcmdpbjowOwogIG1heC13aWR0aDo5NTBweDsKICBjb2xvcjojZjVmM2VkOwogIGZvbnQtc2l6ZTpjbGFtcCgyMXB4LDIuMzV2dywzMXB4KTsKICBmb250LXdlaWdodDo3MDA7CiAgbGluZS1oZWlnaHQ6MS4zNjsKICBsZXR0ZXItc3BhY2luZzotLjAyOGVtOwp9CiNjb21wYW55IC5jb21wYW55LWludHJvLWhpZ2hsaWdodHsKICBwb3NpdGlvbjpyZWxhdGl2ZTsKICBvdmVyZmxvdzpoaWRkZW47CiAgbWFyZ2luLXRvcDoyMHB4OwogIHBhZGRpbmc6MzZweCA0MHB4IDM4cHggNDhweDsKICBib3JkZXI6MXB4IHNvbGlkIHJnYmEoMjE1LDE2OSw1NCwuNSk7CiAgYm9yZGVyLWxlZnQ6NHB4IHNvbGlkIHZhcigtLWdvbGQpOwogIGJhY2tncm91bmQ6bGluZWFyLWdyYWRpZW50KDExMmRlZyxyZ2JhKDIxNSwxNjksNTQsLjE2KSxyZ2JhKDIxNSwxNjksNTQsLjA0NSkgNDIlLHJnYmEoMTAsMTAyLDE5NCwuMDU1KSAxMDAlKSwjMGIwZjE1OwogIGJveC1zaGFkb3c6MCAxOHB4IDQ4cHggcmdiYSgwLDAsMCwuMjIpLGluc2V0IDAgMXB4IDAgcmdiYSgyNTUsMjQxLDE3OCwuMDUpOwp9CiNjb21wYW55IC5jb21wYW55LWludHJvLWhpZ2hsaWdodDpiZWZvcmV7CiAgY29udGVudDoiIjsKICBwb3NpdGlvbjphYnNvbHV0ZTsKICByaWdodDotNjVweDsKICB0b3A6LTcycHg7CiAgd2lkdGg6MTkwcHg7CiAgaGVpZ2h0OjE5MHB4OwogIGJvcmRlcjoxcHggc29saWQgcmdiYSgyMTUsMTY5LDU0LC4xOSk7CiAgYm9yZGVyLXJhZGl1czo1MCU7CiAgYm94LXNoYWRvdzowIDAgMCAyNHB4IHJnYmEoMjE1LDE2OSw1NCwuMDI1KSwwIDAgMCA1MnB4IHJnYmEoMTAsMTAyLDE5NCwuMDIyKTsKICBwb2ludGVyLWV2ZW50czpub25lOwp9CiNjb21wYW55IC5jb21wYW55LWludHJvLWhpZ2hsaWdodDphZnRlcnwKICBjb250ZW50OiIiOwogIHBvc2l0aW9uOmFic29sdXRlOwogIGxlZnQ6MjFweDsKICB0b3A6MzlweDsKICB3aWR0aDoxMHB4OwogIGhlaWdodDoxMHB4OwogIGJvcmRlci1yYWRpdXM6NTAlOwogIGJhY2tncm91bmQ6dmFyKC0tZ29sZCk7CiAgYm94LXNoYWRvdzowIDAgMThweCByZ2JhKDIxNSwxNjksNTQsLjQyKTsKfQojY29tcGFueSAuY29tcGFueS1pbnRyby1oaWdobGlnaHQgcHsKICBwb3NpdGlvbjpyZWxhdGl2ZTsKICB6LWluZGV4OjE7CiAgbWFyZ2luOjA7CiAgbWF4LXdpZHRoOjk0MHB4OwogIGNvbG9yOiNmZmY7CiAgZm9udC1zaXplOmNsYW1wKDI1cHgsMi44NXZ3LDM4cHgpOwogIGZvbnQtd2VpZ2h0OjgwMDsKICBsaW5lLWhlaWdodDoxLjI4OwogIGxldHRlci1zcGFjaW5nOi0uMDM4ZW07CiAgdGV4dC13cmFwOmJhbGFuY2U7Cn0KI2NvbXBhbnkgLmNvbXBhbnktaW50cm8taXRlbSwKI2NvbXBhbnkgLmNvbXBhbnktaW50cm8taGlnaGxpZ2h0ewogIHRyYW5zaXRpb246YmFja2dyb3VuZCAuMjhzIGVhc2UsYm9yZGVyLWNvbG9yIC4yOHMgZWFzZSx0cmFuc2Zvcm0gLjI4cyBlYXNlOwp9CiNjb21wYW55IC5jb21wYW55LWludHJvLWl0ZW06aG92ZXJ7CiAgYmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoOTBkZWcscmdiYSgyMTUsMTY5LDU0LC4wNDUpLHRyYW5zcGFyZW50IDc0JSk7Cn0KI2NvbXBhbnkgLmNvbXBhbnktaW50cm8taGlnaGxpZ2h0OmhvdmVyewogIHRyYW5zZm9ybTp0cmFuc2xhdGVZKC0ycHgpOwogIGJvcmRlci1jb2xvcjpyZ2JhKDI0MCwyMDcsMTAzLC43Mik7CiAgYmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoMTEyZGVnLHJnYmEoMjE1LDE2OSw1NCwuMTkpLHJnYmEoMjE1LDE2OSw1NCwuMDU1KSA0MiUscmdiYSgxMCwxMDIsMTk0LC4wNjUpIDEwMCUpLCMwYjBmMTU7Cn0KQG1lZGlhKG1heC13aWR0aDo3NjBweCl7CiAgI2NvbXBhbnkgLmNvbXBhbnktaW50cm8tbGlzdHt3aWR0aDoxMDAlfQogICNjb21wYW55IC5jb21wYW55LWludHJvLWl0ZW17CiAgICBncmlkLXRlbXBsYXRlLWNvbHVtbnM6MTRweCBtaW5tYXgoMCwxZnIpOwogICAgY29sdW1uLWdhcDoxNHB4OwogICAgcGFkZGluZzoyMXB4IDE4cHg7CiAgfQogICNjb21wYW55IC5jb21wYW55LWludHJvLWl0ZW0gcHsKICAgIGZvbnQtc2l6ZTpjbGFtcCgxOHB4LDUuMjV2dywyM3B4KTsKICAgIGxpbmUtaGVpZ2h0OjEuNDI7CiAgfQogICNjb21wYW55IC5jb21wYW55LWludHJvLWhpZ2hsaWdodHsKICAgIG1hcmdpbi10b3A6MTRweDsKICAgIHBhZGRpbmc6MjdweCAyMHB4IDI5cHggMzRweDsKICB9CiAgI2NvbXBhbnkgLmNvbXBhbnktaW50cm8taGlnaGxpZ2h0OmFmdGVyewogICAgbGVmdDoxNXB4OwogICAgdG9wOjMxcHg7CiAgICB3aWR0aDo4cHg7CiAgICBoZWlnaHQ6OHB4OwogIH0KICAjY29tcGFueSAuY29tcGFueS1pbnRyby1oaWdobGlnaHQgcHsKICAgIGZvbnQtc2l6ZTpjbGFtcCgyMXB4LDZ2dywyOHB4KTsKICAgIGxpbmUtaGVpZ2h0OjEuMzQ7CiAgICB0ZXh0LXdyYXA6cHJldHR5OwogIH0KfQ==").decode("utf-8")
 
-          new_markup = '''(0,f.jsxs)("div",{className:"company-intro-list",children:[(0,f.jsx)("article",{className:"company-intro-item",children:(0,f.jsx)("p",{children:z(l,{en:"Created to facilitate innovation and growth opportunities within Japan’s sports & entertainment industry.",ja:"日本のスポーツ・エンターテインメント業界におけるイノベーションと成長機会の創出を促進するために設立されました。",zh:"致力於促進日本運動與娛樂產業的創新與成長機會。"})})}),(0,f.jsx)("article",{className:"company-intro-item",children:(0,f.jsx)("p",{children:z(l,{en:"Focused on raising the level of sports business connectivity and capability.",ja:"スポーツビジネスにおけるつながりと能力の水準向上に注力しています。",zh:"專注於提升運動商業的連結程度與專業能力。"})})}),(0,f.jsx)("article",{className:"company-intro-highlight",children:(0,f.jsx)("p",{children:z(l,{en:"Powered by a network of sports and entertainment professionals with a strong commitment and long-term connection to Japan.",ja:"日本との強いコミットメントと長期的なつながりを持つ、スポーツおよびエンターテインメントのプロフェッショナルネットワークによって支えられています。",zh:"由一群對日本具有高度投入並與日本保持長期連結的運動與娛樂專業人士所組成的網絡提供支持。"})})})]})'''
-          text = text[:start] + new_markup + text[end:]
+          if old not in text:
+              raise SystemExit("Expected Company Introduction grid not found")
+          text = text.replace(old, new, 1)
 
-          css_note = '/* Company Introduction vertical editorial layout */'
-          if css_note not in text:
-              css = r'''
+          note = "/* Company Introduction vertical editorial layout */"
+          if note not in text:
+              if "</style>" not in text:
+                  raise SystemExit("Style closing tag not found")
+              text = text.replace("</style>", css + "\n</style>", 1)
 
-/* Company Introduction vertical editorial layout */
-#company .company-intro-list{
-  position:relative;
-  z-index:2;
-  width:min(100%,1060px);
-  margin:0 auto;
-  display:grid;
-  grid-template-columns:1fr;
-}
-#company .company-intro-item{
-  position:relative;
-  display:grid;
-  grid-template-columns:18px minmax(0,1fr);
-  column-gap:22px;
-  align-items:start;
-  padding:27px 30px;
-  border-top:1px solid rgba(255,255,255,.12);
-  background:linear-gradient(90deg,rgba(255,255,255,.018),transparent 74%);
-}
-#company .company-intro-item:nth-child(2){
-  border-bottom:1px solid rgba(255,255,255,.12);
-}
-#company .company-intro-item:before{
-  content:"";
-  width:8px;
-  height:8px;
-  margin-top:.56em;
-  border:2px solid var(--gold);
-  border-radius:50%;
-  box-shadow:0 0 0 5px rgba(215,169,54,.07),0 0 18px rgba(215,169,54,.16);
-}
-#company .company-intro-item p{
-  margin:0;
-  max-width:950px;
-  color:#f5f3ed;
-  font-size:clamp(21px,2.35vw,31px);
-  font-weight:700;
-  line-height:1.36;
-  letter-spacing:-.028em;
-}
-#company .company-intro-highlight{
-  position:relative;
-  overflow:hidden;
-  margin-top:20px;
-  padding:36px 40px 38px 48px;
-  border:1px solid rgba(215,169,54,.5);
-  border-left:4px solid var(--gold);
-  background:
-    linear-gradient(112deg,rgba(215,169,54,.16),rgba(215,169,54,.045) 42%,rgba(10,102,194,.055) 100%),
-    #0b0f15;
-  box-shadow:0 18px 48px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,241,178,.05);
-}
-#company .company-intro-highlight:before{
-  content:"";
-  position:absolute;
-  right:-65px;
-  top:-72px;
-  width:190px;
-  height:190px;
-  border:1px solid rgba(215,169,54,.19);
-  border-radius:50%;
-  box-shadow:0 0 0 24px rgba(215,169,54,.025),0 0 0 52px rgba(10,102,194,.022);
-  pointer-events:none;
-}
-#company .company-intro-highlight:after{
-  content:"";
-  position:absolute;
-  left:21px;
-  top:39px;
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  background:var(--gold);
-  box-shadow:0 0 18px rgba(215,169,54,.42);
-}
-#company .company-intro-highlight p{
-  position:relative;
-  z-index:1;
-  margin:0;
-  max-width:940px;
-  color:#fff;
-  font-size:clamp(25px,2.85vw,38px);
-  font-weight:800;
-  line-height:1.28;
-  letter-spacing:-.038em;
-  text-wrap:balance;
-}
-#company .company-intro-item,
-#company .company-intro-highlight{
-  transition:background .28s ease,border-color .28s ease,transform .28s ease;
-}
-#company .company-intro-item:hover{
-  background:linear-gradient(90deg,rgba(215,169,54,.045),transparent 74%);
-}
-#company .company-intro-highlight:hover{
-  transform:translateY(-2px);
-  border-color:rgba(240,207,103,.72);
-  background:
-    linear-gradient(112deg,rgba(215,169,54,.19),rgba(215,169,54,.055) 42%,rgba(10,102,194,.065) 100%),
-    #0b0f15;
-}
-@media(max-width:760px){
-  #company .company-intro-list{width:100%}
-  #company .company-intro-item{
-    grid-template-columns:14px minmax(0,1fr);
-    column-gap:14px;
-    padding:21px 18px;
-  }
-  #company .company-intro-item p{
-    font-size:clamp(18px,5.25vw,23px);
-    line-height:1.42;
-  }
-  #company .company-intro-highlight{
-    margin-top:14px;
-    padding:27px 20px 29px 34px;
-  }
-  #company .company-intro-highlight:after{
-    left:15px;
-    top:31px;
-    width:8px;
-    height:8px;
-  }
-  #company .company-intro-highlight p{
-    font-size:clamp(21px,6vw,28px);
-    line-height:1.34;
-    text-wrap:pretty;
-  }
-}
-'''
-              if '</style>' not in text:
-                  raise SystemExit('Style closing tag not found')
-              text = text.replace('</style>', css + '\n</style>', 1)
-
-          path.write_text(text, encoding='utf-8')
+          path.write_text(text, encoding="utf-8")
           PY
 
       - name: Commit website update and remove temporary workflow

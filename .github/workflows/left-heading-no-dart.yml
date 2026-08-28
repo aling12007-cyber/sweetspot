@@ -29,9 +29,7 @@ jobs:
           css=r'''
 /* Final left-aligned headings without dart icons */
 .section-title .section-kicker-icon,
-.section-title .section-kicker-icon[data-section]{
-  display:none!important;
-}
+.section-title .section-kicker-icon[data-section]{display:none!important}
 #company .section-title,
 #points .section-title,
 .founder-copy .section-title,

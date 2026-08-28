@@ -1,0 +1,86 @@
+name: One-time Company Introduction cleanup
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/company-intro-cleanup.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup-company-intro:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Simplify Company Introduction styling
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          # Remove the previous Company Introduction redesign block completely.
+          marker = '/* Company Introduction vertical editorial layout */'
+          if marker not in text:
+              raise SystemExit('Current Company Introduction style block not found')
+          start = text.index(marker)
+          end = text.index('</style>', start)
+          text = text[:start] + text[end:]
+
+          # Remove legacy Company Introduction grid selectors that are no longer used.
+          text = text.replace('#company .section-title,#company .company-intro-grid{position:relative;z-index:2}', '#company .section-title{position:relative;z-index:2}')
+          text = text.replace('@media(max-width:760px){#company .company-intro-grid .feature-card{min-height:180px!important}}', '')
+          text = text.replace('#company .company-intro-grid .feature-card,\n', '')
+          text = text.replace('#company .company-intro-grid,\n', '')
+
+          # Remove remaining simple legacy rules whose selector is only for company-intro-grid.
+          text = re.sub(r'(?m)^#company \.company-intro-grid[^\{]*\{[^\{\}]*\}\n?', '', text)
+
+          clean_css = r'''
+/* Company Introduction — clean editorial hierarchy */
+#company .section-title{margin-bottom:30px}
+#company .section-title p{font-size:clamp(30px,3.6vw,44px);line-height:1.02;letter-spacing:-.04em}
+#company .company-intro-list{position:relative;z-index:2;width:min(100%,980px);margin:0 auto;display:grid;grid-template-columns:1fr}
+#company .company-intro-item{display:grid;grid-template-columns:8px minmax(0,1fr);column-gap:18px;align-items:start;padding:20px 22px;border-top:1px solid rgba(255,255,255,.11)}
+#company .company-intro-item:nth-child(2){border-bottom:1px solid rgba(255,255,255,.11)}
+#company .company-intro-item:before{content:"";width:6px;height:6px;margin-top:.72em;border-radius:50%;background:var(--gold)}
+#company .company-intro-item p{margin:0;max-width:900px;color:#e8ebef;font-size:clamp(18px,1.55vw,22px);font-weight:600;line-height:1.55;letter-spacing:-.012em}
+#company .company-intro-highlight{margin-top:16px;padding:24px 26px;border:1px solid rgba(215,169,54,.32);border-left:3px solid var(--gold);background:rgba(215,169,54,.055)}
+#company .company-intro-highlight p{margin:0;max-width:900px;color:#fff;font-size:clamp(20px,1.85vw,26px);font-weight:700;line-height:1.45;letter-spacing:-.02em}
+@media(max-width:760px){
+  #company .section-title{margin-bottom:24px}
+  #company .section-title p{font-size:clamp(25px,7.2vw,31px);line-height:1.06}
+  #company .company-intro-list{width:100%}
+  #company .company-intro-item{grid-template-columns:6px minmax(0,1fr);column-gap:13px;padding:17px 12px}
+  #company .company-intro-item:before{width:5px;height:5px;margin-top:.76em}
+  #company .company-intro-item p{font-size:17px;line-height:1.55}
+  #company .company-intro-highlight{margin-top:12px;padding:20px 18px}
+  #company .company-intro-highlight p{font-size:19px;line-height:1.5}
+}
+'''
+          text = text.replace('</style>', clean_css + '\n</style>', 1)
+
+          # Safety checks: current markup remains and obsolete grid styling is gone.
+          if 'company-intro-list' not in text or 'company-intro-highlight' not in text:
+              raise SystemExit('Company Introduction markup missing after cleanup')
+          if 'company-intro-grid' in text:
+              raise SystemExit('Legacy company-intro-grid styling still remains')
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit website update and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/company-intro-cleanup.yml
+          git add index.html
+          git commit -m "Simplify Company Introduction styling"
+          git push

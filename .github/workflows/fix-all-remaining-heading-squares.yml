@@ -1,0 +1,22 @@
+name: Fix remaining heading squares
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/fix-all-remaining-heading-squares.yml']
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch and verify headings
+        run: python .github/scripts/fix_all_remaining_heading_squares.py
+      - name: Commit verified website update
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git rm --ignore-unmatch .github/workflows/fix-all-remaining-heading-squares.yml .github/scripts/fix_all_remaining_heading_squares.py
+          git commit -m 'Remove remaining heading squares and align titles'
+          git push

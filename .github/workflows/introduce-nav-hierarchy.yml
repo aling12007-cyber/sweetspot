@@ -24,57 +24,12 @@ jobs:
           marker='/* Introduce navigation hierarchy */'
           if marker in t:
               s=t.index(marker); e=t.index('</style>',s); t=t[:s]+t[e:]
-          css=r'''
-/* Introduce navigation hierarchy */
-.intro-nav-main{color:var(--gold-pale)!important;font-weight:900!important}
-.intro-nav-subitem{position:relative!important;color:#9fa8b6!important;font-weight:700!important}
-.intro-nav-subitem:before{content:"";position:absolute;left:0;top:50%;width:11px;height:1px;background:rgba(215,169,54,.7);transform:translateY(-50%)}
-.site-header nav .intro-nav-subitem{padding-left:15px!important;font-size:clamp(7px,.62vw,9px)!important;letter-spacing:.08em!important}
-@media(max-width:760px){
-  .intro-menu-subrow{margin-left:34px!important;width:calc(100% - 34px)!important}
-  .intro-menu-subrow>a.intro-nav-subitem{padding-left:28px!important;font-size:.72em!important;letter-spacing:.14em!important;color:#9aa4b1!important}
-  .intro-menu-subrow>a.intro-nav-subitem:before{left:4px;width:14px;background:var(--gold)}
-  .intro-menu-parent>a.intro-nav-main{color:#f4d66d!important}
-}
-'''
+          css='''\n/* Introduce navigation hierarchy */\n.intro-nav-main{color:var(--gold-pale)!important;font-weight:900!important}\n.intro-nav-subitem{position:relative!important;color:#9fa8b6!important;font-weight:700!important}\n.intro-nav-subitem:before{content:"";position:absolute;left:0;top:50%;width:11px;height:1px;background:rgba(215,169,54,.7);transform:translateY(-50%)}\n.site-header nav .intro-nav-subitem{padding-left:15px!important;font-size:clamp(7px,.62vw,9px)!important;letter-spacing:.08em!important}\n@media(max-width:760px){\n  .intro-menu-subrow{margin-left:34px!important;width:calc(100% - 34px)!important}\n  .intro-menu-subrow>a.intro-nav-subitem{padding-left:28px!important;font-size:.72em!important;letter-spacing:.14em!important;color:#9aa4b1!important}\n  .intro-menu-subrow>a.intro-nav-subitem:before{left:4px;width:14px;background:var(--gold)}\n  .intro-menu-parent>a.intro-nav-main{color:#f4d66d!important}\n}\n'''
           t=t.replace('</style>',css+'\n</style>',1)
           js_marker='<!-- Introduce navigation hierarchy -->'
           if js_marker in t:
               s=t.index(js_marker); e=t.index('<!-- /Introduce navigation hierarchy -->',s)+len('<!-- /Introduce navigation hierarchy -->'); t=t[:s]+t[e:]
-          js=r'''
-<!-- Introduce navigation hierarchy -->
-<script>
-(function(){
-  function localIntro(){
-    var active=document.querySelector('.lang-switch button.active');
-    var txt=(active&&active.textContent||'EN').trim();
-    if(txt==='日') return '紹介';
-    if(txt==='中') return '介紹';
-    return 'Introduce';
-  }
-  function apply(){
-    document.querySelectorAll('a[href="#company"]').forEach(function(a){
-      var v=(a.textContent||'').trim();
-      if(['Company','会社','公司','Introduce','紹介','介紹'].includes(v)){
-        a.textContent=localIntro();
-        a.classList.add('intro-nav-main');
-        if(!a.closest('.site-header nav')&&a.parentElement)a.parentElement.classList.add('intro-menu-parent');
-      }
-    });
-    document.querySelectorAll('a[href="#points"],a[href="#founder"]').forEach(function(a){
-      a.classList.add('intro-nav-subitem');
-      if(!a.closest('.site-header nav')&&a.parentElement)a.parentElement.classList.add('intro-menu-subrow');
-    });
-  }
-  var queued=false;
-  function queue(){if(queued)return;queued=true;requestAnimationFrame(function(){queued=false;apply();});}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',queue);else queue();
-  new MutationObserver(queue).observe(document.body,{childList:true,subtree:true,characterData:true});
-  document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.lang-switch'))setTimeout(queue,0);});
-})();
-</script>
-<!-- /Introduce navigation hierarchy -->
-'''
+          js='''\n<!-- Introduce navigation hierarchy -->\n<script>\n(function(){\n  function localIntro(){\n    var active=document.querySelector('.lang-switch button.active');\n    var txt=(active&&active.textContent||'EN').trim();\n    if(txt==='日') return '紹介';\n    if(txt==='中') return '介紹';\n    return 'Introduce';\n  }\n  function apply(){\n    document.querySelectorAll('a[href="#company"]').forEach(function(a){\n      var v=(a.textContent||'').trim();\n      if(['Company','会社','公司','Introduce','紹介','介紹'].includes(v)){\n        a.textContent=localIntro();\n        a.classList.add('intro-nav-main');\n        if(!a.closest('.site-header nav')&&a.parentElement)a.parentElement.classList.add('intro-menu-parent');\n      }\n    });\n    document.querySelectorAll('a[href="#points"],a[href="#founder"]').forEach(function(a){\n      a.classList.add('intro-nav-subitem');\n      if(!a.closest('.site-header nav')&&a.parentElement)a.parentElement.classList.add('intro-menu-subrow');\n    });\n  }\n  var queued=false;\n  function queue(){if(queued)return;queued=true;requestAnimationFrame(function(){queued=false;apply();});}\n  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',queue);else queue();\n  new MutationObserver(queue).observe(document.body,{childList:true,subtree:true,characterData:true});\n  document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.lang-switch'))setTimeout(queue,0);});\n})();\n</script>\n<!-- /Introduce navigation hierarchy -->\n'''
           t=t.replace('</body>',js+'\n</body>',1)
           p.write_text(t,encoding='utf-8')
           PY

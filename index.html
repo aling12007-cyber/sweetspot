@@ -974,6 +974,62 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   }
 }
 
+
+/* Final left-aligned headings without dart icons */
+.section-title .section-kicker-icon,
+.section-title .section-kicker-icon[data-section]{display:none!important}
+#company .section-title,
+#points .section-title,
+.founder-copy .section-title,
+#experience .section-title,
+#capabilities .section-title,
+#network .section-title{
+  grid-template-columns:1fr!important;
+  justify-items:start!important;
+  align-items:start!important;
+  text-align:left!important;
+  gap:8px!important;
+}
+#company .section-title>div,
+#points .section-title>div,
+.founder-copy .section-title>div,
+#experience .section-title>div,
+#capabilities .section-title>div,
+#network .section-title>div{
+  width:100%!important;
+  justify-content:flex-start!important;
+  text-align:left!important;
+  gap:0!important;
+}
+#company .section-title p,
+#points .section-title p,
+.founder-copy .section-title p,
+#experience .section-title p,
+#capabilities .section-title p,
+#network .section-title p,
+#company .section-title h2,
+#points .section-title h2,
+.founder-copy .section-title h2,
+#experience .section-title h2,
+#capabilities .section-title h2,
+#network .section-title h2{
+  margin-left:0!important;
+  margin-right:0!important;
+  text-align:left!important;
+  justify-self:start!important;
+}
+@media(max-width:760px){
+  #company .section-title,
+  #points .section-title,
+  .founder-copy .section-title,
+  #experience .section-title,
+  #capabilities .section-title,
+  #network .section-title{
+    justify-items:start!important;
+    text-align:left!important;
+  }
+}
+
 </style>
 </head>
 <body>

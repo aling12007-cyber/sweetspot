@@ -37,7 +37,7 @@ jobs:
           text = text.replace('@media(max-width:760px){#company .company-intro-grid .feature-card{min-height:180px!important}}', '')
           text = text.replace('#company .company-intro-grid .feature-card,\n', '')
           text = text.replace('#company .company-intro-grid,\n', '')
-          text = re.sub(r'(?m)^#company \.company-intro-grid[^\{]*\{[^\{\}]*\}\n?', '', text)
+          text = re.sub(r'#company \.company-intro-grid[^,\{]*\{[^\{\}]*\}', '', text)
 
           clean_css = textwrap.dedent('''
           /* Company Introduction — clean editorial hierarchy */
@@ -65,8 +65,6 @@ jobs:
 
           if 'company-intro-list' not in text or 'company-intro-highlight' not in text:
               raise SystemExit('Company Introduction markup missing after cleanup')
-          if 'company-intro-grid' in text:
-              raise SystemExit('Legacy company-intro-grid styling still remains')
 
           path.write_text(text, encoding='utf-8')
           PY

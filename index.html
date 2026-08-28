@@ -788,6 +788,70 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
   #network .network-grid article:nth-child(4) h3,#network .network-grid article:nth-child(4) p{max-width:50%!important}
 }
 
+/* Broad Influence number tags */
+#network .network-grid .network-icon{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  width:auto!important;
+  min-width:76px!important;
+  height:34px!important;
+  padding:0 14px 0 12px!important;
+  gap:8px!important;
+  margin:0!important;
+  border:1px solid rgba(215,169,54,.62)!important;
+  border-radius:4px 999px 999px 4px!important;
+  color:#f1d36d!important;
+  background:linear-gradient(90deg,rgba(215,169,54,.15),rgba(215,169,54,.045))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 5px 18px rgba(0,0,0,.14)!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  letter-spacing:.12em!important;
+}
+#network .network-grid .network-icon:before{
+  content:"";
+  width:5px;
+  height:5px;
+  flex:0 0 5px;
+  border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 0 3px rgba(215,169,54,.09),0 0 12px rgba(215,169,54,.22);
+}
+#network .network-grid h3{margin-top:18px!important}
+#network .network-grid article:nth-child(1) .network-icon{
+  border-color:rgba(236,190,70,.72)!important;
+  background:linear-gradient(90deg,rgba(215,169,54,.19),rgba(215,169,54,.055))!important;
+}
+#network .network-grid article:nth-child(2) .network-icon{
+  border-color:rgba(215,169,54,.55)!important;
+  background:linear-gradient(90deg,rgba(215,169,54,.12),rgba(255,255,255,.025))!important;
+}
+#network .network-grid article:nth-child(3) .network-icon{
+  border-color:rgba(238,194,78,.68)!important;
+  background:linear-gradient(90deg,rgba(215,169,54,.18),rgba(215,169,54,.04))!important;
+}
+#network .network-grid article:nth-child(4) .network-icon{
+  border-color:rgba(215,169,54,.58)!important;
+  background:linear-gradient(90deg,rgba(215,169,54,.14),rgba(255,255,255,.02))!important;
+}
+@media(max-width:760px){
+  #network .network-grid .network-icon{
+    width:auto!important;
+    min-width:72px!important;
+    height:32px!important;
+    padding:0 13px 0 11px!important;
+    font-size:10.5px!important;
+  }
+  #network .network-grid .network-icon:before{
+    width:4px;
+    height:4px;
+    flex-basis:4px;
+    box-shadow:0 0 0 3px rgba(215,169,54,.075);
+  }
+  #network .network-grid h3{margin-top:20px!important}
+}
+
 </style>
 </head>
 <body>

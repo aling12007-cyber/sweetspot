@@ -1,0 +1,53 @@
+name: One-time company section format
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/company-section-format.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-company:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Match Company Introduction to Points of Difference format
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          company_pattern = re.compile(
+              r'\(0,f\.jsxs\)\("section",\{id:"company".*?(?=,\(0,f\.jsxs\)\("section",\{id:"points")',
+              re.S,
+          )
+
+          company_block = '''(0,f.jsxs)("section",{id:"company",className:"content-section section-shell",children:[(0,f.jsx)(vu,{number:"01",kicker:{en:"Company Introduction",ja:"会社紹介",zh:"公司介紹"},title:{en:"",ja:"",zh:""},lang:l}),(0,f.jsxs)("div",{className:"difference-grid company-intro-grid",children:[(0,f.jsxs)("article",{className:"feature-card",children:[(0,f.jsxs)("div",{className:"card-top",children:[(0,f.jsx)("span",{children:"01"}),(0,f.jsx)("i",{children:(0,f.jsx)(ge,{type:"target"})})]}),(0,f.jsx)("h3",{children:z(l,{en:"Created to facilitate innovation and growth opportunities within Japan’s sports & entertainment industry.",ja:"日本のスポーツ・エンターテインメント業界におけるイノベーションと成長機会の創出を促進するために設立されました。",zh:"致力於促進日本運動與娛樂產業的創新與成長機會。"})}),(0,f.jsx)("div",{className:"card-line"})]}),(0,f.jsxs)("article",{className:"feature-card",children:[(0,f.jsxs)("div",{className:"card-top",children:[(0,f.jsx)("span",{children:"02"}),(0,f.jsx)("i",{children:(0,f.jsx)(ge,{type:"briefcase"})})]}),(0,f.jsx)("h3",{children:z(l,{en:"Focused on raising the level of sports business connectivity and capability.",ja:"スポーツビジネスにおけるつながりと能力の水準向上に注力しています。",zh:"專注於提升運動商業的連結程度與專業能力。"})}),(0,f.jsx)("div",{className:"card-line"})]}),(0,f.jsxs)("article",{className:"feature-card",children:[(0,f.jsxs)("div",{className:"card-top",children:[(0,f.jsx)("span",{children:"03"}),(0,f.jsx)("i",{children:(0,f.jsx)(ge,{type:"handshake"})})]}),(0,f.jsx)("h3",{children:z(l,{en:"Powered by a network of sports and entertainment professionals with a strong commitment and long-term connection to Japan.",ja:"日本との強いコミットメントと長期的なつながりを持つ、スポーツおよびエンターテインメントのプロフェッショナルネットワークによって支えられています。",zh:"由一群對日本具有高度投入並與日本保持長期連結的運動與娛樂專業人士所組成的網絡提供支持。"})}),(0,f.jsx)("div",{className:"card-line"})]})]})]})'''
+
+          text, count = company_pattern.subn(company_block, text, count=1)
+          if count != 1:
+              raise SystemExit(f'Company section replacement count was {count}, expected 1')
+
+          css_marker = '</style>'
+          css = '''\n/* Company Introduction follows the Points of Difference visual system. */\n#company{position:relative;z-index:3;overflow:hidden;isolation:isolate;background:var(--ink)}\n#company .section-title,#company .company-intro-grid{position:relative;z-index:2}\n#company .company-intro-grid .feature-card{align-content:center}\n#company .company-intro-grid .feature-card h3{max-width:none}\n@media(max-width:760px){#company .company-intro-grid .feature-card{min-height:180px!important}}\n'''
+          if '/* Company Introduction follows the Points of Difference visual system. */' not in text:
+              if css_marker not in text:
+                  raise SystemExit('style closing tag not found')
+              text = text.replace(css_marker, css + css_marker, 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Format Company Introduction like Points of Difference"
+          git push

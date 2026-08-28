@@ -1802,300 +1802,152 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
 
 
 
-/* Major headings Insights corrected START */
-#company .section-title,
-#network .section-title,
-#company .section-title.hierarchy-applied,
-#network .section-title.hierarchy-applied{
-  display:block!important;
-  width:100%!important;
-  margin-left:0!important;
-  margin-right:0!important;
-  text-align:left!important;
-  justify-items:start!important;
-  align-items:start!important;
-}
-#company .section-title.hierarchy-applied .hierarchy-kicker-row,
-#network .section-title.hierarchy-applied .hierarchy-kicker-row{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:flex-start!important;
-  width:100%!important;
-  gap:14px!important;
-  margin:0 0 22px!important;
-  padding:0!important;
-  text-align:left!important;
-}
-#company .section-title.hierarchy-applied .hierarchy-kicker-row::before,
-#network .section-title.hierarchy-applied .hierarchy-kicker-row::before{
-  content:""!important;
-  display:block!important;
-  flex:0 0 52px!important;
-  width:52px!important;
-  height:2px!important;
-  border:0!important;
-  border-radius:0!important;
-  background:linear-gradient(90deg,#b77a12,#e5c668)!important;
-  box-shadow:none!important;
-  transform:none!important;
-}
-#company .section-title.hierarchy-applied .hierarchy-kicker,
-#network .section-title.hierarchy-applied .hierarchy-kicker{
-  display:block!important;
-  margin:0!important;
-  padding:0!important;
-  color:#c8b56e!important;
-  font-family:Arial,Helvetica,sans-serif!important;
-  font-size:14px!important;
-  font-weight:900!important;
-  line-height:1.3!important;
-  letter-spacing:.17em!important;
-  text-align:left!important;
-  text-transform:none!important;
-}
-#company .section-title.hierarchy-applied .hierarchy-heading,
-#network .section-title.hierarchy-applied .hierarchy-heading{
-  display:block!important;
-  width:100%!important;
-  max-width:1100px!important;
-  margin:0!important;
-  padding:0!important;
-  color:#f7f5ef!important;
-  font-family:Arial,Helvetica,sans-serif!important;
-  font-size:clamp(40px,4.7vw,62px)!important;
-  font-weight:800!important;
-  line-height:.98!important;
-  letter-spacing:-.045em!important;
-  text-align:left!important;
-  white-space:normal!important;
-}
-#company .section-title .section-kicker-icon,
-#network .section-title .section-kicker-icon,
-#company .section-title .section-sport-icon,
-#network .section-title .section-sport-icon,
-#company .section-title.hierarchy-applied .hierarchy-kicker::before,
-#network .section-title.hierarchy-applied .hierarchy-kicker::before,
-#company .section-title p::before,
-#network .section-title p::before{
-  display:none!important;
-  content:none!important;
-  width:0!important;
-  height:0!important;
-  border:0!important;
-  background:none!important;
-  box-shadow:none!important;
-}
-#company .section-title:not(.hierarchy-applied)>div:first-child,
-#network .section-title:not(.hierarchy-applied)>div:first-child{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:flex-start!important;
-  width:100%!important;
-  gap:14px!important;
-  margin:0 0 22px!important;
-  padding:0!important;
-  text-align:left!important;
-}
-#company .section-title:not(.hierarchy-applied)>div:first-child::before,
-#network .section-title:not(.hierarchy-applied)>div:first-child::before{
-  content:""!important;
-  display:block!important;
-  flex:0 0 52px!important;
-  width:52px!important;
-  height:2px!important;
-  border:0!important;
-  border-radius:0!important;
-  background:linear-gradient(90deg,#b77a12,#e5c668)!important;
-  box-shadow:none!important;
-  transform:none!important;
-}
-#company .section-title:not(.hierarchy-applied) p,
-#network .section-title:not(.hierarchy-applied) p{
-  margin:0!important;
-  padding:0!important;
-  color:#c8b56e!important;
-  font-size:14px!important;
-  font-weight:900!important;
-  line-height:1.3!important;
-  letter-spacing:.17em!important;
-  text-align:left!important;
-}
-#company .section-title:not(.hierarchy-applied) h2,
-#network .section-title:not(.hierarchy-applied) h2{
-  display:block!important;
-  width:100%!important;
-  max-width:1100px!important;
-  margin:0!important;
-  padding:0!important;
-  color:#f7f5ef!important;
-  font-size:clamp(40px,4.7vw,62px)!important;
-  font-weight:800!important;
-  line-height:.98!important;
-  letter-spacing:-.045em!important;
-  text-align:left!important;
-  white-space:normal!important;
-}
-@media(max-width:760px){
-  #company .section-title.hierarchy-applied .hierarchy-kicker-row,
-  #network .section-title.hierarchy-applied .hierarchy-kicker-row,
-  #company .section-title:not(.hierarchy-applied)>div:first-child,
-  #network .section-title:not(.hierarchy-applied)>div:first-child{
-    gap:11px!important;
-    margin-bottom:18px!important;
-  }
-  #company .section-title.hierarchy-applied .hierarchy-kicker-row::before,
-  #network .section-title.hierarchy-applied .hierarchy-kicker-row::before,
-  #company .section-title:not(.hierarchy-applied)>div:first-child::before,
-  #network .section-title:not(.hierarchy-applied)>div:first-child::before{
-    flex-basis:36px!important;
-    width:36px!important;
-    height:1.5px!important;
-  }
-  #company .section-title.hierarchy-applied .hierarchy-kicker,
-  #network .section-title.hierarchy-applied .hierarchy-kicker,
-  #company .section-title:not(.hierarchy-applied) p,
-  #network .section-title:not(.hierarchy-applied) p{
-    font-size:11px!important;
-    line-height:1.35!important;
-    letter-spacing:.15em!important;
-  }
-  #company .section-title.hierarchy-applied .hierarchy-heading,
-  #network .section-title.hierarchy-applied .hierarchy-heading,
-  #company .section-title:not(.hierarchy-applied) h2,
-  #network .section-title:not(.hierarchy-applied) h2{
-    font-size:clamp(36px,10.5vw,48px)!important;
-    line-height:1!important;
-    letter-spacing:-.045em!important;
-  }
-}
-/* Major headings Insights corrected END */
 
 
-/* Reliable major Insights headings START */
+
+
+
+
+/* Top-level headings — exact Insights pattern START */
 #company > .major-insights-title,
-#network > .major-insights-title{
-  position:relative;
-  z-index:6;
-  display:block;
-  width:100%;
-  box-sizing:border-box;
-  margin:0 0 36px 0;
-  padding:0;
-  text-align:left;
+#network > .section-shell > .major-insights-title{
+  position:relative!important;
+  z-index:6!important;
+  display:block!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  margin:0 0 36px 0!important;
+  padding:0!important;
+  text-align:left!important;
 }
 #company > .major-insights-title *,
-#network > .major-insights-title *{
-  box-sizing:border-box;
-  text-align:left;
+#network > .section-shell > .major-insights-title *{
+  box-sizing:border-box!important;
+  text-align:left!important;
 }
 #company > .major-insights-title .major-kicker-row,
-#network > .major-insights-title .major-kicker-row{
-  display:flex;
-  align-items:center;
-  justify-content:flex-start;
-  gap:28px;
-  width:100%;
-  margin:0 0 38px 0;
-  padding:0;
+#network > .section-shell > .major-insights-title .major-kicker-row{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:28px!important;
+  width:100%!important;
+  margin:0 0 38px 0!important;
+  padding:0!important;
 }
 #company > .major-insights-title .major-kicker-line,
-#network > .major-insights-title .major-kicker-line{
-  display:block;
-  flex:0 0 84px;
-  width:84px;
-  height:3px;
-  margin:0;
-  padding:0;
-  border:0;
-  border-radius:0;
-  background:#c99b35;
-  box-shadow:none;
+#network > .section-shell > .major-insights-title .major-kicker-line{
+  display:block!important;
+  flex:0 0 84px!important;
+  width:84px!important;
+  height:3px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#c99b35!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  transform:none!important;
 }
 #company > .major-insights-title .major-kicker,
-#network > .major-insights-title .major-kicker{
-  display:block;
-  margin:0;
-  padding:0;
-  color:#c8b56e;
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:clamp(17px,2vw,30px);
-  font-weight:800;
-  line-height:1.15;
-  letter-spacing:.18em;
-  text-transform:none;
-  white-space:normal;
+#network > .section-shell > .major-insights-title .major-kicker{
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  color:#c8b56e!important;
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-size:clamp(17px,2vw,30px)!important;
+  font-weight:800!important;
+  line-height:1.15!important;
+  letter-spacing:.18em!important;
+  text-transform:none!important;
+  white-space:normal!important;
+}
+#company > .major-insights-title .major-kicker::before,
+#company > .major-insights-title .major-kicker::after,
+#network > .section-shell > .major-insights-title .major-kicker::before,
+#network > .section-shell > .major-insights-title .major-kicker::after{
+  display:none!important;
+  content:none!important;
 }
 #company > .major-insights-title h2,
-#network > .major-insights-title h2{
-  display:block;
-  width:100%;
-  max-width:1120px;
-  margin:0;
-  padding:0;
-  color:#f7f5ef;
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:clamp(54px,7vw,96px);
-  font-weight:800;
-  line-height:.98;
-  letter-spacing:-.055em;
-  text-align:left;
-  white-space:normal;
-  -webkit-text-stroke:0;
-  text-shadow:none;
+#network > .section-shell > .major-insights-title h2{
+  display:block!important;
+  width:100%!important;
+  max-width:1120px!important;
+  margin:0!important;
+  padding:0!important;
+  color:#f7f5ef!important;
+  background:none!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-size:clamp(54px,7vw,96px)!important;
+  font-weight:800!important;
+  line-height:.98!important;
+  letter-spacing:-.055em!important;
+  text-align:left!important;
+  white-space:normal!important;
+  -webkit-text-stroke:0!important;
+  text-shadow:none!important;
 }
-#network > .major-insights-title .major-support{
-  display:block;
-  width:100%;
-  max-width:920px;
-  margin:28px 0 0;
-  padding:0;
-  color:#9da7b4;
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:clamp(15px,1.45vw,20px);
-  font-weight:500;
-  line-height:1.45;
-  letter-spacing:0;
+#network > .section-shell > .major-insights-title .major-support{
+  display:block!important;
+  width:100%!important;
+  max-width:920px!important;
+  margin:28px 0 0!important;
+  padding:0!important;
+  color:#9da7b4!important;
+  background:none!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-size:clamp(15px,1.45vw,20px)!important;
+  font-weight:500!important;
+  line-height:1.45!important;
+  letter-spacing:0!important;
+  text-align:left!important;
 }
 #company > .section-title.major-source-title-hidden,
-#network > .section-title.major-source-title-hidden{
+#network > .section-shell > .section-title.major-source-title-hidden{
   display:none!important;
 }
 @media(max-width:760px){
   #company > .major-insights-title,
-  #network > .major-insights-title{
-    margin-bottom:28px;
+  #network > .section-shell > .major-insights-title{
+    margin-bottom:28px!important;
   }
   #company > .major-insights-title .major-kicker-row,
-  #network > .major-insights-title .major-kicker-row{
-    gap:16px;
-    margin-bottom:24px;
+  #network > .section-shell > .major-insights-title .major-kicker-row{
+    gap:16px!important;
+    margin-bottom:24px!important;
   }
   #company > .major-insights-title .major-kicker-line,
-  #network > .major-insights-title .major-kicker-line{
-    flex-basis:48px;
-    width:48px;
-    height:2px;
+  #network > .section-shell > .major-insights-title .major-kicker-line{
+    flex-basis:48px!important;
+    width:48px!important;
+    height:2px!important;
   }
   #company > .major-insights-title .major-kicker,
-  #network > .major-insights-title .major-kicker{
-    font-size:clamp(14px,4.4vw,18px);
-    letter-spacing:.16em;
+  #network > .section-shell > .major-insights-title .major-kicker{
+    font-size:clamp(14px,4.4vw,18px)!important;
+    letter-spacing:.16em!important;
   }
   #company > .major-insights-title h2,
-  #network > .major-insights-title h2{
-    max-width:100%;
-    font-size:clamp(42px,13vw,62px);
-    line-height:.98;
-    letter-spacing:-.052em;
+  #network > .section-shell > .major-insights-title h2{
+    max-width:100%!important;
+    font-size:clamp(42px,13vw,62px)!important;
+    line-height:.98!important;
+    letter-spacing:-.052em!important;
   }
-  #network > .major-insights-title .major-support{
-    margin-top:22px;
-    max-width:100%;
-    font-size:clamp(13px,4vw,16px);
-    line-height:1.45;
+  #network > .section-shell > .major-insights-title .major-support{
+    margin-top:22px!important;
+    max-width:100%!important;
+    font-size:clamp(13px,4vw,16px)!important;
+    line-height:1.45!important;
   }
 }
-/* Reliable major Insights headings END */
+/* Top-level headings — exact Insights pattern END */
 
 </style>
 </head>
@@ -2571,58 +2423,65 @@ react/cjs/react-jsx-runtime.production.js:
 <!-- Hierarchy heading roles END -->
 
 
-<!-- Reliable major Insights headings START -->
+
+
+
+<!-- Top-level headings — exact Insights pattern START -->
 <script>
 (function(){
-  var copy = {
-    company: {
-      kicker: {en:"Company", ja:"会社", zh:"公司"},
-      title:  {en:"Company Features", ja:"会社の特徴", zh:"公司特色"}
+  var copy={
+    company:{
+      kicker:{en:"Company",ja:"会社",zh:"公司"},
+      title:{en:"Company Features",ja:"会社の特徴",zh:"公司特色"}
     },
-    network: {
-      kicker: {en:"Network", ja:"ネットワーク", zh:"網絡"},
-      title:  {en:"Broad Influence and Access", ja:"幅広い影響力とアクセス", zh:"廣泛的影響力與資源管道"},
-      support:{en:"Services rendered to:", ja:"サービス提供先：", zh:"曾服務的對象包括："}
+    network:{
+      kicker:{en:"Network",ja:"ネットワーク",zh:"網絡"},
+      title:{en:"Broad Influence and Access",ja:"幅広い影響力とアクセス",zh:"廣泛的影響力與資源管道"},
+      support:{en:"Services rendered to:",ja:"サービス提供先：",zh:"曾服務的對象包括："}
     }
   };
 
-  function currentLang(){
-    var lang=(document.documentElement.lang||"en").toLowerCase();
-    if(lang.indexOf("ja")===0) return "ja";
-    if(lang.indexOf("zh")===0) return "zh";
+  function language(){
+    var active=document.querySelector(".lang-switch button.active");
+    var mark=(active&&active.textContent||"EN").trim();
+    if(mark==="日") return "ja";
+    if(mark==="中") return "zh";
+    var html=(document.documentElement.lang||"en").toLowerCase();
+    if(html.indexOf("ja")===0) return "ja";
+    if(html.indexOf("zh")===0) return "zh";
     return "en";
-  }
-
-  function setText(el, value){
-    if(el && el.textContent !== value) el.textContent = value;
   }
 
   function applyOne(id){
     var section=document.getElementById(id);
     if(!section) return;
-    var source=section.querySelector(":scope > .section-title") || section.querySelector(".section-title");
-    if(!source) return;
+    var source=section.querySelector(".section-title");
+    if(!source || !source.parentNode) return;
+    var parent=source.parentNode;
 
     source.classList.add("major-source-title-hidden");
 
-    var custom=section.querySelector(":scope > .major-insights-title[data-major-id='"+id+"']");
+    var custom=parent.querySelector('.major-insights-title[data-major-id="'+id+'"]');
     if(!custom){
       custom=document.createElement("div");
       custom.className="major-insights-title";
-      custom.setAttribute("data-major-id", id);
+      custom.setAttribute("data-major-id",id);
       custom.innerHTML=
-        '<div class="major-kicker-row"><span class="major-kicker-line" aria-hidden="true"></span><p class="major-kicker"></p></div>'+
+        '<div class="major-kicker-row">'+
+          '<span class="major-kicker-line" aria-hidden="true"></span>'+
+          '<p class="major-kicker"></p>'+
+        '</div>'+
         '<h2></h2>'+
-        (id==="network" ? '<p class="major-support"></p>' : '');
-      section.insertBefore(custom, source);
+        (id==="network"?'<p class="major-support"></p>':'');
+      parent.insertBefore(custom,source);
     }
 
-    var lang=currentLang();
-    setText(custom.querySelector(".major-kicker"), copy[id].kicker[lang] || copy[id].kicker.en);
-    setText(custom.querySelector("h2"), copy[id].title[lang] || copy[id].title.en);
-    if(copy[id].support){
-      setText(custom.querySelector(".major-support"), copy[id].support[lang] || copy[id].support.en);
-    }
+    var lang=language();
+    var data=copy[id];
+    custom.querySelector(".major-kicker").textContent=data.kicker[lang]||data.kicker.en;
+    custom.querySelector("h2").textContent=data.title[lang]||data.title.en;
+    var support=custom.querySelector(".major-support");
+    if(support&&data.support) support.textContent=data.support[lang]||data.support.en;
   }
 
   function apply(){
@@ -2641,18 +2500,17 @@ react/cjs/react-jsx-runtime.production.js:
   }
 
   if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded", queue, {once:true});
-  } else {
+    document.addEventListener("DOMContentLoaded",queue,{once:true});
+  }else{
     queue();
   }
-
-  new MutationObserver(queue).observe(document.body,{childList:true,subtree:true,characterData:true});
   document.addEventListener("click",function(e){
-    if(e.target.closest && e.target.closest(".lang-switch")) setTimeout(queue,0);
+    if(e.target.closest&&e.target.closest(".lang-switch")) setTimeout(queue,0);
   });
+  new MutationObserver(queue).observe(document.body,{childList:true,subtree:true,characterData:true});
 })();
 </script>
-<!-- Reliable major Insights headings END -->
+<!-- Top-level headings — exact Insights pattern END -->
 
 </body>
 </html>

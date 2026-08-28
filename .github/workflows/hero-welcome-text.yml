@@ -1,0 +1,47 @@
+name: Apply homepage welcome text update
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hero-welcome-text.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-copy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update hero welcome copy only
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          old_eyebrow = '(0,f.jsxs)("p",{className:"eyebrow",children:[(0,f.jsx)("span",{}),z(l,{en:"Welcome to Sweet Spot!",ja:"Sweet Spot\\u3078\\u3088\\u3046\\u3053\\u305d\\uff01",zh:"\\u6b61\\u8fce\\u4f86\\u5230 Sweet Spot\\uff01"})]}),'
+          if old_eyebrow not in s:
+              raise SystemExit('Hero eyebrow marker not found')
+          s = s.replace(old_eyebrow, '', 1)
+
+          old_h2 = '(0,f.jsx)("h2",{children:z(l,{en:"Powered by a network of sports and entertainment professionals with a strong commitment and long-term connection to Japan.",ja:"\\u65e5\\u672c\\u306b\\u6df1\\u3044\\u30b3\\u30df\\u30c3\\u30c8\\u30e1\\u30f3\\u30c8\\u3068\\u9577\\u671f\\u7684\\u306a\\u3064\\u306a\\u304c\\u308a\\u3092\\u6301\\u3064\\u3001\\u30b9\\u30dd\\u30fc\\u30c4\\u30fb\\u30a8\\u30f3\\u30bf\\u30fc\\u30c6\\u30a4\\u30f3\\u30e1\\u30f3\\u30c8\\u696d\\u754c\\u306e\\u30d7\\u30ed\\u30d5\\u30a7\\u30c3\\u30b7\\u30e7\\u30ca\\u30eb\\u30cd\\u30c3\\u30c8\\u30ef\\u30fc\\u30af\\u306b\\u652f\\u3048\\u3089\\u308c\\u3066\\u3044\\u307e\\u3059\\u3002",zh:"\\u7531\\u4e00\\u7fa4\\u5c0d\\u65e5\\u672c\\u5177\\u6709\\u6df1\\u539a\\u627f\\u8afe\\u8207\\u9577\\u671f\\u9023\\u7d50\\u7684\\u904b\\u52d5\\u53ca\\u5a1b\\u6a02\\u7522\\u696d\\u5c08\\u696d\\u4eba\\u58eb\\u7db2\\u7d61\\u6240\\u652f\\u6301\\u3002"})})'
+          new_h2 = '(0,f.jsx)("h2",{children:z(l,{en:"Welcome to",ja:"\\u3088\\u3046\\u3053\\u305d",zh:"\\u6b61\\u8fce\\u4f86\\u5230"})})'
+          if old_h2 not in s:
+              raise SystemExit('Hero h2 marker not found')
+          s = s.replace(old_h2, new_h2, 1)
+
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit text update and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f .github/workflows/hero-welcome-text.yml
+          git add index.html
+          git commit -m "Move welcome text below Sweet Spot title"
+          git push

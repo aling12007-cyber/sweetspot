@@ -1,0 +1,53 @@
+name: Match company heading to points format
+
+on:
+  push:
+    paths:
+      - '.github/workflows/company-heading-match.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Match company section heading format
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          old = 'kicker:{en:"Company",ja:"会社",zh:"公司"},title:{en:"Introduction",ja:"紹介",zh:"介紹"}'
+          new = 'kicker:{en:"Company Introduction",ja:"会社紹介",zh:"公司介紹"},title:{en:"",ja:"",zh:""}'
+          if old not in s:
+              raise SystemExit('Company heading pattern not found')
+          s = s.replace(old, new, 1)
+
+          # Ensure the company heading receives the same responsive heading rules as Points of Difference.
+          replacements = {
+              '#points .section-title,.founder-copy .section-title': '#company .section-title,#points .section-title,.founder-copy .section-title',
+              '#points .section-title>div:first-child,.founder-copy .section-title>div:first-child': '#company .section-title>div:first-child,#points .section-title>div:first-child,.founder-copy .section-title>div:first-child',
+              '#points .section-title p,.founder-copy .section-title p': '#company .section-title p,#points .section-title p,.founder-copy .section-title p',
+              '#points .section-heading-row,.founder-copy .section-heading-row': '#company .section-heading-row,#points .section-heading-row,.founder-copy .section-heading-row',
+              '#points .section-title h2,#experience .section-title h2': '#company .section-title h2,#points .section-title h2,#experience .section-title h2',
+              'html[lang="ja"] #points .section-title p,html[lang="ja"] .founder-copy .section-title p': 'html[lang="ja"] #company .section-title p,html[lang="ja"] #points .section-title p,html[lang="ja"] .founder-copy .section-title p',
+              'html[lang="zh"] #points .section-title p,html[lang="zh"] .founder-copy .section-title p': 'html[lang="zh"] #company .section-title p,html[lang="zh"] #points .section-title p,html[lang="zh"] .founder-copy .section-title p',
+          }
+          for a, b in replacements.items():
+              s = s.replace(a, b)
+
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit update and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/company-heading-match.yml
+          git add index.html
+          git commit -m "Match company introduction heading to points format"
+          git push origin main

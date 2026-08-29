@@ -1,0 +1,42 @@
+name: Patch company title and nav labels
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/patch-company-nav.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch company title and navigation labels
+        run: python .github/scripts/patch_company_nav.py
+      - name: Validate unified heading script syntax
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess
+          s=Path('index.html').read_text(encoding='utf-8')
+          m=re.search(r'<script id="ss-single-heading-script">(.*?)</script>',s,re.S)
+          assert m, 'Unified heading script missing'
+          p=Path('.heading-check.js')
+          p.write_text(m.group(1),encoding='utf-8')
+          subprocess.run(['node','--check',str(p)],check=True)
+          p.unlink()
+          assert "company:['公司','公司簡介','']" in s
+          assert "zh:{company:'公司簡介',points:'核心優勢',founder:'創辦人介紹',experience:'專業歷程',network:'廣泛的影響力與資源管道',capabilities:'案例研究 Apple'}" in s
+          print('Company heading and navigation checks passed')
+          PY
+      - name: Commit targeted update
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html .github/workflows/validate-heading-integrity.yml
+          git rm -f .github/scripts/patch_company_nav.py .github/workflows/patch-company-nav.yml
+          git commit -m 'Rename company heading and sync navigation labels'
+          git push

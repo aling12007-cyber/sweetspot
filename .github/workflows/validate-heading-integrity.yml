@@ -1,0 +1,44 @@
+name: Validate heading integrity
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - .github/workflows/validate-heading-integrity.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check single heading source of truth
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess
+          s=Path('index.html').read_text(encoding='utf-8')
+          start='<!-- SS SINGLE UNIFIED SECTION HEADING START -->'
+          end='<!-- SS SINGLE UNIFIED SECTION HEADING END -->'
+          assert s.count(start)==1 and s.count(end)==1, 'Unified heading block must exist exactly once'
+          assert 'Reference major heading fallback START' not in s, 'Legacy heading fallback returned'
+          assert 'var ssHeadingCopy={' not in s, 'Misplaced legacy heading copy returned'
+          a=s.index(start); b=s.index(end,a); block=s[a:b]
+          required=[
+            "points:['Difference','Points of Difference','']",
+            "experience:['Career','Professional Journey','Built across APAC']",
+            "network:['Network','Broad Influence and Access','Services rendered to:']",
+            "capabilities:['Case','Case Study Apple','Demonstrated high-level facilitation capability']"
+          ]
+          for x in required:
+              assert x in block, 'Required heading copy missing: '+x
+          m=re.search(r'<script id="ss-single-heading-script">(.*?)</script>',block,re.S)
+          assert m, 'Unified heading script missing'
+          t=Path('.heading-check.js')
+          t.write_text(m.group(1),encoding='utf-8')
+          subprocess.run(['node','--check',str(t)],check=True)
+          t.unlink()
+          print('Heading integrity check passed')
+          PY

@@ -1,0 +1,28 @@
+name: Unify all section headings
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/unify-all-section-headings.yml'
+permissions:
+  contents: write
+jobs:
+  unify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace competing heading systems with one format
+        run: python .github/scripts/unify_all_section_headings.py
+      - name: Commit verified unified headings
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git rm -f --ignore-unmatch \
+            .github/workflows/unify-all-section-headings.yml \
+            .github/scripts/unify_all_section_headings.py \
+            .github/workflows/audit-heading-conflicts.yml
+          git commit -m 'Use one identical format for every section heading'
+          git push

@@ -2327,5 +2327,131 @@ react/cjs/react-jsx-runtime.production.js:
 </script>
 <!-- Requested homepage copy overrides END -->
 <!-- Top navigation short labels START --><script id="top-navigation-short-labels">(function(){var labels={"Company Introduction":"Company","Company Features":"Company","Points of Difference":"Difference","Introducing the Founder":"Founder","Broad Influence and Access":"Network","Case Study Apple":"Case","Case Study: Apple":"Case","Case Study\uff1aApple":"Case","Insights & Perspectives":"Insights","\u4f1a\u793e\u7d39\u4ecb":"\u4f1a\u793e","\u4f1a\u793e\u306e\u7279\u5fb4":"\u4f1a\u793e","\u79c1\u305f\u3061\u306e\u5f37\u307f":"\u5f37\u307f","\u5275\u696d\u8005\u7d39\u4ecb":"\u5275\u696d\u8005","\u5e45\u5e83\u3044\u5f71\u97ff\u529b\u3068\u30a2\u30af\u30bb\u30b9":"\u30cd\u30c3\u30c8\u30ef\u30fc\u30af","\u30b1\u30fc\u30b9\u30b9\u30bf\u30c7\u30a3 Apple":"\u30b1\u30fc\u30b9","\u30b1\u30fc\u30b9\u30b9\u30bf\u30c7\u30a3\uff1aApple":"\u30b1\u30fc\u30b9","\u6d1e\u5bdf\u3068\u8996\u70b9":"\u6d1e\u5bdf","\u516c\u53f8\u4ecb\u7ecd":"\u516c\u53f8","\u516c\u53f8\u7279\u8272":"\u516c\u53f8","\u6838\u5fc3\u4f18\u52bf":"\u4f18\u52bf","\u521b\u529e\u4eba\u4ecb\u7ecd":"\u521b\u529e\u4eba","\u5e7f\u6cdb\u7684\u5f71\u54cd\u529b\u4e0e\u8d44\u6e90\u7ba1\u9053":"\u7f51\u7edc","\u6848\u4f8b\u7814\u7a76 Apple":"\u6848\u4f8b","\u6848\u4f8b\u7814\u7a76\uff1aApple":"\u6848\u4f8b","\u884c\u4e1a\u6d1e\u5bdf":"\u6d1e\u5bdf","\u516c\u53f8\u4ecb\u7d39":"\u516c\u53f8","\u6838\u5fc3\u512a\u52e2":"\u512a\u52e2","\u5275\u8fa6\u4eba\u4ecb\u7d39":"\u5275\u8fa6\u4eba","\u5ee3\u6cdb\u7684\u5f71\u97ff\u529b\u8207\u8cc7\u6e90\u7ba1\u9053":"\u7db2\u7d61","\u884c\u696d\u6d1e\u5bdf":"\u6d1e\u5bdf"};function r(el){var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),n;while((n=w.nextNode())){var raw=n.nodeValue||"",t=raw.trim();if(Object.prototype.hasOwnProperty.call(labels,t))n.nodeValue=raw.replace(t,labels[t]);}}function a(){var h=document.querySelector("header");if(!h)return;h.querySelectorAll("a,button").forEach(r);}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",a,{once:true});else a();var q=false;new MutationObserver(function(){if(q)return;q=true;requestAnimationFrame(function(){q=false;a();});}).observe(document.documentElement,{subtree:true,childList:true,characterData:true});})();</script><!-- Top navigation short labels END -->
+<!-- Language dropdown selector START -->
+<style id="language-dropdown-selector-style">
+.lang-switch.lang-dropdown-ready{
+  position:relative;
+  display:flex;
+  align-items:center;
+  min-width:74px;
+  height:32px;
+  padding:0;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(255,255,255,.03);
+}
+.lang-switch.lang-dropdown-ready>button{display:none!important}
+.lang-switch.lang-dropdown-ready::after{
+  content:"";
+  position:absolute;
+  right:11px;
+  top:10px;
+  width:6px;
+  height:6px;
+  border-right:1px solid #aeb7c3;
+  border-bottom:1px solid #aeb7c3;
+  transform:rotate(45deg);
+  pointer-events:none;
+}
+.lang-dropdown-select{
+  width:100%;
+  height:30px;
+  padding:0 27px 0 11px;
+  border:0;
+  outline:0;
+  border-radius:17px;
+  color:#d8dee7;
+  background:transparent;
+  font:800 10px/1 Arial,Helvetica,sans-serif;
+  letter-spacing:.04em;
+  cursor:pointer;
+  appearance:none;
+  -webkit-appearance:none;
+  color-scheme:dark;
+}
+.lang-dropdown-select:focus-visible{
+  box-shadow:0 0 0 1px rgba(215,169,54,.7);
+}
+.lang-dropdown-select option{
+  color:#f7f5ef;
+  background:#0e131b;
+}
+</style>
+<script id="language-dropdown-selector">
+(function(){
+  function buttonsOf(box){
+    return Array.prototype.filter.call(box.children,function(el){
+      return el && el.tagName === "BUTTON";
+    });
+  }
+  function activeIndex(buttons){
+    for(var i=0;i<buttons.length;i++){
+      if(buttons[i].classList.contains("active") ||
+         buttons[i].getAttribute("aria-pressed") === "true" ||
+         buttons[i].getAttribute("aria-current") === "true"){
+        return i;
+      }
+    }
+    return 0;
+  }
+  function rebuild(select,buttons){
+    var labels=buttons.map(function(btn){return (btn.textContent||"").trim();});
+    var same=select.options.length===labels.length;
+    if(same){
+      for(var i=0;i<labels.length;i++){
+        if(select.options[i].text!==labels[i]){same=false;break;}
+      }
+    }
+    if(!same){
+      select.innerHTML="";
+      labels.forEach(function(label,i){
+        var option=document.createElement("option");
+        option.value=String(i);
+        option.textContent=label;
+        select.appendChild(option);
+      });
+    }
+  }
+  function apply(){
+    var box=document.querySelector(".lang-switch");
+    if(!box)return;
+    var buttons=buttonsOf(box);
+    if(buttons.length<2)return;
+    var select=box.querySelector(".lang-dropdown-select");
+    if(!select){
+      select=document.createElement("select");
+      select.className="lang-dropdown-select";
+      select.setAttribute("aria-label","Language");
+      select.addEventListener("change",function(){
+        var currentBox=document.querySelector(".lang-switch");
+        if(!currentBox)return;
+        var currentButtons=buttonsOf(currentBox);
+        var index=parseInt(select.value,10);
+        if(currentButtons[index])currentButtons[index].click();
+        setTimeout(apply,0);
+      });
+      box.appendChild(select);
+    }
+    rebuild(select,buttons);
+    select.value=String(activeIndex(buttons));
+    box.classList.add("lang-dropdown-ready");
+  }
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",apply,{once:true});
+  }else{
+    apply();
+  }
+  var queued=false;
+  new MutationObserver(function(){
+    if(queued)return;
+    queued=true;
+    requestAnimationFrame(function(){
+      queued=false;
+      apply();
+    });
+  }).observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:["class","aria-pressed","aria-current"]});
+})();
+</script>
+<!-- Language dropdown selector END -->
 </body>
 </html>

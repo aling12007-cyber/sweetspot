@@ -40,7 +40,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git rm --ignore-unmatch \
+          git rm -f --ignore-unmatch \
             .github/workflows/fix-headings-to-actual-insights.yml \
             .github/scripts/fix_headings_to_actual_insights.py \
             .github/scripts/final_heading_specificity.py \

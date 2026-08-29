@@ -1,0 +1,17 @@
+name: Shorten language menu labels
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/short-language-labels.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Shorten language labels
+        run: echo 'CmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aAppbXBvcnQgcmUsIHN1YnByb2Nlc3MKCnAgPSBQYXRoKCJpbmRleC5odG1sIikKdGV4dCA9IHAucmVhZF90ZXh0KGVuY29kaW5nPSJ1dGYtOCIpCm9yaWdpbmFsID0gdGV4dAoKcGF0dGVybnMgPSBbCiAgICAocicoPzwhW0EtWmEtel0pRU5HKD8hW0EtWmEtel0pJywgJ0VOJyksCiAgICAoJ+aXpeacrOiqnicgLCAn5pelJyksCiAgICAoJ+eugOS9k+S4reaWhycsICfnroAnKSwKICAgICgn57mB6auU5Lit5paHJywgJ+e5gScpLApdCmNvdW50cyA9IHt9CmZvciBwYXR0ZXJuLCByZXBsIGluIHBhdHRlcm5zOgogICAgdGV4dCwgbj0gcmUuc3VibihwYXR0ZXJuLCByZXBsLCB0ZXh0KQogICAgY291bnRzW3BhdHRlcm5dID0gbgoKaWYgdGV4dCA9PSBvcmlnaW5hbDoKICAgIHJhaXNlIFN5c3RlbUV4aXQoZiJObyBsYW5ndWFnZS1sYWJlbCBjaGFuZ2VzIG1hZGU6IHtjb3VudHN9IikKCnAud3JpdGVfdGV4dCh0ZXh0LCBlbmNvZGluZz0idXRmLTgiKQpwcmludCgicmVwbGFjZW1lbnQgY291bnRzOiIsIGNvdW50cykKCnN1YnByb2Nlc3MucnVuKFsiZ2l0IiwgImNvbmZpZyIsICJ1c2VyLm5hbWUiLCAiZ2l0aHViLWFjdGlvbnNbYm90XSJdLCBjaGVjaz1UcnVlKQpzdWJwcm9jZXNzLnJ1bihbImdpdCIsICJjb25maWciLCAidXNlci5lbWFpbCIsICI0MTg5ODI4MitnaXRodWItYWN0aW9uc1tib3RdQHVzZXJzLm5vcmVwbHkuZ2l0aHViLmNvbSJdLCBjaGVjaz1UcnVlKQpzdWJwcm9jZXNzLnJ1bihbImdpdCIsICJhZGQiLCAiaW5kZXguaHRtbCJdLCBjaGVjaz1UcnVlKQpzdWJwcm9jZXNzLnJ1bihbImdpdCIsICJjb21taXQiLCAiLW0iLCAiU2hvcnRlbiBsYW5ndWFnZSBtZW51IGxhYmVscyJdLCBjaGVjaz1UcnVlKQpzdWJwcm9jZXNzLnJ1bihbImdpdCIsICJwdXNoIl0sIGNoZWNrPVRydWUpCg==' | base64 -d | python

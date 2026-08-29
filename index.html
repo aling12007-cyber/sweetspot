@@ -1784,6 +1784,41 @@ react/cjs/react-jsx-runtime.production.js:
       });
     });
   }
+  var ssHeadingCopy={
+  en:{
+    points:['Difference','Points of Difference',''],
+    experience:['Career','Professional Journey','Built across APAC'],
+    network:['Network','Broad Influence and Access','Services rendered to:'],
+    capabilities:['Case','Case Study Apple','Demonstrated high-level facilitation capability']
+  },
+  ja:{
+    points:['差別化','私たちの強み',''],
+    experience:['キャリア','プロフェッショナル・ジャーニー','APACで築いたキャリア'],
+    network:['ネットワーク','幅広い影響力とアクセス','サービス提供先：'],
+    capabilities:['ケース','ケーススタディ Apple','高水準のファシリテーション能力を実証']
+  },
+  zh:{
+    points:['差異','核心優勢',''],
+    experience:['職涯','專業歷程','深耕亞太地區'],
+    network:['網絡','廣泛的影響力與資源管道','曾服務的對象包括：'],
+    capabilities:['案例','案例研究 Apple','展現高水準的協調促成能力']
+  }
+};
+function ssHeadingLang(data){
+  var probe=[data.kicker||'',data.title||'',data.support||''].join(' ');
+  if(/[\u3040-\u30ff]/.test(probe))return 'ja';
+  if(/[\u4e00-\u9fff]/.test(probe))return 'zh';
+  var hl=(document.documentElement.getAttribute('lang')||'').toLowerCase();
+  if(hl.indexOf('ja')===0)return 'ja';
+  if(hl.indexOf('zh')===0)return 'zh';
+  return 'en';
+}
+function ssApplyHeadingCopy(d,data){
+  var lang=ssHeadingLang(data);
+  var row=(ssHeadingCopy[lang]&&ssHeadingCopy[lang][d.id])||(ssHeadingCopy.en&&ssHeadingCopy.en[d.id]);
+  if(!row)return data;
+  return {kicker:row[0],title:row[1],support:row[2]||''};
+}
   var queued=false;
   function queueEnhance(){
     if(queued) return;
@@ -2088,7 +2123,8 @@ react/cjs/react-jsx-runtime.production.js:
     defs.forEach(function(d){
       var section=document.getElementById(d.id); if(!section)return;
       var src=chooseSource(section,d); if(!src)return;
-      make(section,src,d,extract(src,d));
+      var data=ssApplyHeadingCopy(d,extract(src,d));
+      make(section,src,d,data);
     });
   }
   function queue(){if(queued)return;queued=true;requestAnimationFrame(run)}

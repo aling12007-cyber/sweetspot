@@ -15,8 +15,8 @@ jobs:
           fetch-depth: 0
       - name: Install localization verifier
         run: python -m pip install --disable-pip-version-check -q opencc-python-reimplemented
-      - name: Patch Traditional Chinese source and headings with current setter
-        run: python .github/scripts/fix_traditional_chinese_v6.py
+      - name: Patch Traditional Chinese source and language controls
+        run: python .github/scripts/fix_traditional_chinese_v7.py
       - name: Verify Traditional and Simplified modes
         run: python .github/scripts/verify_chinese_modes.py
       - name: Validate diff

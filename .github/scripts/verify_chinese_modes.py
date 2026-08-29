@@ -55,10 +55,11 @@ window.addEventListener('load',function(){{setTimeout(function(){{
             if q.exists():q.unlink()
 
 def main():
-    exact='English / 日本語 / 简体中文 / 繁體中文'
+    trad_drop='English / 日本語 / 简体中文 / 繁體中文'
+    simp_drop='English / 日本语 / 简体中文 / 繁体中文'
     trad=run_mode('3','trad')
     if 'MODE=zhtw' not in trad or 'LANG=zh-Hant' not in trad:raise RuntimeError('Traditional mode/lang failed')
-    if 'DROP='+exact not in trad:raise RuntimeError('Traditional dropdown changed')
+    if 'DROP='+trad_drop not in trad:raise RuntimeError('Traditional dropdown changed')
     required=['歡迎來到','公司簡介','亞太經驗','核心市場','全球網絡','東京 / 日本','策略。連結。執行。','創辦人','聯絡我們']
     miss=[x for x in required if x not in trad]
     if miss:raise RuntimeError('Traditional missing '+repr(miss))
@@ -74,7 +75,7 @@ def main():
 
     simp=run_mode('2','simp')
     if 'MODE=zhcn' not in simp or 'LANG=zh-Hans' not in simp:raise RuntimeError('Simplified mode/lang failed')
-    if 'DROP='+exact not in simp:raise RuntimeError('Simplified dropdown changed')
+    if 'DROP='+simp_drop not in simp:raise RuntimeError('Simplified dropdown changed')
     for x in ['欢迎来到','公司简介','亚太经验','核心市场','全球网络','东京 / 日本']:
         if x not in simp:raise RuntimeError('Simplified missing '+x)
     for x in ['公司 > 公司简介','差异 > 核心优势','职涯 > 专业历程','网络 > 广泛的影响力与资源管道','案例 > 案例研究：Apple']:

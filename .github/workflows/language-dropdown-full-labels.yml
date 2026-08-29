@@ -1,0 +1,68 @@
+name: Use full language dropdown labels
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/language-dropdown-full-labels.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set full language names in dropdown
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess
+
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          start='<!-- Language dropdown selector START -->'
+          end='<!-- Language dropdown selector END -->'
+          if s.count(start)!=1 or s.count(end)!=1:
+              raise SystemExit('Language dropdown block not found exactly once')
+          a=s.index(start)
+          b=s.index(end,a)+len(end)
+          block=s[a:b]
+
+          old='var labels=buttons.map(function(btn){return (btn.textContent||"").trim();});'
+          new='var labels=["English","\\u65e5\\u672c\\u8a9e","\\u7b80\\u4f53\\u4e2d\\u6587","\\u7e41\\u9ad4\\u4e2d\\u6587"];'
+          if old in block:
+              block=block.replace(old,new,1)
+          elif new not in block:
+              raise SystemExit('Expected dropdown label source not found')
+
+          s=s[:a]+block+s[b:]
+          if s.count(new)!=1:
+              raise SystemExit('Full language label mapping must exist exactly once')
+
+          m=re.search(r'<script id="language-dropdown-selector">(.*?)</script>',s,re.S)
+          if not m:
+              raise SystemExit('Language dropdown script missing')
+          t=Path('.language-dropdown-check.js')
+          t.write_text(m.group(1),encoding='utf-8')
+          subprocess.run(['node','--check',str(t)],check=True)
+          t.unlink()
+
+          # Do not touch navigation or page heading controllers.
+          if s.count('id="top-navigation-short-labels"')!=1:
+              raise SystemExit('Top navigation controller changed unexpectedly')
+          if s.count('id="ss-single-heading-script"')!=1:
+              raise SystemExit('Unified heading controller changed unexpectedly')
+
+          p.write_text(s,encoding='utf-8')
+          print('Full language dropdown labels validated')
+          PY
+
+          git diff -- index.html
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/language-dropdown-full-labels.yml
+          git add index.html
+          git commit -m 'Use full language names in dropdown'
+          git push

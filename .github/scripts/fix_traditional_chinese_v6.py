@@ -16,8 +16,8 @@ if old in s:s=s.replace(old,new,1)
 elif 'window.__ssRefreshUnifiedHeadings=run;' not in s:raise RuntimeError('Unified heading run hook missing')
 
 # Invoke the existing unified heading renderer only after the language mode is settled.
-old="  function setMode(next){\n    mode=next;\n    document.documentElement.setAttribute('data-ss-lang-mode',mode);\n    document.documentElement.lang=mode==='zhcn'?'zh-Hans':mode==='zhtw'?'zh-Hant':mode;\n  }"
-new="  function setMode(next){\n    mode=next;\n    document.documentElement.setAttribute('data-ss-lang-mode',mode);\n    document.documentElement.lang=mode==='zhcn'?'zh-Hans':mode==='zhtw'?'zh-Hant':mode;\n    setTimeout(function(){if(window.__ssRefreshUnifiedHeadings)window.__ssRefreshUnifiedHeadings();},0);\n    setTimeout(function(){if(window.__ssRefreshUnifiedHeadings)window.__ssRefreshUnifiedHeadings();},80);\n  }"
+old="  function setMode(next){\n    mode=next;\n    document.documentElement.setAttribute('data-ss-lang-mode',next);\n    document.documentElement.lang=next==='ja'?'ja':next==='zhcn'?'zh-Hans':next==='zhtw'?'zh-Hant':'en';\n  }"
+new="  function setMode(next){\n    mode=next;\n    document.documentElement.setAttribute('data-ss-lang-mode',next);\n    document.documentElement.lang=next==='ja'?'ja':next==='zhcn'?'zh-Hans':next==='zhtw'?'zh-Hant':'en';\n    setTimeout(function(){if(window.__ssRefreshUnifiedHeadings)window.__ssRefreshUnifiedHeadings();},0);\n    setTimeout(function(){if(window.__ssRefreshUnifiedHeadings)window.__ssRefreshUnifiedHeadings();},80);\n  }"
 if old in s:s=s.replace(old,new,1)
 elif new not in s:raise RuntimeError('setMode hook missing')
 

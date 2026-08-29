@@ -16,7 +16,7 @@ jobs:
       - name: Install localization verifier
         run: python -m pip install --disable-pip-version-check -q opencc-python-reimplemented
       - name: Patch and verify Traditional Chinese
-        run: python .github/scripts/fix_traditional_chinese.py
+        run: python .github/scripts/fix_traditional_chinese_v2.py
       - name: Commit localization fix only
         shell: bash
         run: |

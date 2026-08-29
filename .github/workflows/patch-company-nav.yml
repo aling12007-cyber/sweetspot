@@ -30,13 +30,12 @@ jobs:
           assert "zh:{company:'公司簡介',points:'核心優勢',founder:'創辦人介紹',experience:'專業歷程',network:'廣泛的影響力與資源管道',capabilities:'案例研究 Apple'}" in s
           print('Company heading and navigation checks passed')
           PY
-      - name: Commit targeted update
+      - name: Commit targeted index update only
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html .github/workflows/validate-heading-integrity.yml
-          git rm -f .github/scripts/patch_company_nav.py .github/workflows/patch-company-nav.yml
+          git add index.html
           git commit -m 'Rename company heading and sync navigation labels'
           git push

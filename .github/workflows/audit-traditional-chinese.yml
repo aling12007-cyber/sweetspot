@@ -1,0 +1,62 @@
+name: Audit Traditional Chinese
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-traditional-chinese.yml'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render Traditional Chinese and print visible text
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          audit=r'''<script>
+          window.addEventListener('load',function(){
+            setTimeout(function(){
+              var buttons=[].slice.call(document.querySelectorAll('.lang-switch button'));
+              var target=buttons.find(function(b){return !b.classList.contains('ss-lang-simplified') && ((b.dataset.ssLabel||'').trim()==='中' || (b.textContent||'').trim()==='中');});
+              if(target) target.click();
+              setTimeout(function(){
+                var text=(document.body.innerText||'').replace(/\u00a0/g,' ').replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+                var mode=document.documentElement.getAttribute('data-ss-lang-mode')||'';
+                var lang=document.documentElement.getAttribute('lang')||'';
+                document.body.innerHTML='<pre id="audit-output"></pre>';
+                document.getElementById('audit-output').textContent='MODE='+mode+'\nLANG='+lang+'\n---VISIBLE TEXT---\n'+text;
+              },1000);
+            },800);
+          });
+          </script>'''
+          if '</body>' not in s: raise SystemExit('missing body')
+          Path('audit.html').write_text(s.replace('</body>',audit+'\n</body>',1),encoding='utf-8')
+          PY
+          python -m http.server 8000 >/tmp/audit-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          CHROME="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$CHROME" || { echo 'Chrome not found'; exit 1; }
+          "$CHROME" --headless --no-sandbox --disable-gpu --virtual-time-budget=6000 --dump-dom http://127.0.0.1:8000/audit.html > /tmp/audit-dom.html
+          python - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          class P(HTMLParser):
+              def __init__(self): super().__init__(); self.on=False; self.buf=[]
+              def handle_starttag(self,tag,attrs):
+                  if tag=='pre' and dict(attrs).get('id')=='audit-output': self.on=True
+              def handle_endtag(self,tag):
+                  if tag=='pre' and self.on: self.on=False
+              def handle_data(self,data):
+                  if self.on:self.buf.append(data)
+          p=P(); p.feed(Path('/tmp/audit-dom.html').read_text(encoding='utf-8',errors='replace'))
+          text=''.join(p.buf)
+          print(text)
+          if 'MODE=zhtw' not in text or 'LANG=zh-Hant' not in text:
+              raise SystemExit('Traditional Chinese mode was not activated')
+          PY

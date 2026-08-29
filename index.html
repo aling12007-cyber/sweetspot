@@ -2295,5 +2295,36 @@ react/cjs/react-jsx-runtime.production.js:
 })();
 </script>
 <!-- SS SINGLE UNIFIED SECTION HEADING END -->
+<!-- Requested homepage copy overrides START -->
+<script id="requested-home-copy-overrides">
+(function(){
+  var ctaMap={"Company Features":"Company Introduction","会社の特徴":"会社紹介","公司特色":"公司介紹"};
+  var caseMap={"Case Study Apple":"Case Study: Apple","ケーススタディ Apple":"ケーススタディ：Apple","案例研究 Apple":"案例研究：Apple"};
+  function patchTextNodes(el,map){
+    var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
+    var n;
+    while((n=w.nextNode())){
+      var raw=n.nodeValue||"";
+      var trimmed=raw.trim();
+      if(Object.prototype.hasOwnProperty.call(map,trimmed)){
+        n.nodeValue=raw.replace(trimmed,map[trimmed]);
+      }
+    }
+  }
+  function apply(){
+    document.querySelectorAll("a,button").forEach(function(el){patchTextNodes(el,ctaMap);});
+    var scope=document.querySelector("#capabilities");
+    if(scope){scope.querySelectorAll("h1,h2,h3,.hierarchy-heading").forEach(function(el){patchTextNodes(el,caseMap);});}
+  }
+  if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",apply,{once:true});}else{apply();}
+  var queued=false;
+  new MutationObserver(function(){
+    if(queued)return;
+    queued=true;
+    requestAnimationFrame(function(){queued=false;apply();});
+  }).observe(document.documentElement,{subtree:true,childList:true,characterData:true});
+})();
+</script>
+<!-- Requested homepage copy overrides END -->
 </body>
 </html>

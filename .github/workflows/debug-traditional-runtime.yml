@@ -11,55 +11,50 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Instrument language conversion and render
+      - name: Trace Chinese translation source
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
           s=Path('index.html').read_text(encoding='utf-8')
-          needle="function simplifyTree(scope){\n    if(mode!=='zhcn' || translating)return;"
-          repl="function simplifyTree(scope){\n    document.documentElement.dataset.dbgSimplify=(document.documentElement.dataset.dbgSimplifyCount||'0')+'|closure='+mode+',attr='+(document.documentElement.getAttribute('data-ss-lang-mode')||'')+',lang='+(document.documentElement.getAttribute('lang')||'');document.documentElement.dataset.dbgSimplifyCount=String((parseInt(document.documentElement.dataset.dbgSimplifyCount||'0',10)||0)+1);\n    if(mode!=='zhcn' || translating)return;"
-          if needle not in s: raise SystemExit('simplifyTree marker missing')
-          s=s.replace(needle,repl,1)
-          # Track global converter calls and final state. Identity result is not used; wrapper preserves original output.
-          hook=r'''<script>
-          window.addEventListener('load',function(){
-            var raw=window.__ssToSimplified;
-            if(typeof raw==='function'){
-              var count=0;
-              window.__ssToSimplified=function(v){count++;document.documentElement.dataset.dbgConverter=String(count)+'|attr='+(document.documentElement.getAttribute('data-ss-lang-mode')||'')+'|lang='+(document.documentElement.getAttribute('lang')||'');return raw(v)};
-            }
-          });
-          </script>'''
-          s=s.replace('</body>',hook+'\n</body>',1)
-          audit=r'''<script>
-          window.addEventListener('load',function(){
-            setTimeout(function(){
-              var buttons=[].slice.call(document.querySelectorAll('.lang-switch button'));
-              var trad=buttons.find(function(b){return !b.classList.contains('ss-lang-simplified')&&(b.textContent||'').trim()==='中'});
-              if(trad)trad.click();
-              var snaps=[];var n=0;
-              var timer=setInterval(function(){
-                n++;
-                var st=document.documentElement.dataset;
-                var text=(document.querySelector('.stats span')||{}).textContent||'';
-                snaps.push('t'+n+': mode='+(document.documentElement.getAttribute('data-ss-lang-mode')||'')+', lang='+(document.documentElement.getAttribute('lang')||'')+', simplifyCount='+(st.dbgSimplifyCount||'0')+', simplifyLast='+(st.dbgSimplify||'')+', converter='+(st.dbgConverter||'')+', stat='+text);
-                if(n>=8){clearInterval(timer);document.body.innerHTML='<pre id="audit-output"></pre>';document.getElementById('audit-output').textContent=snaps.join('\n');}
-              },300);
-            },700);
-          });
-          </script>'''
-          s=s.replace('</body>',audit+'\n</body>',1)
-          Path('debug.html').write_text(s,encoding='utf-8')
-          PY
-          python -m http.server 8000 >/tmp/http.log 2>&1 &
-          P=$!
-          trap 'kill $P || true' EXIT
-          CHROME="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
-          "$CHROME" --headless --no-sandbox --disable-gpu --virtual-time-budget=7000 --dump-dom http://127.0.0.1:8000/debug.html >/tmp/dom.html
-          python - <<'PY'
-          import re, html
-          s=open('/tmp/dom.html',encoding='utf-8',errors='replace').read()
-          m=re.search(r'<pre id="audit-output">(.*?)</pre>',s,re.S)
-          print(html.unescape(re.sub(r'<[^>]+>','',m.group(1) if m else 'NO AUDIT OUTPUT')))
+          targets=['亚太经验','亞太經驗','公司简介','公司簡介','欢迎来到','歡迎來到','核心市场','核心市場','全球网络','全球網絡','东京 / 日本','東京 / 日本']
+          def dec(body):
+              out=[];i=0
+              common={'n':'\n','r':'\r','t':'\t','b':'\b','f':'\f','v':'\v','0':'\0','"':'"',"'":"'",'\\':'\\','/':'/'}
+              while i<len(body):
+                  if body[i]!='\\':out.append(body[i]);i+=1;continue
+                  if i+1>=len(body):out.append('\\');break
+                  k=body[i+1]
+                  if k=='u' and i+5<len(body) and re.fullmatch(r'[0-9a-fA-F]{4}',body[i+2:i+6]):out.append(chr(int(body[i+2:i+6],16)));i+=6;continue
+                  if k=='x' and i+3<len(body) and re.fullmatch(r'[0-9a-fA-F]{2}',body[i+2:i+4]):out.append(chr(int(body[i+2:i+4],16)));i+=4;continue
+                  out.append(common.get(k,k));i+=2
+              return ''.join(out)
+          pat=re.compile(r'(["\'])(.*?)(?<!\\)\1',re.S)
+          hits=[]
+          for m in pat.finditer(s):
+              raw=m.group(2)
+              if len(raw)>5000:continue
+              try:d=dec(raw)
+              except Exception:continue
+              found=[t for t in targets if t in d]
+              if found:
+                  a=max(0,m.start()-260);b=min(len(s),m.end()+260)
+                  hits.append((m.start(),found,d[:1000],s[a:b]))
+          print('STRING HITS',len(hits))
+          for pos,found,d,ctx in hits[:80]:
+              print('\nPOS',pos,'TARGETS',found,'\nDECODED',repr(d),'\nCONTEXT',ctx.replace('\n','\\n'))
+          # Also search escaped source forms directly.
+          for t in targets:
+              esc=''.join('\\u%04x'%ord(ch) if ord(ch)>127 else ch for ch in t)
+              for needle,label in [(t,'literal'),(esc,'u-escape')]:
+                  p=0;cnt=0
+                  while True:
+                      p=s.find(needle,p)
+                      if p<0:break
+                      cnt+=1
+                      print('\nDIRECT',t,label,'POS',p,'CTX',s[max(0,p-220):min(len(s),p+len(needle)+220)].replace('\n','\\n'))
+                      p+=max(1,len(needle))
+                      if cnt>=12:break
+                  print('COUNT-SHOWN',t,label,cnt)
           PY

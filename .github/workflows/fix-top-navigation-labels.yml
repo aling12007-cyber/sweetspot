@@ -1,0 +1,135 @@
+name: Fix top navigation labels
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-top-navigation-labels.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Shorten only homepage top navigation labels
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+
+          start = '<!-- Top navigation short labels START -->'
+          end = '<!-- Top navigation short labels END -->'
+          if start in text:
+              a = text.index(start)
+              b = text.index(end, a) + len(end)
+              text = text[:a] + text[b:]
+
+          script = r'''<!-- Top navigation short labels START -->
+<script id="top-navigation-short-labels">
+(function(){
+  var labels={
+    "Company Introduction":"Company",
+    "Company Features":"Company",
+    "Points of Difference":"Difference",
+    "Introducing the Founder":"Founder",
+    "Broad Influence and Access":"Network",
+    "Case Study Apple":"Case",
+    "Case Study: Apple":"Case",
+    "Case Study：Apple":"Case",
+    "Insights & Perspectives":"Insights",
+
+    "会社紹介":"会社",
+    "会社の特徴":"会社",
+    "私たちの強み":"強み",
+    "創業者紹介":"創業者",
+    "幅広い影響力とアクセス":"ネットワーク",
+    "ケーススタディ Apple":"ケース",
+    "ケーススタディ：Apple":"ケース",
+    "洞察と視点":"洞察",
+
+    "公司介绍":"公司",
+    "公司特色":"公司",
+    "核心优势":"优势",
+    "创办人介绍":"创办人",
+    "广泛的影响力与资源管道":"网络",
+    "案例研究 Apple":"案例",
+    "案例研究：Apple":"案例",
+    "行业洞察":"洞察",
+
+    "公司介紹":"公司",
+    "核心優勢":"優勢",
+    "創辦人介紹":"創辦人",
+    "廣泛的影響力與資源管道":"網絡",
+    "案例研究 Apple":"案例",
+    "案例研究：Apple":"案例",
+    "行業洞察":"洞察"
+  };
+
+  function replaceTextNodes(el){
+    var walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
+    var node;
+    while((node=walker.nextNode())){
+      var raw=node.nodeValue||"";
+      var trimmed=raw.trim();
+      if(Object.prototype.hasOwnProperty.call(labels,trimmed)){
+        node.nodeValue=raw.replace(trimmed,labels[trimmed]);
+      }
+    }
+  }
+
+  function apply(){
+    var header=document.querySelector('header');
+    if(!header)return;
+    header.querySelectorAll('a,button').forEach(replaceTextNodes);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',apply,{once:true});
+  }else{
+    apply();
+  }
+
+  var queued=false;
+  new MutationObserver(function(){
+    if(queued)return;
+    queued=true;
+    requestAnimationFrame(function(){queued=false;apply();});
+  }).observe(document.documentElement,{subtree:true,childList:true,characterData:true});
+})();
+</script>
+<!-- Top navigation short labels END -->'''
+
+          if '</body>' not in text:
+              raise SystemExit('Could not find </body>')
+          text = text.replace('</body>', script + '\n</body>', 1)
+
+          # Safety guards: exactly one nav-only controller, and requested page content remains present.
+          if text.count('id="top-navigation-short-labels"') != 1:
+              raise SystemExit('Expected exactly one top navigation controller')
+          required_page_copy = [
+              'Company Introduction',
+              'Points of Difference',
+              'Professional Journey',
+              'Broad Influence and Access',
+              'Case Study',
+              'Insights & Perspectives'
+          ]
+          missing = [s for s in required_page_copy if s not in text]
+          if missing:
+              raise SystemExit(f'Unexpected page-copy regression: {missing}')
+
+          p.write_text(text, encoding='utf-8')
+          PY
+
+          git diff -- index.html
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/fix-top-navigation-labels.yml
+          git add index.html
+          git commit -m 'Fix top navigation short labels'
+          git push

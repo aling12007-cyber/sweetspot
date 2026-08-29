@@ -1,5 +1,5 @@
 from pathlib import Path
-import shutil,subprocess,sys,time,re
+import shutil,subprocess,sys,time
 from html.parser import HTMLParser
 from opencc import OpenCC
 
@@ -28,10 +28,11 @@ window.addEventListener('load',function(){{setTimeout(function(){{
    var lang=document.documentElement.getAttribute('lang')||'';
    var hero=((document.querySelector('.hero-copy h2')||{{}}).textContent||'').trim();
    var stat=((document.querySelector('.stats span')||{{}}).textContent||'').trim();
+   var heads=[].slice.call(document.querySelectorAll('.ss-unified-heading')).map(function(h){{return ((h.querySelector('.ss-unified-kicker')||{{}}).textContent||'').trim()+' > '+((h.querySelector('.ss-unified-title')||{{}}).textContent||'').trim()+' > '+((h.querySelector('.ss-unified-support')||{{}}).textContent||'').trim()}}).join(' || ');
    var body=(document.body.innerText||'').replace(/\\u00a0/g,' ');
    document.body.innerHTML='<pre id="audit-output"></pre>';
-   document.getElementById('audit-output').textContent='MODE='+mode+'\\nLANG='+lang+'\\nDROP='+labels+'\\nHERO='+hero+'\\nSTAT='+stat+'\\nBODY='+body;
- }},1500);
+   document.getElementById('audit-output').textContent='MODE='+mode+'\\nLANG='+lang+'\\nDROP='+labels+'\\nHERO='+hero+'\\nSTAT='+stat+'\\nHEADINGS='+heads+'\\nBODY='+body;
+ }},1700);
 }},900)}});
 </script>'''
     html_path=ROOT/f'audit-{name}.html';dom_path=ROOT/f'.dom-{name}.html'
@@ -42,9 +43,9 @@ window.addEventListener('load',function(){{setTimeout(function(){{
     try:
         time.sleep(.6)
         with dom_path.open('w',encoding='utf-8') as f:
-            subprocess.run([chrome,'--headless','--no-sandbox','--disable-gpu','--window-size=1440,1300','--virtual-time-budget=6500','--dump-dom',f'http://127.0.0.1:8000/{html_path.name}'],stdout=f,check=True)
+            subprocess.run([chrome,'--headless','--no-sandbox','--disable-gpu','--window-size=1440,1300','--virtual-time-budget=7000','--dump-dom',f'http://127.0.0.1:8000/{html_path.name}'],stdout=f,check=True)
         p=PreParser();p.feed(dom_path.read_text(encoding='utf-8',errors='replace'));text=''.join(p.buf)
-        print(f'--- {name.upper()} ---\n'+text[:22000])
+        print(f'--- {name.upper()} ---\n'+text[:24000])
         return text
     finally:
         server.terminate()
@@ -58,9 +59,12 @@ def main():
     trad=run_mode('3','trad')
     if 'MODE=zhtw' not in trad or 'LANG=zh-Hant' not in trad:raise RuntimeError('Traditional mode/lang failed')
     if 'DROP='+exact not in trad:raise RuntimeError('Traditional dropdown changed')
-    required=['歡迎來到','公司簡介','亞太經驗','核心市場','全球網絡','東京 / 日本','策略。連結。執行。','創辦人','專業歷程','廣泛的影響力與資源管道','案例研究：Apple','聯絡我們']
+    required=['歡迎來到','公司簡介','亞太經驗','核心市場','全球網絡','東京 / 日本','策略。連結。執行。','創辦人','聯絡我們']
     miss=[x for x in required if x not in trad]
     if miss:raise RuntimeError('Traditional missing '+repr(miss))
+    heading_required=['公司 > 公司簡介','差異 > 核心優勢','職涯 > 專業歷程','網絡 > 廣泛的影響力與資源管道','案例 > 案例研究：Apple']
+    hm=[x for x in heading_required if x not in trad]
+    if hm:raise RuntimeError('Traditional headings missing '+repr(hm))
     cleaned=trad.replace('简体中文','')
     residues=[];cc=OpenCC('s2tw')
     for line in cleaned.splitlines():
@@ -73,6 +77,8 @@ def main():
     if 'DROP='+exact not in simp:raise RuntimeError('Simplified dropdown changed')
     for x in ['欢迎来到','公司简介','亚太经验','核心市场','全球网络','东京 / 日本']:
         if x not in simp:raise RuntimeError('Simplified missing '+x)
+    for x in ['公司 > 公司简介','差异 > 核心优势','职涯 > 专业历程','网络 > 广泛的影响力与资源管道','案例 > 案例研究：Apple']:
+        if x not in simp:raise RuntimeError('Simplified heading missing '+x)
     print('Isolated Traditional and Simplified runtime verification passed')
 
 if __name__=='__main__':main()

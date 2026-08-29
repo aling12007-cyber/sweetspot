@@ -1,0 +1,230 @@
+name: Fix Traditional Chinese localization
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-traditional-chinese.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install localization verifier
+        run: python -m pip install --disable-pip-version-check -q opencc-python-reimplemented
+      - name: Patch Traditional Chinese source and verify runtime
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, json, hashlib
+          from opencc import OpenCC
+
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          before=s
+
+          def styles(src):
+              return re.findall(r'<style\b[^>]*>.*?</style>',src,re.S|re.I)
+          def assets(src):
+              return sorted(re.findall(r'assets/images/[A-Za-z0-9._-]+',src))
+          before_styles=styles(before)
+          before_assets=assets(before)
+          before_en=re.findall(r'en:"((?:\\.|[^"\\])*)"',before)
+          before_ja=re.findall(r'ja:"((?:\\.|[^"\\])*)"',before)
+
+          cc=OpenCC('s2twp')
+
+          def decode_js(body):
+              out=[]; i=0
+              common={'n':'\n','r':'\r','t':'\t','b':'\b','f':'\f','v':'\v','0':'\0','"':'"',"'":"'",'\\':'\\','/':'/'}
+              while i<len(body):
+                  ch=body[i]
+                  if ch!='\\':
+                      out.append(ch); i+=1; continue
+                  if i+1>=len(body):
+                      out.append('\\'); break
+                  k=body[i+1]
+                  if k=='u' and i+5<len(body) and re.fullmatch(r'[0-9a-fA-F]{4}',body[i+2:i+6]):
+                      code=int(body[i+2:i+6],16); i+=6
+                      if 0xD800<=code<=0xDBFF and i+5<len(body) and body[i:i+2]=='\\u' and re.fullmatch(r'[0-9a-fA-F]{4}',body[i+2:i+6]):
+                          low=int(body[i+2:i+6],16)
+                          if 0xDC00<=low<=0xDFFF:
+                              code=0x10000+((code-0xD800)<<10)+(low-0xDC00); i+=6
+                      out.append(chr(code)); continue
+                  if k=='x' and i+3<len(body) and re.fullmatch(r'[0-9a-fA-F]{2}',body[i+2:i+4]):
+                      out.append(chr(int(body[i+2:i+4],16))); i+=4; continue
+                  out.append(common.get(k,k)); i+=2
+              return ''.join(out)
+
+          semantic={
+              '公司特色':'公司簡介',
+              '案例研究 Apple':'案例研究：Apple',
+              '版權所有。':'版權所有。',
+              '創始人':'創辦人',
+              '2015 FIFA U-20 世界杯區域銷售與行銷經理':'2015 FIFA U-20 世界盃區域銷售與行銷經理',
+          }
+
+          pat=re.compile(r'zh:"((?:\\.|[^"\\])*)"')
+          changed=0
+          total=0
+          def repl(m):
+              nonlocal_holder=None
+              global changed,total
+              total+=1
+              raw=m.group(1)
+              text=decode_js(raw)
+              new=cc.convert(text)
+              new=semantic.get(new,new)
+              enc=json.dumps(new,ensure_ascii=True)[1:-1]
+              if enc!=raw: changed+=1
+              return 'zh:"'+enc+'"'
+          s=pat.sub(repl,s)
+          if total<40 or changed<20:
+              raise SystemExit(f'Unexpected zh localization coverage: total={total}, changed={changed}')
+
+          # Keep the explicit unified heading source authoritative for Chinese.
+          old="""    zh:{\n      company:['公司','公司簡介',''],\n      points:['差異','核心優勢',''],\n      experience:['職涯','專業歷程','深耕亞太地區'],\n      network:['網絡','廣泛的影響力與資源管道','曾服務的對象包括：'],\n      capabilities:['案例','案例研究 Apple','展現高水準的協調促成能力']\n    }"""
+          new="""    zh:{\n      company:['公司','公司簡介',''],\n      points:['差異','核心優勢',''],\n      founder:['創辦人','Sam L. Pearson',''],\n      experience:['職涯','專業歷程','深耕亞太地區'],\n      network:['網絡','廣泛的影響力與資源管道','曾服務的對象包括：'],\n      capabilities:['案例','案例研究：Apple','展現高水準的協調促成能力'],\n      insights:['洞察','洞察與觀點','專家觀點']\n    }"""
+          if old not in s: raise SystemExit('Unified Chinese heading map not found')
+          s=s.replace(old,new,1)
+
+          # Make heading language detection use the four-language state rather than hidden button text.
+          old="function lang(){var a=document.querySelector('.lang-switch button.active'),t=txt(a);if(t==='日')return'ja';if(t==='中')return'zh';var h=(document.documentElement.getAttribute('lang')||'').toLowerCase();return h.indexOf('ja')===0?'ja':h.indexOf('zh')===0?'zh':'en'}"
+          new="function lang(){var m=document.documentElement.getAttribute('data-ss-lang-mode')||'';if(m==='zhtw'||m==='zhcn')return'zh';if(m==='ja')return'ja';var a=document.querySelector('.lang-switch button.active'),t=txt(a);if(t==='日')return'ja';if(t==='中')return'zh';var h=(document.documentElement.getAttribute('lang')||'').toLowerCase();return h.indexOf('ja')===0?'ja':h.indexOf('zh')===0?'zh':'en'}"
+          if old not in s: raise SystemExit('Unified heading lang detector not found')
+          s=s.replace(old,new,1)
+
+          # Make section-navigation labels follow the explicit four-language state.
+          old="    return x==='日'?'ja':x==='中'?'zh':'en';"
+          new="    var mode=document.documentElement.getAttribute('data-ss-lang-mode')||'';\n    if(mode==='zhtw'||mode==='zhcn')return 'zh';\n    if(mode==='ja')return 'ja';\n    return x==='日'?'ja':x==='中'?'zh':'en';"
+          if old not in s: raise SystemExit('Section navigation language detector not found')
+          s=s.replace(old,new,1)
+
+          # Align the underlying Chinese Case Study label with the requested colon form.
+          s=s.replace("capabilities:'案例研究 Apple'","capabilities:'案例研究：Apple'",1)
+
+          # Keep the document language tag stable after React rerenders.
+          old="""  function setMode(next){\n    mode=next;\n    document.documentElement.setAttribute('data-ss-lang-mode',next);\n    document.documentElement.lang=next==='ja'?'ja':next==='zhcn'?'zh-Hans':next==='zhtw'?'zh-Hant':'en';\n  }"""
+          new="""  function desiredLang(){return mode==='ja'?'ja':mode==='zhcn'?'zh-Hans':mode==='zhtw'?'zh-Hant':'en'}\n  function enforceLang(){var v=desiredLang();if(document.documentElement.getAttribute('lang')!==v)document.documentElement.setAttribute('lang',v)}\n  function setMode(next){\n    mode=next;\n    document.documentElement.setAttribute('data-ss-lang-mode',next);\n    enforceLang();\n  }"""
+          if old not in s: raise SystemExit('Four-language setMode block not found')
+          s=s.replace(old,new,1)
+
+          old="""  function apply(){\n    scheduled=false;\n    var ui=ensureUI();\n    if(!ui)return;\n    if(mode==='zhcn')simplifyTree(document.body);\n  }"""
+          new="""  function apply(){\n    scheduled=false;\n    var ui=ensureUI();\n    if(!ui)return;\n    enforceLang();\n    if(mode==='zhcn')simplifyTree(document.body);\n  }"""
+          if old not in s: raise SystemExit('Four-language apply block not found')
+          s=s.replace(old,new,1)
+
+          old="observer.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:false});"
+          new="observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['lang']});"
+          if old not in s: raise SystemExit('Four-language observer not found')
+          s=s.replace(old,new,1)
+
+          # No style, image, English, or Japanese source changes are allowed in this localization pass.
+          if styles(s)!=before_styles: raise SystemExit('Unexpected CSS/style change')
+          if assets(s)!=before_assets: raise SystemExit('Unexpected image asset change')
+          if re.findall(r'en:"((?:\\.|[^"\\])*)"',s)!=before_en: raise SystemExit('Unexpected English bundle change')
+          if re.findall(r'ja:"((?:\\.|[^"\\])*)"',s)!=before_ja: raise SystemExit('Unexpected Japanese bundle change')
+
+          p.write_text(s,encoding='utf-8')
+          print(f'Localized {changed} of {total} zh string literals; CSS/assets/EN/JA unchanged')
+          PY
+
+          # Build an isolated runtime audit page from the patched file.
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          audit=r'''<script>
+          window.addEventListener('load',function(){
+            setTimeout(function(){
+              var buttons=[].slice.call(document.querySelectorAll('.lang-switch button'));
+              var trad=buttons.find(function(b){return !b.classList.contains('ss-lang-simplified') && (b.textContent||'').trim()==='中';});
+              if(trad)trad.click();
+              setTimeout(function(){
+                var toggle=document.querySelector('.career-toggle'); if(toggle&&toggle.getAttribute('aria-expanded')!=='true')toggle.click();
+                setTimeout(function(){
+                  var tradText=(document.body.innerText||'').replace(/\u00a0/g,' ').replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+                  var tradMode=document.documentElement.getAttribute('data-ss-lang-mode')||'';
+                  var tradLang=document.documentElement.getAttribute('lang')||'';
+                  var simp=document.querySelector('.ss-lang-simplified'); if(simp)simp.click();
+                  setTimeout(function(){
+                    var simpText=(document.body.innerText||'').replace(/\u00a0/g,' ').replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+                    var simpMode=document.documentElement.getAttribute('data-ss-lang-mode')||'';
+                    var simpLang=document.documentElement.getAttribute('lang')||'';
+                    document.body.innerHTML='<pre id="audit-output"></pre>';
+                    document.getElementById('audit-output').textContent='TRAD_MODE='+tradMode+'\nTRAD_LANG='+tradLang+'\n---TRAD---\n'+tradText+'\n---SIMP META---\nSIMP_MODE='+simpMode+'\nSIMP_LANG='+simpLang+'\n---SIMP---\n'+simpText;
+                  },1400);
+                },900);
+              },1600);
+            },900);
+          });
+          </script>'''
+          Path('runtime-audit.html').write_text(s.replace('</body>',audit+'\n</body>',1),encoding='utf-8')
+          PY
+          python -m http.server 8000 >/tmp/ss-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          CHROME="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$CHROME" || { echo 'Chrome not found'; exit 1; }
+          "$CHROME" --headless --no-sandbox --disable-gpu --window-size=1440,1200 --virtual-time-budget=9000 --dump-dom http://127.0.0.1:8000/runtime-audit.html > /tmp/runtime-dom.html
+          python - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from opencc import OpenCC
+          class P(HTMLParser):
+              def __init__(self): super().__init__(); self.on=False; self.buf=[]
+              def handle_starttag(self,tag,attrs):
+                  if tag=='pre' and dict(attrs).get('id')=='audit-output': self.on=True
+              def handle_endtag(self,tag):
+                  if tag=='pre' and self.on: self.on=False
+              def handle_data(self,data):
+                  if self.on:self.buf.append(data)
+          p=P(); p.feed(Path('/tmp/runtime-dom.html').read_text(encoding='utf-8',errors='replace'))
+          text=''.join(p.buf)
+          print(text[:16000])
+          if 'TRAD_MODE=zhtw' not in text or 'TRAD_LANG=zh-Hant' not in text: raise SystemExit('Traditional mode/lang verification failed')
+          if 'SIMP_MODE=zhcn' not in text or 'SIMP_LANG=zh-Hans' not in text: raise SystemExit('Simplified mode/lang verification failed')
+          trad=text.split('---TRAD---\n',1)[1].split('\n---SIMP META---',1)[0]
+          simp=text.split('---SIMP---\n',1)[1]
+          required=[
+            '公司簡介','亞太經驗','核心市場','全球網絡','東京 / 日本',
+            '源自對體育運動的真摯熱愛與尊重，驅動我們所管理的每一項企劃與合作。',
+            '打破傳統產業壁壘，開創充滿創意的商業機會與前瞻性策略。',
+            '對頂尖表現的技術與工藝抱持高度欣賞，向所有卓越運動員與創作者致敬。',
+            '創辦人','總經理','體育行銷主管','日本商務開發總監','世界盃區域銷售與行銷經理',
+            '公司\n公司簡介','差異\n核心優勢','職涯\n專業歷程','網絡\n廣泛的影響力與資源管道','案例\n案例研究：Apple','洞察\n洞察與觀點',
+            '閱讀完整專欄','聯絡我們','立即聯絡我們','版權所有。'
+          ]
+          missing=[x for x in required if x not in trad]
+          if missing: raise SystemExit('Missing expected Traditional strings: '+repr(missing))
+          cleaned=trad.replace('简体中文','')
+          c=OpenCC('s2twp')
+          suspects=[]
+          for line in cleaned.splitlines():
+              converted=c.convert(line)
+              if converted!=line:
+                  suspects.append((line,converted))
+          if suspects:
+              print('Residual Simplified-looking Traditional lines:')
+              for a,b in suspects[:40]: print('OLD:',a,'\nNEW:',b)
+              raise SystemExit('Residual Simplified Chinese detected in Traditional runtime')
+          for x in ['公司简介','亚太经验','核心市场','全球网络','东京 / 日本']:
+              if x not in simp: raise SystemExit('Simplified mode regression: missing '+x)
+          for label in ['English','日本語','简体中文','繁體中文']:
+              if label not in trad: raise SystemExit('Language dropdown label missing: '+label)
+          print('Traditional and Simplified runtime localization verified')
+          PY
+          rm -f runtime-audit.html
+          git diff --check
+      - name: Commit localization fix only
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet && { echo 'No index changes to commit'; exit 1; }
+          git commit -m 'Fix Traditional Chinese localization'
+          git push origin main

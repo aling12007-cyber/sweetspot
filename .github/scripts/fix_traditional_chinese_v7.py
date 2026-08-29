@@ -14,10 +14,10 @@ if old in s:s=s.replace(old,new,1)
 elif 'select.setAttribute("data-ss-no-simplify","1");' not in s:raise RuntimeError('Dropdown creation hook missing')
 
 # Also protect an already-created select whenever the dropdown controller reapplies.
-old='    rebuild(select,buttons);\n    box.classList.add("lang-dropdown-ready");'
-new='    select.setAttribute("data-ss-no-simplify","1");\n    rebuild(select,buttons);\n    box.classList.add("lang-dropdown-ready");'
+old='    rebuild(select,buttons);\n    select.value=String(activeIndex(buttons));\n    box.classList.add("lang-dropdown-ready");'
+new='    select.setAttribute("data-ss-no-simplify","1");\n    rebuild(select,buttons);\n    select.value=String(activeIndex(buttons));\n    box.classList.add("lang-dropdown-ready");'
 if old in s:s=s.replace(old,new,1)
-elif new not in s:raise RuntimeError('Dropdown apply hook missing')
+elif 'select.setAttribute("data-ss-no-simplify","1");\n    rebuild(select,buttons);' not in s:raise RuntimeError('Dropdown apply hook missing')
 
 INDEX.write_text(s,encoding='utf-8')
 subprocess.run(['git','diff','--check'],cwd=ROOT,check=True)

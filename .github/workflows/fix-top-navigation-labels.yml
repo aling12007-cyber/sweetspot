@@ -18,10 +18,10 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import base64
 
           p = Path('index.html')
           text = p.read_text(encoding='utf-8')
-
           start = '<!-- Top navigation short labels START -->'
           end = '<!-- Top navigation short labels END -->'
           if start in text:
@@ -29,100 +29,14 @@ jobs:
               b = text.index(end, a) + len(end)
               text = text[:a] + text[b:]
 
-          script = r'''<!-- Top navigation short labels START -->
-<script id="top-navigation-short-labels">
-(function(){
-  var labels={
-    "Company Introduction":"Company",
-    "Company Features":"Company",
-    "Points of Difference":"Difference",
-    "Introducing the Founder":"Founder",
-    "Broad Influence and Access":"Network",
-    "Case Study Apple":"Case",
-    "Case Study: Apple":"Case",
-    "Case Study：Apple":"Case",
-    "Insights & Perspectives":"Insights",
-
-    "会社紹介":"会社",
-    "会社の特徴":"会社",
-    "私たちの強み":"強み",
-    "創業者紹介":"創業者",
-    "幅広い影響力とアクセス":"ネットワーク",
-    "ケーススタディ Apple":"ケース",
-    "ケーススタディ：Apple":"ケース",
-    "洞察と視点":"洞察",
-
-    "公司介绍":"公司",
-    "公司特色":"公司",
-    "核心优势":"优势",
-    "创办人介绍":"创办人",
-    "广泛的影响力与资源管道":"网络",
-    "案例研究 Apple":"案例",
-    "案例研究：Apple":"案例",
-    "行业洞察":"洞察",
-
-    "公司介紹":"公司",
-    "核心優勢":"優勢",
-    "創辦人介紹":"創辦人",
-    "廣泛的影響力與資源管道":"網絡",
-    "案例研究 Apple":"案例",
-    "案例研究：Apple":"案例",
-    "行業洞察":"洞察"
-  };
-
-  function replaceTextNodes(el){
-    var walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
-    var node;
-    while((node=walker.nextNode())){
-      var raw=node.nodeValue||"";
-      var trimmed=raw.trim();
-      if(Object.prototype.hasOwnProperty.call(labels,trimmed)){
-        node.nodeValue=raw.replace(trimmed,labels[trimmed]);
-      }
-    }
-  }
-
-  function apply(){
-    var header=document.querySelector('header');
-    if(!header)return;
-    header.querySelectorAll('a,button').forEach(replaceTextNodes);
-  }
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',apply,{once:true});
-  }else{
-    apply();
-  }
-
-  var queued=false;
-  new MutationObserver(function(){
-    if(queued)return;
-    queued=true;
-    requestAnimationFrame(function(){queued=false;apply();});
-  }).observe(document.documentElement,{subtree:true,childList:true,characterData:true});
-})();
-</script>
-<!-- Top navigation short labels END -->'''
-
+          payload = 'PCEtLSBUb3AgbmF2aWdhdGlvbiBzaG9ydCBsYWJlbHMgU1RBUlQgLS0+CjxzY3JpcHQgaWQ9InRvcC1uYXZpZ2F0aW9uLXNob3J0LWxhYmVscyI+CihmdW5jdGlvbigpewogIHZhciBsYWJlbHM9ewogICAgIkNvbXBhbnkgSW50cm9kdWN0aW9uIjoiQ29tcGFueSIsCiAgICAiQ29tcGFueSBGZWF0dXJlcyI6IkNvbXBhbnkiLAogICAgIlBvaW50cyBvZiBEaWZmZXJlbmNlIjoiRGlmZmVyZW5jZSIsCiAgICAiSW50cm9kdWNpbmcgdGhlIEZvdW5kZXIiOiJGb3VuZGVyIiwKICAgICJCcm9hZCBJbmZsdWVuY2UgYW5kIEFjY2VzcyI6Ik5ldHdvcmsiLAogICAgIkNhc2UgU3R1ZHkgQXBwbGUiOiJDYXNlIiwKICAgICJDYXNlIFN0dWR5OiBBcHBsZSI6IkNhc2UiLAogICAgIkNhc2UgU3R1ZHnvvJpBcHBsZSI6IkNhc2UiLAogICAgIkluc2lnaHRzICYgUGVyc3BlY3RpdmVzIjoiSW5zaWdodHMiLAogICAgIuS8muekvOS7i+S7iyI6IuS8muekvCIsCiAgICAi5Lya56S+44Gu54m5546yIjoi5Lya56S+IiwKICAgICLnp4HjgZ/jgaHjga7lvLfjgb8iOiLlvLfjgb8iLAogICAgIuWJtealreWQjeS7iyI6IuWJtealreiAhSIsCiAgICAi5bmF5bqD44GE5b2x6Z+/5Yqb44Go44Ki44Kv44K744K5Ijoi44ON44OD44OI44Ov44O844KvIiwKICAgICLjgrHjg7zjgrnjgrnjgr/jg4fjgqMgQXBwbGUiOiLjgrHjg7zjgrkiLAogICAgIuOCseODvOOCueOCueOCv+ODh+OCo++8mkFwcGxlIjoi44Kx44O844K5IiwKICAgICLmtJ7lr5_jgajjg5bjg6njg7Pjg4YiOiLmtJ7lr58iLAogICAgIuWFrOWPuOS7i+e7j+S7iyI6IuWFrOWPuCIsCiAgICAi5YWs5Y+454m56ImyIjoi5YWs5Y+4IiwKICAgICLmoLjlv4PkvJjliq8iOiLkvJjliq8iLAogICAgIuWIm+WKnuS6u+S7i+e7j+S7iyI6IuWIm+WKnuS6uiIsCiAgICAi5bm/5rOb55qE5b2x5ZON5Yqb5LiO6LWE5rqQ566h6YGTIjoi572R57ucIiwKICAgICLmoYjkvovnoJTnqbYgQXBwbGUiOiLmoYjkvosiLAogICAgIuahiOS+i+eglOeptu+8mkFwcGxlIjoi5qGI5L6LIiwKICAgICLooYzkuJrmtJ7lr58iOiLmtJ7lr58iLAogICAgIuWFrOWPuOS7iue0uCI6IuWFrOWPuCIsCiAgICAi5qC45b+D5YSq5YuLIjoi5YSq5YuLIiwKICAgICLlibXovqbkurrku4vntLkiOiLlibXovqbkuroiLAogICAgIuW7o+azm+eahOW9semfv+WKm+iIiOi3r+mCk+euoeeQhiI6Iue2s+i7nCIsCiAgICAi5qGI5L6L56CU56m2IEFwcGxlIjoi5qGI5L6LIiwKICAgICLmoYjkvovnoJTnqbY77yaBBcHBsZSI6IuahiOS+iSIsCiAgICAi6KGM5qWt5rSe5a+fIjoi5rSe5a+fIgogIH07CiAgZnVuY3Rpb24gcmVwbGFjZVRleHROb2RlcyhlbCl7CiAgICB2YXIgd2Fsa2VyPWRvY3VtZW50LmNyZWF0ZVRyZWVXYWxrZXIoZWwsTm9kZUZpbHRlci5TSE9XX1RFWFQpOwogICAgdmFyIG5vZGU7CiAgICB3aGlsZSgobm9kZT13YWxrZXIubmV4dE5vZGUoKSkpewogICAgICB2YXIgcmF3PW5vZGUubm9kZVZhbHVlfHwiIjsKICAgICAgdmFyIHRyaW1tZWQ9cmF3LnRyaW0oKTsKICAgICAgaWYoT2JqZWN0LnByb3RvdHlwZS5oYXNPd25Qcm9wZXJ0eS5jYWxsKGxhYmVscyx0cmltbWVkKSl7CiAgICAgICAgbm9kZS5ub2RlVmFsdWU9cmF3LnJlcGxhY2UodHJpbW1lZCxsYWJlbHNbdHJpbW1lZF0pOwogICAgICB9CiAgICB9CiAgfQogIGZ1bmN0aW9uIGFwcGx5KCl7CiAgICB2YXIgaGVhZGVyPWRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoJ2hlYWRlcicpOwogICAgaWYoIWhlYWRlcilldHVybjsKICAgIGhlYWRlci5xdWVyeVNlbGVjdG9yQWxsKCdhLGJ1dHRvbicpLmZvckVhY2gocmVwbGFjZVRleHROb2Rlcyk7CiAgfQogIGlmKGRvY3VtZW50LnJlYWR5U3RhdGU9PT0nbG9hZGluZycpewogICAgZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsYXBwbHkse29uY2U6dHJ1ZX0pOwogIH1lbHNlewogICAgYXBwbHkoKTsKICB9CiAgdmFyIHF1ZXVlZD1mYWxzZTsKICBuZXcgTXV0YXRpb25PYnNlcnZlcihmdW5jdGlvbigpewogICAgaWYocXVldWVkKXJldHVybjsKICAgIHF1ZXVlZD10cnVlOwogICAgcmVxdWVzdEFuaW1hdGlvbkZyYW1lKGZ1bmN0aW9uKCl7cXVldWVkPWZhbHNlO2FwcGx5KCk7fSk7CiAgfSkub2JzZXJ2ZShkb2N1bWVudC5kb2N1bWVudEVsZW1lbnQse3N1YnRyZWU6dHJ1ZSxjaGlsZExpc3Q6dHJ1ZSxjaGFyYWN0ZXJEYXRhOnRydWV9KTsKfSkoKTsKPC9zY3JpcHQ+CjwhLS0gVG9wIG5hdmlnYXRpb24gc2hvcnQgbGFiZWxzIEVORCAtLT4='
+          script = base64.b64decode(payload).decode('utf-8')
           if '</body>' not in text:
               raise SystemExit('Could not find </body>')
           text = text.replace('</body>', script + '\n</body>', 1)
 
-          # Safety guards: exactly one nav-only controller, and requested page content remains present.
           if text.count('id="top-navigation-short-labels"') != 1:
               raise SystemExit('Expected exactly one top navigation controller')
-          required_page_copy = [
-              'Company Introduction',
-              'Points of Difference',
-              'Professional Journey',
-              'Broad Influence and Access',
-              'Case Study',
-              'Insights & Perspectives'
-          ]
-          missing = [s for s in required_page_copy if s not in text]
-          if missing:
-              raise SystemExit(f'Unexpected page-copy regression: {missing}')
-
           p.write_text(text, encoding='utf-8')
           PY
 

@@ -1858,17 +1858,17 @@ react/cjs/react-jsx-runtime.production.js:
     if((b.ja.textContent||'').trim()!=='日')b.ja.textContent='日';
     if((b.zh.textContent||'').trim()!=='中')b.zh.textContent='中';
 
-    b.en.dataset.ssLabel='ENG';
-    b.en.setAttribute('aria-label','ENG');
-    b.en.setAttribute('title','ENG');
+    b.en.dataset.ssLabel='EN';
+    b.en.setAttribute('aria-label','EN');
+    b.en.setAttribute('title','EN');
 
-    b.ja.dataset.ssLabel='日本語';
-    b.ja.setAttribute('aria-label','日本語');
-    b.ja.setAttribute('title','日本語');
+    b.ja.dataset.ssLabel='日';
+    b.ja.setAttribute('aria-label','日');
+    b.ja.setAttribute('title','日');
 
-    b.zh.dataset.ssLabel='繁體中文';
-    b.zh.setAttribute('aria-label','繁體中文');
-    b.zh.setAttribute('title','繁體中文');
+    b.zh.dataset.ssLabel='繁';
+    b.zh.setAttribute('aria-label','繁');
+    b.zh.setAttribute('title','繁');
   }
 
   function ensureUI(){
@@ -1887,9 +1887,9 @@ react/cjs/react-jsx-runtime.production.js:
       b.root.insertBefore(simp,b.zh);
     }
 
-    simp.dataset.ssLabel='简体中文';
-    simp.setAttribute('aria-label','简体中文');
-    simp.setAttribute('title','简体中文');
+    simp.dataset.ssLabel='简';
+    simp.setAttribute('aria-label','简');
+    simp.setAttribute('title','简');
 
     if(mode==='zhcn'){
       Array.prototype.forEach.call(b.root.querySelectorAll('button'),function(x){x.classList.remove('active')});

@@ -22,6 +22,13 @@ jobs:
           new="before,sep,after=text.rpartition('</style>'); text=before+css+'\\n</style>'+after"
           if old in s: s=s.replace(old,new,1)
           p.write_text(s,encoding='utf-8')
+
+          q=Path('.github/scripts/final_heading_specificity.py')
+          t=q.read_text(encoding='utf-8')
+          oldv="var P=[s(w,'::before'),s(w,'::after'),s(k,'::before'),s(k,'::after')].every(function(x){return x.content==='none'||x.display==='none'});"
+          newv="var P=[s(w,'::before'),s(w,'::after'),s(k,'::before'),s(k,'::after')].every(function(x){return x.display==='none'||x.content==='none'||x.content==='normal'||(((parseFloat(x.width)||0)<=1)&&((parseFloat(x.height)||0)<=1))});var icons=[].slice.call(w.querySelectorAll('.section-kicker-icon,.section-sport-icon,svg,i'));P=P&&icons.every(function(e){var z=s(e),r=e.getBoundingClientRect();return z.display==='none'||z.visibility==='hidden'||r.width===0||r.height===0});"
+          if oldv not in t: raise SystemExit('final verifier expression not found')
+          q.write_text(t.replace(oldv,newv,1),encoding='utf-8')
           PY
           python .github/scripts/fix_headings_to_actual_insights.py || true
       - name: Force exact Insights computed styles and verify

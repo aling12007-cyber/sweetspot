@@ -13,35 +13,18 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install OpenCC
         run: python -m pip install --disable-pip-version-check -q opencc-python-reimplemented
-      - name: Trace dropdown mapping and Chinese source
+      - name: Trace v4 localization patch behavior
         shell: bash
         run: |
           python - <<'PY'
+          import importlib.util
+          spec=importlib.util.spec_from_file_location('m','.github/scripts/fix_traditional_chinese_v4.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);m.patch_index()
           from pathlib import Path
-          from opencc import OpenCC
-          import re,json
-          s=Path('index.html').read_text(encoding='utf-8');cc=OpenCC('s2tw')
-          def dec(body):
-              out=[];i=0;common={'n':'\n','r':'\r','t':'\t','"':'"',"'":"'",'\\':'\\','/':'/'}
-              while i<len(body):
-                  if body[i]!='\\':out.append(body[i]);i+=1;continue
-                  if i+1>=len(body):out.append('\\');break
-                  k=body[i+1]
-                  if k=='u' and i+5<len(body) and re.fullmatch(r'[0-9a-fA-F]{4}',body[i+2:i+6]):out.append(chr(int(body[i+2:i+6],16)));i+=6;continue
-                  if k=='x' and i+3<len(body) and re.fullmatch(r'[0-9a-fA-F]{2}',body[i+2:i+4]):out.append(chr(int(body[i+2:i+4],16)));i+=4;continue
-                  out.append(common.get(k,k));i+=2
-              return ''.join(out)
-          pat=re.compile(r'zh:"((?:\\.|[^"\\])*)"')
-          def repl(m):
-              raw=m.group(1);txt=cc.convert(dec(raw));
-              for a,b in {'公司特色':'公司簡介','創始人':'創辦人','案例研究 Apple':'案例研究：Apple'}.items():txt=txt.replace(a,b)
-              return 'zh:"'+json.dumps(txt,ensure_ascii=True)[1:-1]+'"'
-          s=pat.sub(repl,s)
+          s=Path('index.html').read_text(encoding='utf-8')
           hook=r'''<script>
           window.addEventListener('load',function(){setTimeout(function(){
-            var out=[];function state(tag){var box=document.querySelector('.lang-switch');var bs=box?[].slice.call(box.children).filter(function(x){return x.tagName==='BUTTON'}):[];var sel=document.querySelector('.lang-dropdown-select');out.push(tag+' MODE='+(document.documentElement.getAttribute('data-ss-lang-mode')||'')+' LANG='+(document.documentElement.getAttribute('lang')||'')+' BUTTONS='+bs.map(function(b,i){return i+':'+(b.textContent||'').trim()+':'+b.className}).join(' || ')+' OPTIONS='+(sel?[].slice.call(sel.options).map(function(o,i){return i+':'+o.text}).join(' || '):'none')+' HERO='+((document.querySelector('.hero-copy h2')||{}).textContent||''));}
-            document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.lang-switch button');if(b){state('CAPTURE-BEFORE-'+((b.textContent||'').trim())+'-'+b.className);setTimeout(function(){state('AFTER-CLICK')},50)}},true);
-            state('START');var sel=document.querySelector('.lang-dropdown-select');sel.value='3';state('BEFORE-CHANGE-3');sel.dispatchEvent(new Event('change',{bubbles:true}));setTimeout(function(){state('AFTER-CHANGE-3');document.body.innerHTML='<pre id="audit-output"></pre>';document.getElementById('audit-output').textContent=out.join('\n');},1800);
+            var out=[];function state(tag){var box=document.querySelector('.lang-switch');var bs=box?[].slice.call(box.children).filter(function(x){return x.tagName==='BUTTON'}):[];var sel=document.querySelector('.lang-dropdown-select');out.push(tag+' MODE='+(document.documentElement.getAttribute('data-ss-lang-mode')||'')+' LANG='+(document.documentElement.getAttribute('lang')||'')+' BUTTONS='+bs.map(function(b,i){return i+':'+(b.textContent||'').trim()+':'+b.className}).join(' || ')+' OPTIONS='+(sel?[].slice.call(sel.options).map(function(o,i){return i+':'+o.text}).join(' || '):'none')+' HERO='+((document.querySelector('.hero-copy h2')||{}).textContent||'')+' STAT='+((document.querySelector('.stats span')||{}).textContent||'')+' BODYTRAD='+String((document.body.innerText||'').indexOf('源自對體育運動的真摯熱愛與尊重')>=0)+' BODYSIMP='+String((document.body.innerText||'').indexOf('源自对体育运动的真挚热爱与尊重')>=0));}
+            state('START');var sel=document.querySelector('.lang-dropdown-select');sel.value='3';sel.dispatchEvent(new Event('change',{bubbles:true}));setTimeout(function(){state('T50')},50);setTimeout(function(){state('T300')},300);setTimeout(function(){state('T1000');document.body.innerHTML='<pre id="audit-output"></pre>';document.getElementById('audit-output').textContent=out.join('\n');},1000);
           },900)});
           </script>'''
           Path('debug.html').write_text(s.replace('</body>',hook+'\n</body>',1),encoding='utf-8')
@@ -49,7 +32,7 @@ jobs:
           python -m http.server 8000 >/tmp/http.log 2>&1 &
           P=$!;trap 'kill $P || true' EXIT
           CHROME="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
-          "$CHROME" --headless --no-sandbox --disable-gpu --virtual-time-budget=6500 --dump-dom http://127.0.0.1:8000/debug.html >/tmp/dom.html
+          "$CHROME" --headless --no-sandbox --disable-gpu --virtual-time-budget=6000 --dump-dom http://127.0.0.1:8000/debug.html >/tmp/dom.html
           python - <<'PY'
           import re,html
           s=open('/tmp/dom.html',encoding='utf-8',errors='replace').read();m=re.search(r'<pre id="audit-output">(.*?)</pre>',s,re.S);print(html.unescape(re.sub(r'<[^>]+>','',m.group(1) if m else 'NO OUTPUT')))

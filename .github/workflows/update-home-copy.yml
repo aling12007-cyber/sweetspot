@@ -1,0 +1,115 @@
+name: Update homepage CTA and Case Study title
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-home-copy.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Update only requested homepage copy
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+
+          # Update the visible Case Study large heading in the existing runtime copy map.
+          replacements = [
+              (
+                  'capabilities:["Case Study","Case Study Apple","Demonstrated high-level facilitation capability"]',
+                  'capabilities:["Case Study","Case Study: Apple","Demonstrated high-level facilitation capability"]'
+              ),
+              (
+                  'capabilities:["ケーススタディ","ケーススタディ Apple","高水準のファシリテーション能力を実証："]',
+                  'capabilities:["ケーススタディ","ケーススタディ：Apple","高水準のファシリテーション能力を実証："]'
+              ),
+              (
+                  'capabilities:["案例研究","案例研究 Apple","展現高水準的協調促成能力："]',
+                  'capabilities:["案例研究","案例研究：Apple","展現高水準的協調促成能力："]'
+              ),
+          ]
+          for old, new in replacements:
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'Expected exactly one runtime heading mapping for {old!r}, found {count}')
+              text = text.replace(old, new, 1)
+
+          # Change only the hero gold CTA text. This deliberately targets text nodes inside links/buttons,
+          # so section headings and navigation labels remain untouched.
+          start = '<!-- Hero CTA text override START -->'
+          end = '<!-- Hero CTA text override END -->'
+          if start in text:
+              a = text.index(start)
+              b = text.index(end, a) + len(end)
+              text = text[:a] + text[b:]
+
+          script = r'''<!-- Hero CTA text override START -->
+<script id="hero-cta-copy-override">
+(function(){
+  var ctaMap={
+    "Company Features":"Company Introduction",
+    "会社の特徴":"会社紹介",
+    "公司特色":"公司介紹"
+  };
+  function patchTextNodes(el){
+    var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
+    var n;
+    while((n=w.nextNode())){
+      var raw=n.nodeValue||"";
+      var trimmed=raw.trim();
+      if(Object.prototype.hasOwnProperty.call(ctaMap,trimmed)){
+        n.nodeValue=raw.replace(trimmed,ctaMap[trimmed]);
+      }
+    }
+  }
+  function apply(){
+    document.querySelectorAll('a,button').forEach(patchTextNodes);
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',apply,{once:true});
+  }else{
+    apply();
+  }
+  var queued=false;
+  new MutationObserver(function(){
+    if(queued)return;
+    queued=true;
+    requestAnimationFrame(function(){queued=false;apply();});
+  }).observe(document.documentElement,{subtree:true,childList:true,characterData:true});
+})();
+</script>
+<!-- Hero CTA text override END -->'''
+
+          if '</body>' not in text:
+              raise SystemExit('Could not find </body> insertion point')
+          text = text.replace('</body>', script + '\n</body>', 1)
+
+          # Guards: requested new text must be present, existing short top navigation stays intact.
+          required = [
+              'Company Introduction', '会社紹介', '公司介紹',
+              'Case Study: Apple', 'ケーススタディ：Apple', '案例研究：Apple',
+              '[["company",{en:"Company",ja:"会社",zh:"公司"}]'
+          ]
+          missing = [s for s in required if s not in text]
+          if missing:
+              raise SystemExit(f'Missing expected text after patch: {missing}')
+
+          p.write_text(text, encoding='utf-8')
+          PY
+
+          git diff -- index.html
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/update-home-copy.yml
+          git add index.html
+          git commit -m 'Update homepage CTA and Case Study title'
+          git push

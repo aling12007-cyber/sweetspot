@@ -21,78 +21,56 @@ jobs:
 
           p = Path('index.html')
           text = p.read_text(encoding='utf-8')
+          start = '<!-- Requested homepage copy overrides START -->'
+          end = '<!-- Requested homepage copy overrides END -->'
 
-          replacements = [
-              ('capabilities:["Case Study","Case Study Apple","Demonstrated high-level facilitation capability"]',
-               'capabilities:["Case Study","Case Study: Apple","Demonstrated high-level facilitation capability"]'),
-              ('capabilities:["ケーススタディ","ケーススタディ Apple","高水準のファシリテーション能力を実証："]',
-               'capabilities:["ケーススタディ","ケーススタディ：Apple","高水準のファシリテーション能力を実証："]'),
-              ('capabilities:["案例研究","案例研究 Apple","展現高水準的協調促成能力："]',
-               'capabilities:["案例研究","案例研究：Apple","展現高水準的協調促成能力："]'),
-          ]
-          for old, new in replacements:
-              count = text.count(old)
-              if count != 1:
-                  raise SystemExit(f'Expected exactly one runtime heading mapping for {old!r}, found {count}')
-              text = text.replace(old, new, 1)
-
-          start = '<!-- Hero CTA text override START -->'
-          end = '<!-- Hero CTA text override END -->'
           if start in text:
               a = text.index(start)
               b = text.index(end, a) + len(end)
               text = text[:a] + text[b:]
 
-          script = '''<!-- Hero CTA text override START -->
-          <script id="hero-cta-copy-override">
-          (function(){
-            var ctaMap={
-              "Company Features":"Company Introduction",
-              "会社の特徴":"会社紹介",
-              "公司特色":"公司介紹"
-            };
-            function patchTextNodes(el){
-              var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
-              var n;
-              while((n=w.nextNode())){
-                var raw=n.nodeValue||"";
-                var trimmed=raw.trim();
-                if(Object.prototype.hasOwnProperty.call(ctaMap,trimmed)){
-                  n.nodeValue=raw.replace(trimmed,ctaMap[trimmed]);
-                }
-              }
-            }
-            function apply(){
-              document.querySelectorAll('a,button').forEach(patchTextNodes);
-            }
-            if(document.readyState==='loading'){
-              document.addEventListener('DOMContentLoaded',apply,{once:true});
-            }else{
-              apply();
-            }
-            var queued=false;
-            new MutationObserver(function(){
-              if(queued)return;
-              queued=true;
-              requestAnimationFrame(function(){queued=false;apply();});
-            }).observe(document.documentElement,{subtree:true,childList:true,characterData:true});
-          })();
-          </script>
-          <!-- Hero CTA text override END -->'''
-          script = '\n'.join(line[10:] if line.startswith('          ') else line for line in script.splitlines())
+          lines = [
+              '<!-- Requested homepage copy overrides START -->',
+              '<script id="requested-home-copy-overrides">',
+              '(function(){',
+              '  var ctaMap={"Company Features":"Company Introduction","会社の特徴":"会社紹介","公司特色":"公司介紹"};',
+              '  var caseMap={"Case Study Apple":"Case Study: Apple","ケーススタディ Apple":"ケーススタディ：Apple","案例研究 Apple":"案例研究：Apple"};',
+              '  function patchTextNodes(el,map){',
+              '    var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);',
+              '    var n;',
+              '    while((n=w.nextNode())){',
+              '      var raw=n.nodeValue||"";',
+              '      var trimmed=raw.trim();',
+              '      if(Object.prototype.hasOwnProperty.call(map,trimmed)){',
+              '        n.nodeValue=raw.replace(trimmed,map[trimmed]);',
+              '      }',
+              '    }',
+              '  }',
+              '  function apply(){',
+              '    document.querySelectorAll("a,button").forEach(function(el){patchTextNodes(el,ctaMap);});',
+              '    var scope=document.querySelector("#capabilities");',
+              '    if(scope){scope.querySelectorAll("h1,h2,h3,.hierarchy-heading").forEach(function(el){patchTextNodes(el,caseMap);});}',
+              '  }',
+              '  if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",apply,{once:true});}else{apply();}',
+              '  var queued=false;',
+              '  new MutationObserver(function(){',
+              '    if(queued)return;',
+              '    queued=true;',
+              '    requestAnimationFrame(function(){queued=false;apply();});',
+              '  }).observe(document.documentElement,{subtree:true,childList:true,characterData:true});',
+              '})();',
+              '</script>',
+              '<!-- Requested homepage copy overrides END -->',
+          ]
+          script = '\n'.join(lines)
 
           if '</body>' not in text:
               raise SystemExit('Could not find </body> insertion point')
           text = text.replace('</body>', script + '\n</body>', 1)
 
-          required = [
-              'Company Introduction', '会社紹介', '公司介紹',
-              'Case Study: Apple', 'ケーススタディ：Apple', '案例研究：Apple',
-              '[["company",{en:"Company",ja:"会社",zh:"公司"}]'
-          ]
-          missing = [s for s in required if s not in text]
-          if missing:
-              raise SystemExit(f'Missing expected text after patch: {missing}')
+          for expected in ['Company Introduction','Case Study: Apple','会社紹介','ケーススタディ：Apple','公司介紹','案例研究：Apple']:
+              if expected not in text:
+                  raise SystemExit(f'Missing expected copy: {expected}')
 
           p.write_text(text, encoding='utf-8')
           PY

@@ -2395,7 +2395,7 @@ react/cjs/react-jsx-runtime.production.js:
     return 0;
   }
   function rebuild(select,buttons){
-    var labels=buttons.map(function(btn){return (btn.textContent||"").trim();});
+    var labels=["English","\u65e5\u672c\u8a9e","\u7b80\u4f53\u4e2d\u6587","\u7e41\u9ad4\u4e2d\u6587"];
     var same=select.options.length===labels.length;
     if(same){
       for(var i=0;i<labels.length;i++){

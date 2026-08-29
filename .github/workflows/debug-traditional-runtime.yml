@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install OpenCC
         run: python -m pip install --disable-pip-version-check -q opencc-python-reimplemented
-      - name: Correctly verify patched React Chinese source at runtime
+      - name: Trace dropdown mapping and Chinese source
         shell: bash
         run: |
           python - <<'PY'
@@ -31,17 +31,18 @@ jobs:
                   if k=='x' and i+3<len(body) and re.fullmatch(r'[0-9a-fA-F]{2}',body[i+2:i+4]):out.append(chr(int(body[i+2:i+4],16)));i+=4;continue
                   out.append(common.get(k,k));i+=2
               return ''.join(out)
-          pat=re.compile(r'zh:"((?:\\.|[^"\\])*)"');count=0
+          pat=re.compile(r'zh:"((?:\\.|[^"\\])*)"')
           def repl(m):
-              global count
-              raw=m.group(1);txt=dec(raw);new=cc.convert(txt)
-              sem={'公司特色':'公司簡介','案例研究 Apple':'案例研究：Apple','創始人':'創辦人','2015 FIFA U-20 世界杯區域銷售與行銷經理':'2015 FIFA U-20 世界盃區域銷售與行銷經理'}
-              new=sem.get(new,new);enc=json.dumps(new,ensure_ascii=True)[1:-1]
-              if enc!=raw:count+=1
-              return 'zh:"'+enc+'"'
-          s=pat.sub(repl,s);print('CHANGED',count)
+              raw=m.group(1);txt=cc.convert(dec(raw));
+              for a,b in {'公司特色':'公司簡介','創始人':'創辦人','案例研究 Apple':'案例研究：Apple'}.items():txt=txt.replace(a,b)
+              return 'zh:"'+json.dumps(txt,ensure_ascii=True)[1:-1]+'"'
+          s=pat.sub(repl,s)
           hook=r'''<script>
-          window.addEventListener('load',function(){setTimeout(function(){var buttons=[].slice.call(document.querySelectorAll('.lang-switch button'));var trad=buttons.find(function(b){return !b.classList.contains('ss-lang-simplified')&&(b.textContent||'').trim()==='中'});if(trad)trad.click();setTimeout(function(){var welcome=(document.querySelector('.hero-copy h2')||{}).textContent||'';var stat=(document.querySelector('.stats span')||{}).textContent||'';var cta=(document.querySelector('.hero-cta .gold-button')||{}).textContent||'';var body=(document.body.innerText||'');var mode=document.documentElement.getAttribute('data-ss-lang-mode')||'';var lang=document.documentElement.getAttribute('lang')||'';document.body.innerHTML='<pre id="audit-output"></pre>';document.getElementById('audit-output').textContent='MODE='+mode+'\nLANG='+lang+'\nWELCOME='+welcome+'\nSTAT='+stat+'\nCTA='+cta+'\nHAS_TRAD_BODY='+String(body.indexOf('源自對體育運動的真摯熱愛與尊重')>=0);},1400);},700);});
+          window.addEventListener('load',function(){setTimeout(function(){
+            var out=[];function state(tag){var box=document.querySelector('.lang-switch');var bs=box?[].slice.call(box.children).filter(function(x){return x.tagName==='BUTTON'}):[];var sel=document.querySelector('.lang-dropdown-select');out.push(tag+' MODE='+(document.documentElement.getAttribute('data-ss-lang-mode')||'')+' LANG='+(document.documentElement.getAttribute('lang')||'')+' BUTTONS='+bs.map(function(b,i){return i+':'+(b.textContent||'').trim()+':'+b.className}).join(' || ')+' OPTIONS='+(sel?[].slice.call(sel.options).map(function(o,i){return i+':'+o.text}).join(' || '):'none')+' HERO='+((document.querySelector('.hero-copy h2')||{}).textContent||''));}
+            document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.lang-switch button');if(b){state('CAPTURE-BEFORE-'+((b.textContent||'').trim())+'-'+b.className);setTimeout(function(){state('AFTER-CLICK')},50)}},true);
+            state('START');var sel=document.querySelector('.lang-dropdown-select');sel.value='3';state('BEFORE-CHANGE-3');sel.dispatchEvent(new Event('change',{bubbles:true}));setTimeout(function(){state('AFTER-CHANGE-3');document.body.innerHTML='<pre id="audit-output"></pre>';document.getElementById('audit-output').textContent=out.join('\n');},1800);
+          },900)});
           </script>'''
           Path('debug.html').write_text(s.replace('</body>',hook+'\n</body>',1),encoding='utf-8')
           PY

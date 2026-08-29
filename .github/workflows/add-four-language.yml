@@ -1,0 +1,26 @@
+name: Add four-language Chinese switch
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-four-language.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add Traditional and Simplified Chinese language modes
+        shell: bash
+        run: echo 'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmltcG9ydCByZSwgc3VicHJvY2VzcwoKcGF0aD1QYXRoKCdpbmRleC5odG1sJykKcz1wYXRoLnJlYWRfdGV4dChlbmNvZGluZz0ndXRmLTgnKQoKbWFya2VyPSc8IS0tIFNTIEZPVVIgTEFOR1VBR0UgU1dJVENIIFNUQVJUIC0tPicKYXNzZXJ0IG1hcmtlciBub3QgaW4gcywgJ0ZvdXItbGFuZ3VhZ2Ugc3dpdGNoIGFscmVhZHkgaW5zdGFsbGVkJwoKb2xkX3NldD0iZnVuY3Rpb24gc2V0TGFiZWwoYSx2KXtpZihhJiZhLnRleHRDb250ZW50IT09dil hLnRleHRDb250ZW50PXY7fSIKbmV3X3NldD0iZnVuY3Rpb24gc2V0TGFiZWwoYSx2KXtpZihkb2N1bWVudC5kb2N1bWVudEVsZW1lbnQuZ2V0QXR0cmlidXRlKCdkYXRhLXNzLWxhbmctbW9kZScpPT09J3poY24nJiZ3aW5kb3cuX19zc1RvU2ltcGxpZmllZCl2PXdpbmRvdy5fX3NzVG9TaW1wbGlmaWVkKHYpO2lmKGEmJmEudGV4dENvbnRlbnQhPT12KWEudGV4dENvbnRlbnQ9djt9Igphc3NlcnQgb2xkX3NldCBpbiBzLCAnTmF2aWdhdGlvbiBzZXRMYWJlbCBob29rIG5vdCBmb3VuZCcKcz1zLnJlcGxhY2Uob2xkX3NldCxuZXdfc2V0LDEpCg...REDACTED_FOR_DISPLAY...JykKc3VicHJvY2Vzcy5ydW4oWydub2RlJywnLS1jaGVjaycsc3RyKHRtcCldLGNoZWNrPVRydWUpCnRtcC51bmxpbmsoKQoKcHJpbnQoJ0ZvdXItbGFuZ3VhZ2Ugc3dpdGNoIGFuZCBUcmFkaXRpb25hbCBDaGluZXNlIG1vZGUgaW5zdGFsbGVkLicpCg==' | base64 -d | python
+      - name: Commit language update
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git rm -f .github/workflows/add-four-language.yml
+          git commit -m 'Add Traditional Chinese language option'
+          git push

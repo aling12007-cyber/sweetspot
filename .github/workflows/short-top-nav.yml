@@ -1,0 +1,77 @@
+name: Shorten top navigation labels
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/short-top-nav.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch only top navigation labels
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+
+          pattern = re.compile(
+              r'\[\["company",\{en:"[^"]+",ja:"[^"]+",zh:"[^"]+"\}\],'
+              r'\["points",\{en:"[^"]+",ja:"[^"]+",zh:"[^"]+"\}\],'
+              r'\["founder",\{en:"[^"]+",ja:"[^"]+",zh:"[^"]+"\}\],'
+              r'\["network",\{en:"[^"]+",ja:"[^"]+",zh:"[^"]+"\}\],'
+              r'\["capabilities",\{en:"[^"]+",ja:"[^"]+",zh:"[^"]+"\}\],'
+              r'\["insights",\{en:"[^"]+",ja:"[^"]+",zh:"[^"]+"\}\]\]'
+          )
+          matches = list(pattern.finditer(text))
+          if len(matches) != 1:
+              raise SystemExit(f'Expected exactly one top navigation array, found {len(matches)}')
+
+          old = matches[0].group(0)
+          new = (
+              '[["company",{en:"Company",ja:"会社",zh:"公司"}],'
+              '["points",{en:"Difference",ja:"強み",zh:"優勢"}],'
+              '["founder",{en:"Founder",ja:"創業者",zh:"創辦人"}],'
+              '["network",{en:"Network",ja:"ネットワーク",zh:"網絡"}],'
+              '["capabilities",{en:"Case",ja:"ケース",zh:"案例"}],'
+              '["insights",{en:"Insights",ja:"洞察",zh:"洞察"}]]'
+          )
+
+          print('Old top nav:', old)
+          print('New top nav:', new)
+          text = text[:matches[0].start()] + new + text[matches[0].end():]
+
+          # Guard: section-heading copy remains intact. Only the header nav array is shortened.
+          required_heading_copy = [
+              'Company Introduction',
+              'Points of Difference',
+              'Professional Journey',
+              'Broad Influence and Access',
+              'Case Study Apple',
+              'Insights & Perspectives',
+          ]
+          missing = [s for s in required_heading_copy if s not in text]
+          if missing:
+              raise SystemExit(f'Heading copy unexpectedly missing after nav-only patch: {missing}')
+
+          if text.count(new) != 1:
+              raise SystemExit('New short navigation array verification failed')
+
+          p.write_text(text, encoding='utf-8')
+          PY
+
+          git diff -- index.html
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/short-top-nav.yml
+          git add index.html
+          git commit -m 'Shorten top navigation labels'
+          git push

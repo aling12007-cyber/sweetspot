@@ -1,4 +1,60 @@
-/* Sweet Spot — Case Study split layout */
+/* Sweet Spot — Hero and Case Study enhancements */
+#home .hero-bridge-line{
+  margin:18px 0 22px;
+  max-width:680px;
+  color:rgba(255,255,255,.7);
+  font-size:clamp(11px,1vw,13px);
+  font-weight:500;
+  line-height:1.65;
+  letter-spacing:.055em;
+}
+
+#home .hero-cta{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:12px;
+}
+
+#home .hero-company-cta{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:46px;
+  padding:12px 20px;
+  border:1px solid rgba(255,255,255,.32);
+  background:rgba(7,10,15,.24);
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+  line-height:1;
+  letter-spacing:.07em;
+  text-decoration:none;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  transition:border-color .22s ease,background .22s ease,transform .22s ease;
+}
+
+#home .hero-company-cta::after{
+  content:"↗";
+  margin-left:10px;
+  color:var(--gold);
+  font-size:13px;
+  transform:translateY(-1px);
+}
+
+#home .hero-company-cta:hover,
+#home .hero-company-cta:focus-visible{
+  border-color:rgba(215,169,54,.72);
+  background:rgba(215,169,54,.08);
+  transform:translateY(-1px);
+}
+
+#home .hero-company-cta:focus-visible{
+  outline:2px solid var(--gold);
+  outline-offset:3px;
+}
+
 #capabilities .case-study-split{
   display:grid;
   grid-template-columns:minmax(0,.88fr) minmax(380px,1.12fr);
@@ -86,6 +142,24 @@
 }
 
 @media(max-width:600px){
+  #home .hero-bridge-line{
+    margin:14px 0 18px;
+    max-width:92%;
+    font-size:10px;
+    line-height:1.55;
+    letter-spacing:.04em;
+  }
+
+  #home .hero-cta{
+    gap:10px;
+  }
+
+  #home .hero-company-cta{
+    min-height:42px;
+    padding:11px 15px;
+    font-size:10px;
+  }
+
   #capabilities .case-study-split{
     padding:18px;
     gap:20px;

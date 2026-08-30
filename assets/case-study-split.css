@@ -35,14 +35,17 @@
 }
 
 #home .hero-company-cta::after{
-  content:"\2192\FE0E";
+  content:"";
+  display:inline-block;
+  flex:0 0 14px;
+  width:14px;
+  height:14px;
   margin-left:10px;
-  color:var(--gold);
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:15px;
-  font-weight:400;
-  line-height:1;
-  transform:translateY(-1px);
+  border-top:1px solid var(--gold);
+  border-right:1px solid var(--gold);
+  background:linear-gradient(45deg,transparent 46%,var(--gold) 47%,var(--gold) 53%,transparent 54%);
+  transform:scale(.78);
+  transform-origin:center;
 }
 
 #home .hero-company-cta:hover,
@@ -163,8 +166,10 @@
   }
 
   #home .hero-company-cta::after{
+    flex-basis:13px;
+    width:13px;
+    height:13px;
     margin-left:8px;
-    font-size:14px;
   }
 
   #capabilities .case-study-split{

@@ -47,9 +47,9 @@
     if(!tagline){
       tagline=document.createElement('p');
       tagline.className='hero-bridge-line';
-      tagline.textContent='Bridging Japan and the world through sports, business and culture.';
       ctaWrap.parentNode.insertBefore(tagline,ctaWrap);
     }
+    tagline.textContent='“Bridging Japan and the world through sports, business and culture.”';
 
     var secondary=ctaWrap.querySelector('.hero-company-cta');
     if(!secondary){

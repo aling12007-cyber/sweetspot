@@ -2135,7 +2135,7 @@ react/cjs/react-jsx-runtime.production.js:
     return x==='日'?'ja':x==='中'?'zh':'en';
   }
   var navLabels={
-    en:{company:'Company Introduction',points:'Points of Difference',founder:'Introducing the Founder',experience:'Professional Journey',network:'Broad Influence and Access',capabilities:'Case Study Apple'},
+    en:{company:'Company Introduction',points:'Points of Difference',founder:'Introducing the Founder',experience:'Professional Journey',network:'Broad Influence and Access',capabilities:'Case Study: Apple'},
     ja:{company:'会社紹介',points:'私たちの強み',founder:'創業者紹介',experience:'プロフェッショナル・ジャーニー',network:'幅広い影響力とアクセス',capabilities:'ケーススタディ Apple'},
     zh:{company:'公司簡介',points:'核心優勢',founder:'創辦人介紹',experience:'專業歷程',network:'廣泛的影響力與資源管道',capabilities:'案例研究 Apple'}
   };
@@ -2271,7 +2271,7 @@ react/cjs/react-jsx-runtime.production.js:
       points:['Difference','Points of Difference',''],
       experience:['Career','Professional Journey','Built across APAC'],
       network:['Network','Broad Influence and Access','Services rendered to:'],
-      capabilities:['Case','Case Study Apple','Demonstrated high-level facilitation capability']
+      capabilities:['Case','Case Study: Apple','Demonstrated high-level facilitation capability']
     },
     ja:{
       company:['会社','会社紹介',''],
@@ -2323,7 +2323,7 @@ react/cjs/react-jsx-runtime.production.js:
 <script id="requested-home-copy-overrides">
 (function(){
   var ctaMap={"Company Features":"Company Introduction","会社の特徴":"会社紹介","公司特色":"公司介紹"};
-  var caseMap={"Case Study Apple":"Case Study: APPLE","Case Study：Apple":"Case Study: APPLE","Case Study: Apple":"Case Study: APPLE","ケーススタディ Apple":"ケーススタディ：Apple","案例研究 Apple":"案例研究：Apple"};
+  var caseMap={"Case Study Apple":"Case Study: Apple","Case Study：Apple":"Case Study: Apple","Case Study: Apple":"Case Study: Apple","ケーススタディ Apple":"ケーススタディ：Apple","案例研究 Apple":"案例研究：Apple"};
   function patchTextNodes(el,map){
     var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
     var n;
@@ -2338,7 +2338,7 @@ react/cjs/react-jsx-runtime.production.js:
   function apply(){
     document.querySelectorAll("a,button").forEach(function(el){patchTextNodes(el,ctaMap);});
     var scope=document.querySelector("#capabilities");
-    if(scope){scope.querySelectorAll("h1,h2,h3,.hierarchy-heading").forEach(function(el){patchTextNodes(el,caseMap);});if(!scope.querySelector('img[data-case-study-activity="1"]')){var h=scope.querySelector('.ss-unified-heading[data-ss-section="capabilities"]');if(h){var i=document.createElement("img");i.src="assets/case-study-activity.jpg";i.alt="";i.loading="lazy";i.setAttribute("data-case-study-activity","1");i.style.cssText="display:block;width:100%;height:auto";h.insertAdjacentElement("afterend",i);}}}
+    if(scope){scope.querySelectorAll("h1,h2,h3,.hierarchy-heading").forEach(function(el){patchTextNodes(el,caseMap);});if(!scope.querySelector('img[data-case-study-activity="1"]')){var h=scope.querySelector('.ss-unified-heading[data-ss-section="capabilities"]');if(h){var i=document.createElement("img");i.src="assets/case-study-activity.webp";i.alt="";i.loading="lazy";i.setAttribute("data-case-study-activity","1");i.style.cssText="display:block;width:100%;height:auto";h.insertAdjacentElement("afterend",i);}}}
   }
   if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",apply,{once:true});}else{apply();}
   var queued=false;

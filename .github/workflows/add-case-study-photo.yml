@@ -1,0 +1,40 @@
+name: Add Case Study activity photo
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-case-study-photo.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch Case Study title and photo
+        run: python .github/scripts/add_case_study_photo.py
+      - name: Verify rendered Case Study block
+        shell: bash
+        run: |
+          python -m http.server 8000 >/tmp/sweetspot-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
+          sleep 1
+          CHROME="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          test -n "$CHROME"
+          "$CHROME" --headless --no-sandbox --disable-gpu --virtual-time-budget=6000 --dump-dom http://127.0.0.1:8000/ >/tmp/sweetspot-dom.html
+          grep -Fq 'Case Study: APPLE' /tmp/sweetspot-dom.html
+          grep -Fq 'data-case-study-activity="1"' /tmp/sweetspot-dom.html
+          grep -Fq 'assets/case-study-activity.jpg' /tmp/sweetspot-dom.html
+      - name: Commit only requested website changes
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html assets/case-study-activity.jpg
+          git rm .github/scripts/add_case_study_photo.py .github/workflows/add-case-study-photo.yml
+          git diff --cached --check
+          git commit -m 'Add Case Study activity photo'
+          git push origin main

@@ -122,8 +122,8 @@
     var companyLabels={
       en:'Company Introduction',
       ja:'会社紹介',
-      zhtw:'公司介紹',
-      zhcn:'公司介绍'
+      zhtw:'公司簡介',
+      zhcn:'公司简介'
     };
     if(secondary.getAttribute('href')!=='#company')secondary.setAttribute('href','#company');
     setLinkLabel(secondary,companyLabels[lang]||companyLabels.en);

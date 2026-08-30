@@ -50,3 +50,4 @@ jobs:
           t.unlink()
           print('Heading integrity check passed')
           PY
+# Validates the current unified heading source of truth.

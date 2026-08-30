@@ -1,0 +1,46 @@
+name: Temporary site patcher
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/temporary-site-patcher.yml
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: chatgpt/contact-case-study-layout
+          fetch-depth: 0
+      - name: Patch index on feature branch
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('/sweetspottest4/','/sweetspot/')
+          css='<link rel="stylesheet" href="assets/case-study-split.css">'
+          js='<script src="assets/site-enhancements.js" defer></script>'
+          if css not in s:
+              s=s.replace('</head>',css+'\n</head>',1)
+          if js not in s:
+              s=s.replace('</body>',js+'\n</body>',1)
+          p.write_text(s,encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Fix URLs and load requested site enhancements"
+          git push origin HEAD:chatgpt/contact-case-study-layout
+      - name: Remove temporary workflow from main
+        shell: bash
+        run: |
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
+          git rm .github/workflows/temporary-site-patcher.yml
+          git commit -m "Remove temporary site patcher"
+          git push origin main

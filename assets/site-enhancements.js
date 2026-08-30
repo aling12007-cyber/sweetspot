@@ -1,4 +1,4 @@
-/* Sweet Spot — requested CTA and Case Study enhancements */
+/* Sweet Spot — requested Hero CTA and Case Study enhancements */
 (function(){
   var applying=false;
 
@@ -9,32 +9,63 @@
     return 'en';
   }
 
-  function patchHeroCTA(){
-    var cta=document.querySelector('#home .hero-cta a');
-    if(!cta)return;
-
-    var labels={
-      en:"Let's Connect",
-      ja:'お問い合わせ',
-      zh:'聯絡我們'
-    };
-    var label=labels[currentLanguage()];
-
-    if(cta.getAttribute('href')!=='#contact')cta.setAttribute('href','#contact');
-
+  function setLinkLabel(link,label){
     var textNode=null;
-    for(var i=0;i<cta.childNodes.length;i++){
-      if(cta.childNodes[i].nodeType===Node.TEXT_NODE){
-        textNode=cta.childNodes[i];
+    for(var i=0;i<link.childNodes.length;i++){
+      if(link.childNodes[i].nodeType===Node.TEXT_NODE){
+        textNode=link.childNodes[i];
         break;
       }
     }
 
     if(textNode){
       if((textNode.nodeValue||'').trim()!==label)textNode.nodeValue=label;
-    }else if(!cta.textContent.includes(label)){
-      cta.insertBefore(document.createTextNode(label),cta.firstChild);
+    }else if(!link.textContent.includes(label)){
+      link.insertBefore(document.createTextNode(label),link.firstChild);
     }
+  }
+
+  function patchHero(){
+    var home=document.querySelector('#home');
+    if(!home)return;
+
+    var ctaWrap=home.querySelector('.hero-cta');
+    if(!ctaWrap)return;
+
+    var primary=ctaWrap.querySelector('a:not(.hero-company-cta)');
+    if(primary){
+      var contactLabels={
+        en:"Let's Connect",
+        ja:'お問い合わせ',
+        zh:'聯絡我們'
+      };
+      if(primary.getAttribute('href')!=='#contact')primary.setAttribute('href','#contact');
+      setLinkLabel(primary,contactLabels[currentLanguage()]);
+    }
+
+    var tagline=home.querySelector('.hero-bridge-line');
+    if(!tagline){
+      tagline=document.createElement('p');
+      tagline.className='hero-bridge-line';
+      tagline.textContent='Bridging Japan and the world through sports, business and culture.';
+      ctaWrap.parentNode.insertBefore(tagline,ctaWrap);
+    }
+
+    var secondary=ctaWrap.querySelector('.hero-company-cta');
+    if(!secondary){
+      secondary=document.createElement('a');
+      secondary.className='hero-company-cta';
+      secondary.href='#company';
+      ctaWrap.appendChild(secondary);
+    }
+
+    var companyLabels={
+      en:'Company Introduction',
+      ja:'会社紹介',
+      zh:'公司介紹'
+    };
+    if(secondary.getAttribute('href')!=='#company')secondary.setAttribute('href','#company');
+    setLinkLabel(secondary,companyLabels[currentLanguage()]);
   }
 
   function patchCaseStudy(){
@@ -73,7 +104,7 @@
     if(applying)return;
     applying=true;
     try{
-      patchHeroCTA();
+      patchHero();
       patchCaseStudy();
     }finally{
       applying=false;

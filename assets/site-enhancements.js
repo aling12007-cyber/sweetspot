@@ -1,4 +1,4 @@
-/* Sweet Spot — requested Hero CTA and Case Study enhancements */
+/* Sweet Spot — requested Hero, navigation and Case Study enhancements */
 (function(){
   var applying=false;
 
@@ -25,6 +25,29 @@
     }
   }
 
+  function patchNavigation(){
+    var navs=document.querySelectorAll('.site-header nav');
+    if(!navs.length)return;
+
+    var homeLabels={
+      en:'Home',
+      ja:'ホーム',
+      zh:'首頁'
+    };
+    var label=homeLabels[currentLanguage()];
+
+    navs.forEach(function(nav){
+      var homeLink=nav.querySelector('a.nav-home[href="#home"]');
+      if(!homeLink){
+        homeLink=document.createElement('a');
+        homeLink.className='nav-home nav-level-1';
+        homeLink.href='#home';
+        nav.insertBefore(homeLink,nav.firstElementChild);
+      }
+      setLinkLabel(homeLink,label);
+    });
+  }
+
   function patchHero(){
     var home=document.querySelector('#home');
     if(!home)return;
@@ -49,7 +72,7 @@
       tagline.className='hero-bridge-line';
       ctaWrap.parentNode.insertBefore(tagline,ctaWrap);
     }
-    tagline.textContent='“Bridging Japan and the world through sports, business and culture.”';
+    tagline.textContent='Bridging Japan and the world through sports, business and culture.';
 
     var secondary=ctaWrap.querySelector('.hero-company-cta');
     if(!secondary){
@@ -104,6 +127,7 @@
     if(applying)return;
     applying=true;
     try{
+      patchNavigation();
       patchHero();
       patchCaseStudy();
     }finally{

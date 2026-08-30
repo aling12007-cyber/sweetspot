@@ -1,0 +1,103 @@
+/* Sweet Spot — Case Study split layout */
+#capabilities .case-study-split{
+  display:grid;
+  grid-template-columns:minmax(0,.88fr) minmax(380px,1.12fr);
+  gap:clamp(34px,5vw,72px);
+  align-items:center;
+  margin:0 0 44px;
+  padding:clamp(30px,3.6vw,48px);
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.13);
+  background:linear-gradient(135deg,rgba(215,169,54,.075),rgba(10,102,194,.045) 56%,rgba(255,255,255,.018));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+#capabilities .case-study-split::before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:3px;
+  background:linear-gradient(180deg,var(--gold),rgba(215,169,54,.08));
+}
+
+#capabilities .case-study-copy{
+  min-width:0;
+  position:relative;
+  z-index:1;
+}
+
+#capabilities .case-study-copy .section-title,
+#capabilities .case-study-copy .ss-unified-heading{
+  margin:0!important;
+  padding:0!important;
+  width:100%!important;
+}
+
+#capabilities .case-study-media{
+  margin:0;
+  width:100%;
+  aspect-ratio:16/10;
+  min-height:300px;
+  max-height:420px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(215,169,54,.38);
+  background:#0d1118;
+  box-shadow:0 24px 64px rgba(0,0,0,.34);
+  clip-path:polygon(0 0,96% 0,100% 8%,100% 100%,0 100%);
+}
+
+#capabilities .case-study-media::after{
+  content:"CASE STUDY / APPLE";
+  position:absolute;
+  right:14px;
+  bottom:12px;
+  z-index:2;
+  padding:7px 9px;
+  color:#0a0c10;
+  background:rgba(215,169,54,.94);
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.12em;
+}
+
+#capabilities .case-study-media img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+}
+
+@media(max-width:900px){
+  #capabilities .case-study-split{
+    grid-template-columns:1fr;
+    gap:24px;
+    padding:24px;
+    margin-bottom:30px;
+  }
+
+  #capabilities .case-study-media{
+    min-height:0;
+    max-height:none;
+    aspect-ratio:16/10;
+  }
+}
+
+@media(max-width:600px){
+  #capabilities .case-study-split{
+    padding:18px;
+    gap:20px;
+  }
+
+  #capabilities .case-study-media{
+    aspect-ratio:4/3;
+  }
+
+  #capabilities .case-study-media::after{
+    right:10px;
+    bottom:9px;
+    font-size:8px;
+  }
+}

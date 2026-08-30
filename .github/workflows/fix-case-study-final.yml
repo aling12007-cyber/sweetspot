@@ -78,3 +78,4 @@ jobs:
           git status --short
           git commit -m 'Fix Case Study title and photo quality'
           git push origin main
+# retry after repairing image chunk

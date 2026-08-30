@@ -35,17 +35,17 @@
 }
 
 #home .hero-company-cta::after{
-  content:"";
-  display:inline-block;
-  flex:0 0 14px;
-  width:14px;
-  height:14px;
-  margin-left:10px;
-  border-top:1px solid var(--gold);
-  border-right:1px solid var(--gold);
-  background:linear-gradient(45deg,transparent 46%,var(--gold) 47%,var(--gold) 53%,transparent 54%);
-  transform:scale(.78);
-  transform-origin:center;
+  content:none;
+}
+
+#home .hero-company-arrow{
+  display:block;
+  flex:0 0 auto;
+  width:17px;
+  height:17px;
+  margin-left:9px;
+  color:var(--gold);
+  overflow:visible;
 }
 
 #home .hero-company-cta:hover,
@@ -165,11 +165,10 @@
     font-size:10px;
   }
 
-  #home .hero-company-cta::after{
-    flex-basis:13px;
-    width:13px;
-    height:13px;
-    margin-left:8px;
+  #home .hero-company-arrow{
+    width:15px;
+    height:15px;
+    margin-left:7px;
   }
 
   #capabilities .case-study-split{

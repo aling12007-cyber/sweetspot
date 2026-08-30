@@ -2323,7 +2323,7 @@ react/cjs/react-jsx-runtime.production.js:
 <script id="requested-home-copy-overrides">
 (function(){
   var ctaMap={"Company Features":"Company Introduction","会社の特徴":"会社紹介","公司特色":"公司介紹"};
-  var caseMap={"Case Study Apple":"Case Study：Apple","ケーススタディ Apple":"ケーススタディ：Apple","案例研究 Apple":"案例研究：Apple"};
+  var caseMap={"Case Study Apple":"Case Study: APPLE","Case Study：Apple":"Case Study: APPLE","Case Study: Apple":"Case Study: APPLE","ケーススタディ Apple":"ケーススタディ：Apple","案例研究 Apple":"案例研究：Apple"};
   function patchTextNodes(el,map){
     var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
     var n;
@@ -2338,7 +2338,7 @@ react/cjs/react-jsx-runtime.production.js:
   function apply(){
     document.querySelectorAll("a,button").forEach(function(el){patchTextNodes(el,ctaMap);});
     var scope=document.querySelector("#capabilities");
-    if(scope){scope.querySelectorAll("h1,h2,h3,.hierarchy-heading").forEach(function(el){patchTextNodes(el,caseMap);});}
+    if(scope){scope.querySelectorAll("h1,h2,h3,.hierarchy-heading").forEach(function(el){patchTextNodes(el,caseMap);});if(!scope.querySelector('img[data-case-study-activity="1"]')){var h=scope.querySelector('.ss-unified-heading[data-ss-section="capabilities"]');if(h){var i=document.createElement("img");i.src="assets/case-study-activity.jpg";i.alt="";i.loading="lazy";i.setAttribute("data-case-study-activity","1");i.style.cssText="display:block;width:100%;height:auto";h.insertAdjacentElement("afterend",i);}}}
   }
   if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",apply,{once:true});}else{apply();}
   var queued=false;

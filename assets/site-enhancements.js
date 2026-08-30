@@ -48,7 +48,7 @@
     arrow.setAttribute('stroke-linejoin','round');
 
     var path=document.createElementNS(ns,'path');
-    path.setAttribute('d','M2.5 9h12M10.5 5l4 4-4 4');
+    path.setAttribute('d','M9 2.5v12M5 10.5l4 4 4-4');
     arrow.appendChild(path);
     link.appendChild(arrow);
   }

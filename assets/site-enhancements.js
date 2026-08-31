@@ -140,7 +140,7 @@
     if(!heading||!body)return;
 
     var headingLabels={
-      en:'Have an opportunity in Japan?',
+      en:'Let’s connect!',
       ja:'日本でのビジネスチャンスをお考えですか？',
       zhtw:'正在尋找日本市場的機會嗎？',
       zhcn:'正在寻找日本市场的机会吗？'

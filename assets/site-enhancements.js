@@ -141,9 +141,9 @@
 
     var headingLabels={
       en:'Let’s connect!',
-      ja:'日本でのビジネスチャンスをお考えですか？',
-      zhtw:'正在尋找日本市場的機會嗎？',
-      zhcn:'正在寻找日本市场的机会吗？'
+      ja:'ぜひお話ししましょう！',
+      zhtw:'來聊聊吧！',
+      zhcn:'来聊聊吧！'
     };
     var bodyLabels={
       en:'Whether you’re exploring the market, looking for the right partner or need a local perspective, let’s start a conversation!',

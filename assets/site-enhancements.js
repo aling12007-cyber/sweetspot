@@ -1,4 +1,4 @@
-/* Sweet Spot — requested Hero, navigation and Case Study enhancements */
+/* Sweet Spot — requested Hero, navigation, Contact and Case Study enhancements */
 (function(){
   var applying=false;
 
@@ -130,6 +130,32 @@
     ensureCompanyArrow(secondary);
   }
 
+  function patchContact(){
+    var contact=document.querySelector('#contact');
+    if(!contact)return;
+
+    var lang=currentLanguage();
+    var heading=contact.querySelector('.contact-inner h2');
+    var body=contact.querySelector('.contact-inner > p:not(.eyebrow)');
+    if(!heading||!body)return;
+
+    var headingLabels={
+      en:'Have an opportunity in Japan?',
+      ja:'日本でのビジネスチャンスをお考えですか？',
+      zhtw:'正在尋找日本市場的機會嗎？',
+      zhcn:'正在寻找日本市场的机会吗？'
+    };
+    var bodyLabels={
+      en:'Whether you’re exploring the market, looking for the right partner or need a local perspective, let’s start a conversation!',
+      ja:'市場進出を検討している方も、最適なパートナーを探している方も、現地の視点が必要な方も、まずは気軽にお話ししましょう！',
+      zhtw:'無論您正在探索市場、尋找合適的合作夥伴，或需要在地觀點，都歡迎與我們聊聊！',
+      zhcn:'无论您正在探索市场、寻找合适的合作伙伴，或需要本地视角，都欢迎与我们聊聊！'
+    };
+
+    heading.textContent=headingLabels[lang]||headingLabels.en;
+    body.textContent=bodyLabels[lang]||bodyLabels.en;
+  }
+
   function patchCaseStudy(){
     var scope=document.querySelector('#capabilities');
     if(!scope||scope.querySelector('.case-study-split'))return;
@@ -185,6 +211,7 @@
     try{
       patchNavigation();
       patchHero();
+      patchContact();
       patchCaseStudy();
     }finally{
       applying=false;

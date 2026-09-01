@@ -13,15 +13,16 @@ This repository currently stores the deployed site artifact rather than an unbun
 
 ## Hero safeguards
 
-- The retired Unsplash hero stadium image must never be allowed to render behind the Tokyo Tower image.
-- `assets/case-study-split.css` neutralizes the legacy `.photo-card::before` background while the bundled source still contains the old declaration.
-- `assets/site-enhancements.js` gives the Tokyo Tower image high fetch priority and removes the stale outer accessibility label so the existing Tokyo Tower image alternative text is used.
+- The retired Unsplash Hero stadium URL has been removed from `index.html` and must not be restored.
+- `assets/case-study-split.css` continues to suppress the legacy `.photo-card::before` layer while preserving the current Tokyo Tower composition.
+- `index.html` statically preloads the Tokyo Tower image with high fetch priority.
+- `assets/site-enhancements.js` keeps the rendered Tokyo Tower image at high fetch priority and removes the stale outer accessibility label so the existing Tokyo Tower image alternative text is used.
 
 ## Repository hygiene
 
 - `founder.jpg`, `logo.jpg`, and `noop` are retired root-level files and should not be restored.
 - Every local `assets/...` reference should resolve to an existing file.
-- Run the site-integrity workflow for changes to `index.html`, `assets/**`, or the integrity workflow itself.
+- Run the site-integrity workflow for changes to `index.html`, `assets/**`, `favicon.svg`, `robots.txt`, `sitemap.xml`, or the integrity workflow itself.
 
 ## Source-project constraint
 

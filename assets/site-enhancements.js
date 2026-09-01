@@ -1,23 +1,6 @@
 /* Sweet Spot — requested Hero, navigation, Contact and Case Study enhancements */
 (function(){
   var applying=false;
-  var heroImageHref='assets/images/site-5fa8ee41a447.webp';
-
-  function prepareHeroImage(){
-    if(!document.head)return;
-    var selector='link[rel="preload"][as="image"][href="'+heroImageHref+'"]';
-    if(document.querySelector(selector))return;
-
-    var preload=document.createElement('link');
-    preload.rel='preload';
-    preload.as='image';
-    preload.href=heroImageHref;
-    preload.setAttribute('fetchpriority','high');
-    document.head.appendChild(preload);
-  }
-
-  prepareHeroImage();
-
   function currentLanguage(){
     var mode=(document.documentElement.getAttribute('data-ss-lang-mode')||'').toLowerCase();
     if(mode==='ja')return 'ja';

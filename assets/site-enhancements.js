@@ -214,6 +214,16 @@
     split.appendChild(media);
   }
 
+  function patchEmptySemantics(){
+  document.querySelectorAll('.hero-lede,.hero-note,.section-title h2').forEach(function(element){
+    if((element.textContent||'').trim()===''){
+      element.setAttribute('aria-hidden','true');
+    }else if(element.getAttribute('aria-hidden')==='true'){
+      element.removeAttribute('aria-hidden');
+    }
+  });
+}
+
   function closeMobileMenu(){
     if(window.matchMedia&&!window.matchMedia('(max-width:1050px)').matches)return;
 
@@ -239,6 +249,7 @@
       patchHero();
       patchContact();
       patchCaseStudy();
+      patchEmptySemantics();
     }finally{
       applying=false;
     }

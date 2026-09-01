@@ -5,6 +5,10 @@ on:
     paths:
       - index.html
       - .github/workflows/validate-heading-integrity.yml
+  pull_request:
+    paths:
+      - index.html
+      - .github/workflows/validate-heading-integrity.yml
   workflow_dispatch:
 permissions:
   contents: read
@@ -12,7 +16,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
       - name: Check single heading source of truth
         shell: bash
         run: |

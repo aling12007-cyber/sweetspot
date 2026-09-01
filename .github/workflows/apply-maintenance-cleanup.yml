@@ -26,27 +26,16 @@ jobs:
 
           js_path = Path('assets/site-enhancements.js')
           js = js_path.read_text(encoding='utf-8')
-          preload_block = """  var heroImageHref='assets/images/site-5fa8ee41a447.webp';
-
-          function prepareHeroImage(){
-            if(!document.head)return;
-            var selector='link[rel=\"preload\"][as=\"image\"][href=\"'+heroImageHref+'\"]';
-            if(document.querySelector(selector))return;
-
-            var preload=document.createElement('link');
-            preload.rel='preload';
-            preload.as='image';
-            preload.href=heroImageHref;
-            preload.setAttribute('fetchpriority','high');
-            document.head.appendChild(preload);
-          }
-
-          prepareHeroImage();
-
-          """
-          if js.count(preload_block) != 1:
-              raise SystemExit('Expected exactly one dynamic preload helper block')
-          js = js.replace(preload_block, '', 1)
+          start_marker = "  var heroImageHref='assets/images/site-5fa8ee41a447.webp';\n"
+          end_marker = "  prepareHeroImage();\n\n"
+          start = js.find(start_marker)
+          if start < 0:
+              raise SystemExit('Dynamic preload helper start marker not found')
+          end = js.find(end_marker, start)
+          if end < 0:
+              raise SystemExit('Dynamic preload helper end marker not found')
+          end += len(end_marker)
+          js = js[:start] + js[end:]
           if 'prepareHeroImage' in js or 'heroImageHref' in js:
               raise SystemExit('Dynamic preload helper was not fully removed')
           if "cityImage.setAttribute('fetchpriority','high')" not in js:
@@ -55,15 +44,8 @@ jobs:
 
           doc_path = Path('.github/SITE-MAINTENANCE.md')
           doc = doc_path.read_text(encoding='utf-8')
-          old_hero = """- The retired Unsplash hero stadium image must never be allowed to render behind the Tokyo Tower image.
-          - `assets/case-study-split.css` neutralizes the legacy `.photo-card::before` background while the bundled source still contains the old declaration.
-          - `assets/site-enhancements.js` gives the Tokyo Tower image high fetch priority and removes the stale outer accessibility label so the existing Tokyo Tower image alternative text is used.
-          """
-          new_hero = """- The retired Unsplash Hero stadium URL has been removed from `index.html` and must not be restored.
-          - `assets/case-study-split.css` continues to suppress the legacy `.photo-card::before` layer while preserving the current Tokyo Tower composition.
-          - `index.html` statically preloads the Tokyo Tower image with high fetch priority.
-          - `assets/site-enhancements.js` keeps the rendered Tokyo Tower image at high fetch priority and removes the stale outer accessibility label so the existing Tokyo Tower image alternative text is used.
-          """
+          old_hero = "- The retired Unsplash hero stadium image must never be allowed to render behind the Tokyo Tower image.\n- `assets/case-study-split.css` neutralizes the legacy `.photo-card::before` background while the bundled source still contains the old declaration.\n- `assets/site-enhancements.js` gives the Tokyo Tower image high fetch priority and removes the stale outer accessibility label so the existing Tokyo Tower image alternative text is used.\n"
+          new_hero = "- The retired Unsplash Hero stadium URL has been removed from `index.html` and must not be restored.\n- `assets/case-study-split.css` continues to suppress the legacy `.photo-card::before` layer while preserving the current Tokyo Tower composition.\n- `index.html` statically preloads the Tokyo Tower image with high fetch priority.\n- `assets/site-enhancements.js` keeps the rendered Tokyo Tower image at high fetch priority and removes the stale outer accessibility label so the existing Tokyo Tower image alternative text is used.\n"
           if old_hero not in doc:
               raise SystemExit('Expected Hero maintenance text not found')
           doc = doc.replace(old_hero, new_hero, 1)
@@ -76,12 +58,8 @@ jobs:
 
           workflow_path = Path('.github/workflows/validate-site-integrity.yml')
           workflow = workflow_path.read_text(encoding='utf-8')
-          old_check = """          if hero not in enhancements or \"fetchpriority','high\" not in enhancements:
-                      raise SystemExit('Hero image priority safeguard is missing')
-          """
-          new_check = """          if \"cityImage.setAttribute('fetchpriority','high')\" not in enhancements:
-                      raise SystemExit('Rendered Hero image priority safeguard is missing')
-          """
+          old_check = "          if hero not in enhancements or \"fetchpriority','high\" not in enhancements:\n              raise SystemExit('Hero image priority safeguard is missing')"
+          new_check = "          if \"cityImage.setAttribute('fetchpriority','high')\" not in enhancements:\n              raise SystemExit('Rendered Hero image priority safeguard is missing')"
           if old_check not in workflow:
               raise SystemExit('Expected Hero priority CI check not found')
           workflow = workflow.replace(old_check, new_check, 1)
@@ -106,8 +84,6 @@ jobs:
           rm .github/workflows/apply-maintenance-cleanup.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/site-enhancements.js .github/SITE-MAINTENANCE.md .github/workflows/validate-site-integrity.yml
-          git rm --cached .github/workflows/apply-maintenance-cleanup.yml >/dev/null 2>&1 || true
-          git add -u .github/workflows/apply-maintenance-cleanup.yml
+          git add -A
           git commit -m 'chore: remove redundant preload helper'
           git push origin HEAD:maintenance/remove-redundant-preload-20260901

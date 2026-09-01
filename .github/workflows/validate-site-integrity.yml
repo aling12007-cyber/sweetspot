@@ -1,0 +1,84 @@
+name: Validate site integrity
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'assets/**'
+      - '.github/workflows/validate-site-integrity.yml'
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'assets/**'
+      - '.github/workflows/validate-site-integrity.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate enhancement JavaScript syntax
+        run: node --check assets/site-enhancements.js
+
+      - name: Validate required files and local asset references
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          required = [
+              Path('index.html'),
+              Path('assets/case-study-activity.webp'),
+              Path('assets/case-study-split.css'),
+              Path('assets/site-enhancements.js'),
+              Path('assets/images/site-0bea4d652740.webp'),
+              Path('assets/images/site-569ad95d8272.webp'),
+              Path('assets/images/site-5fa8ee41a447.webp'),
+              Path('assets/images/site-e8a84d6c8ba9.webp'),
+          ]
+          missing = [str(path) for path in required if not path.is_file()]
+          if missing:
+              raise SystemExit('Missing required files: ' + ', '.join(missing))
+
+          forbidden = [Path('founder.jpg'), Path('logo.jpg'), Path('noop')]
+          restored = [str(path) for path in forbidden if path.exists()]
+          if restored:
+              raise SystemExit('Deleted legacy files were restored: ' + ', '.join(restored))
+
+          index = Path('index.html').read_text(encoding='utf-8')
+          css = Path('assets/case-study-split.css').read_text(encoding='utf-8')
+          enhancements = Path('assets/site-enhancements.js').read_text(encoding='utf-8')
+
+          hero = 'assets/images/site-5fa8ee41a447.webp'
+          if hero not in index:
+              raise SystemExit('Tokyo Tower hero image reference is missing from index.html')
+
+          old_hero_url = 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e'
+          if old_hero_url in index:
+              rule = re.search(r'#home\s+\.photo-card::before\s*\{([^}]*)\}', css, re.S)
+              if not rule:
+                  raise SystemExit('Legacy hero image still exists but its blocking override is missing')
+              body = re.sub(r'\s+', '', rule.group(1)).lower()
+              if 'content:none!important' not in body or 'background:none!important' not in body:
+                  raise SystemExit('Legacy hero background is not fully disabled')
+
+          stale_label = 'A stadium under lights'
+          if stale_label in index:
+              if "removeAttribute('aria-label')" not in enhancements or stale_label not in enhancements:
+                  raise SystemExit('Stale hero accessibility label is not neutralized')
+
+          if hero not in enhancements or "fetchpriority','high" not in enhancements:
+              raise SystemExit('Hero image priority safeguard is missing')
+
+          asset_pattern = re.compile(r'assets/[A-Za-z0-9._/-]+\.(?:webp|css|js|png|jpe?g|svg)')
+          referenced = set(asset_pattern.findall(index + '\n' + css + '\n' + enhancements))
+          dangling = sorted(ref for ref in referenced if not Path(ref).is_file())
+          if dangling:
+              raise SystemExit('Dangling local asset references: ' + ', '.join(dangling))
+
+          print(f'Validated {len(referenced)} local asset reference(s).')

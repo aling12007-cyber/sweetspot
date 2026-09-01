@@ -6,9 +6,6 @@ on:
       - index.html
       - .github/workflows/validate-heading-integrity.yml
   pull_request:
-    paths:
-      - index.html
-      - .github/workflows/validate-heading-integrity.yml
   workflow_dispatch:
 permissions:
   contents: read

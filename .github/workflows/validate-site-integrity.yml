@@ -11,13 +11,7 @@ on:
       - 'sitemap.xml'
       - '.github/workflows/validate-site-integrity.yml'
   pull_request:
-    paths:
-      - 'index.html'
-      - 'assets/**'
-      - 'favicon.svg'
-      - 'robots.txt'
-      - 'sitemap.xml'
-      - '.github/workflows/validate-site-integrity.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read

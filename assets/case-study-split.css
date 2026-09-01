@@ -1,4 +1,15 @@
 /* Sweet Spot — Hero and Case Study enhancements */
+
+/* Prevent the legacy stadium image from flashing before Tokyo Tower loads. */
+#home .photo-card{
+  background:#07101d!important;
+}
+
+#home .photo-card::before{
+  content:none!important;
+  background:none!important;
+}
+
 #home .hero-bridge-line{
   margin:18px 0 22px;
   max-width:680px;

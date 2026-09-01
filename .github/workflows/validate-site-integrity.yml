@@ -6,11 +6,17 @@ on:
     paths:
       - 'index.html'
       - 'assets/**'
+      - 'favicon.svg'
+      - 'robots.txt'
+      - 'sitemap.xml'
       - '.github/workflows/validate-site-integrity.yml'
   pull_request:
     paths:
       - 'index.html'
       - 'assets/**'
+      - 'favicon.svg'
+      - 'robots.txt'
+      - 'sitemap.xml'
       - '.github/workflows/validate-site-integrity.yml'
 
 permissions:
@@ -30,9 +36,13 @@ jobs:
         run: |
           from pathlib import Path
           import re
+          import xml.etree.ElementTree as ET
 
           required = [
               Path('index.html'),
+              Path('favicon.svg'),
+              Path('robots.txt'),
+              Path('sitemap.xml'),
               Path('assets/case-study-activity.webp'),
               Path('assets/case-study-split.css'),
               Path('assets/site-enhancements.js'),
@@ -53,19 +63,30 @@ jobs:
           index = Path('index.html').read_text(encoding='utf-8')
           css = Path('assets/case-study-split.css').read_text(encoding='utf-8')
           enhancements = Path('assets/site-enhancements.js').read_text(encoding='utf-8')
+          robots = Path('robots.txt').read_text(encoding='utf-8')
 
+          site_url = 'https://aling12007-cyber.github.io/sweetspot/'
           hero = 'assets/images/site-5fa8ee41a447.webp'
+          favicon_tag = '<link rel="icon" type="image/svg+xml" href="favicon.svg">'
+          preload_tag = '<link rel="preload" as="image" href="' + hero + '" fetchpriority="high">'
+
           if hero not in index:
               raise SystemExit('Tokyo Tower hero image reference is missing from index.html')
+          if preload_tag not in index:
+              raise SystemExit('Static Tokyo Tower preload is missing from index.html')
+          if favicon_tag not in index:
+              raise SystemExit('Favicon link is missing from index.html')
+          if '<link rel="canonical" href="' + site_url + '">' not in index:
+              raise SystemExit('Canonical URL does not match the deployed site URL')
 
           old_hero_url = 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e'
           if old_hero_url in index:
-              rule = re.search(r'#home\s+\.photo-card::before\s*\{([^}]*)\}', css, re.S)
-              if not rule:
-                  raise SystemExit('Legacy hero image still exists but its blocking override is missing')
-              body = re.sub(r'\s+', '', rule.group(1)).lower()
-              if 'content:none!important' not in body or 'background:none!important' not in body:
-                  raise SystemExit('Legacy hero background is not fully disabled')
+              raise SystemExit('Retired Hero stadium URL was restored')
+
+          # This background is intentionally preserved while visible-output parity is required.
+          career_url = 'https://images.unsplash.com/photo-1574629810360-7efbb92f582c?auto=format&fit=crop&w=1800&q=72'
+          if career_url not in index:
+              raise SystemExit('Career Playbook background changed unexpectedly')
 
           stale_label = 'A stadium under lights'
           if stale_label in index:
@@ -74,6 +95,16 @@ jobs:
 
           if hero not in enhancements or "fetchpriority','high" not in enhancements:
               raise SystemExit('Hero image priority safeguard is missing')
+
+          sitemap_url = site_url + 'sitemap.xml'
+          if 'Sitemap: ' + sitemap_url not in robots:
+              raise SystemExit('robots.txt sitemap URL does not match the deployed site URL')
+
+          root = ET.parse('sitemap.xml').getroot()
+          ns = {'sm': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+          locs = [node.text for node in root.findall('.//sm:loc', ns)]
+          if locs != [site_url]:
+              raise SystemExit('sitemap.xml must contain exactly the canonical site URL')
 
           asset_pattern = re.compile(r'assets/[A-Za-z0-9._/-]+\.(?:webp|css|js|png|jpe?g|svg)')
           referenced = set(asset_pattern.findall(index + '\n' + css + '\n' + enhancements))

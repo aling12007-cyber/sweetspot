@@ -56,21 +56,12 @@ jobs:
           doc = doc.replace(old_run, new_run, 1)
           doc_path.write_text(doc, encoding='utf-8')
 
-          workflow_path = Path('.github/workflows/validate-site-integrity.yml')
-          workflow = workflow_path.read_text(encoding='utf-8')
-          old_check = "          if hero not in enhancements or \"fetchpriority','high\" not in enhancements:\n              raise SystemExit('Hero image priority safeguard is missing')"
-          new_check = "          if \"cityImage.setAttribute('fetchpriority','high')\" not in enhancements:\n              raise SystemExit('Rendered Hero image priority safeguard is missing')"
-          if old_check not in workflow:
-              raise SystemExit('Expected Hero priority CI check not found')
-          workflow = workflow.replace(old_check, new_check, 1)
-          workflow_path.write_text(workflow, encoding='utf-8')
-
       - name: Validate zero visible-output change
         shell: bash
         run: |
           set -euo pipefail
           node --check assets/site-enhancements.js
-          git diff --exit-code origin/main -- index.html assets/case-study-split.css favicon.svg robots.txt sitemap.xml
+          git diff --exit-code origin/main -- index.html assets/case-study-split.css favicon.svg robots.txt sitemap.xml .github/workflows/validate-site-integrity.yml
           grep -Fq '<link rel="preload" as="image" href="assets/images/site-5fa8ee41a447.webp" fetchpriority="high">' index.html
           grep -Fq "cityImage.setAttribute('fetchpriority','high')" assets/site-enhancements.js
           ! grep -Fq 'prepareHeroImage' assets/site-enhancements.js

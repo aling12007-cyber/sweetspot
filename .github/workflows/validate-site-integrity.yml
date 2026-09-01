@@ -93,8 +93,8 @@ jobs:
               if "removeAttribute('aria-label')" not in enhancements or stale_label not in enhancements:
                   raise SystemExit('Stale hero accessibility label is not neutralized')
 
-          if hero not in enhancements or "fetchpriority','high" not in enhancements:
-              raise SystemExit('Hero image priority safeguard is missing')
+          if "cityImage.setAttribute('fetchpriority','high')" not in enhancements:
+              raise SystemExit('Rendered Hero image priority safeguard is missing')
 
           sitemap_url = site_url + 'sitemap.xml'
           if 'Sitemap: ' + sitemap_url not in robots:

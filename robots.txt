@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aling12007-cyber.github.io/sweetspot/sitemap.xml

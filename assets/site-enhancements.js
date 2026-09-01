@@ -1,6 +1,22 @@
 /* Sweet Spot — requested Hero, navigation, Contact and Case Study enhancements */
 (function(){
   var applying=false;
+  var heroImageHref='assets/images/site-5fa8ee41a447.webp';
+
+  function prepareHeroImage(){
+    if(!document.head)return;
+    var selector='link[rel="preload"][as="image"][href="'+heroImageHref+'"]';
+    if(document.querySelector(selector))return;
+
+    var preload=document.createElement('link');
+    preload.rel='preload';
+    preload.as='image';
+    preload.href=heroImageHref;
+    preload.setAttribute('fetchpriority','high');
+    document.head.appendChild(preload);
+  }
+
+  prepareHeroImage();
 
   function currentLanguage(){
     var mode=(document.documentElement.getAttribute('data-ss-lang-mode')||'').toLowerCase();
@@ -80,6 +96,16 @@
   function patchHero(){
     var home=document.querySelector('#home');
     if(!home)return;
+
+    var heroVisual=home.querySelector('.hero-visual');
+    if(heroVisual&&heroVisual.getAttribute('aria-label')==='A stadium under lights'){
+      heroVisual.removeAttribute('aria-label');
+    }
+
+    var cityImage=home.querySelector('.hero-city-image');
+    if(cityImage&&cityImage.getAttribute('fetchpriority')!=='high'){
+      cityImage.setAttribute('fetchpriority','high');
+    }
 
     var ctaWrap=home.querySelector('.hero-cta');
     if(!ctaWrap)return;

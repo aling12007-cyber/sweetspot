@@ -23,6 +23,16 @@ This repository currently stores the deployed site artifact rather than an unbun
 - `founder.jpg`, `logo.jpg`, and `noop` are retired root-level files and should not be restored.
 - Every local `assets/...` reference should resolve to an existing file.
 - Run the site-integrity workflow for changes to `index.html`, `assets/**`, `favicon.svg`, `robots.txt`, `sitemap.xml`, or the integrity workflow itself.
+- Remove merged or abandoned maintenance branches after their work is complete.
+
+## Pull request safeguards
+
+- The default branch is protected by an active repository ruleset.
+- All changes to `main` should go through a pull request.
+- The required checks are `integrity` and `validate`.
+- Both required workflows run on every pull request so required checks cannot remain pending because of path filters.
+- `Validate site integrity` can also be run manually with `workflow_dispatch`.
+- Dependabot checks GitHub Actions dependencies weekly and should update them through normal pull requests and required checks.
 
 ## Source-project constraint
 

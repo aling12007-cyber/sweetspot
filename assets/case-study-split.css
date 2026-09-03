@@ -313,3 +313,21 @@
     font-size:8px;
   }
 }
+
+/* Rights Holders overlap safeguard */
+@media(min-width:761px){
+  #network .network-grid article:nth-child(2) p.network-subitem-list{
+    max-width:50%!important;
+  }
+}
+
+@media(max-width:760px){
+  #network .network-grid article:nth-child(2) p.network-subitem-list{
+    max-width:56%!important;
+  }
+
+  #network .network-grid article:nth-child(2)::before{
+    right:0!important;
+    width:40%!important;
+  }
+}

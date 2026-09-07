@@ -1,0 +1,158 @@
+name: Temporary Introduction subsection headings
+
+on:
+  push:
+    branches:
+      - content/introduction-subheads-20260907
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: content/introduction-subheads-20260907
+          fetch-depth: 0
+      - name: Apply scoped content headings
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          js_path=Path('assets/site-enhancements.js')
+          js=js_path.read_text()
+          old_a=("  var kicker=company.querySelector('.section-title p');\n"
+                 "  if(kicker)kicker.textContent=introductionLabels[lang]||introductionLabels.en;\n\n"
+                 "  var points=document.querySelector('#points');\n")
+          new_a=("  var kicker=company.querySelector('.section-title p');\n"
+                 "  if(kicker)kicker.textContent=introductionLabels[lang]||introductionLabels.en;\n\n"
+                 "  var list=company.querySelector('.company-intro-list');\n"
+                 "  var focusHeading=company.querySelector('.introduction-subhead--focus');\n"
+                 "  if(!focusHeading&&list){\n"
+                 "    focusHeading=document.createElement('div');\n"
+                 "    focusHeading.className='introduction-subhead introduction-subhead--focus';\n"
+                 "  }\n"
+                 "  if(focusHeading&&list){\n"
+                 "    focusHeading.textContent='WHAT WE STAND FOR';\n"
+                 "    list.insertAdjacentElement('beforebegin',focusHeading);\n"
+                 "  }\n\n"
+                 "  var points=document.querySelector('#points');\n")
+          if js.count(old_a)!=1: raise SystemExit(f'Expected one Introduction heading anchor, found {js.count(old_a)}')
+          js=js.replace(old_a,new_a,1)
+          old_b=("  if(grid){\n"
+                 "    grid.setAttribute('data-ss-merged-introduction','1');\n"
+                 "    var welcome=company.querySelector('.company-story-welcome');\n"
+                 "    if(welcome)welcome.insertAdjacentElement('beforebegin',grid);\n"
+                 "    else company.appendChild(grid);\n"
+                 "  }\n")
+          new_b=("  if(grid){\n"
+                 "    grid.setAttribute('data-ss-merged-introduction','1');\n"
+                 "    var welcome=company.querySelector('.company-story-welcome');\n"
+                 "    if(welcome)welcome.insertAdjacentElement('beforebegin',grid);\n"
+                 "    else company.appendChild(grid);\n\n"
+                 "    var differenceHeading=company.querySelector('.introduction-subhead--difference');\n"
+                 "    if(!differenceHeading){\n"
+                 "      differenceHeading=document.createElement('div');\n"
+                 "      differenceHeading.className='introduction-subhead introduction-subhead--difference';\n"
+                 "    }\n"
+                 "    differenceHeading.textContent='DIFFERENCE';\n"
+                 "    grid.insertAdjacentElement('beforebegin',differenceHeading);\n"
+                 "  }\n")
+          if js.count(old_b)!=1: raise SystemExit(f'Expected one Difference-grid anchor, found {js.count(old_b)}')
+          js=js.replace(old_b,new_b,1)
+          js_path.write_text(js)
+          css_path=Path('assets/case-study-split.css')
+          css=css_path.read_text()
+          marker='/* Introduction subsection headings */'
+          if marker in css: raise SystemExit('Introduction subsection heading CSS already exists')
+          css_lines=[
+              '', '', marker,
+              '#company .introduction-subhead{',
+              '  position:relative;',
+              '  z-index:2;',
+              '  display:flex;',
+              '  align-items:center;',
+              '  gap:12px;',
+              '  width:min(100%,1040px);',
+              '  margin-left:auto;',
+              '  margin-right:auto;',
+              '  color:#c8b56e;',
+              '  font-size:11px;',
+              '  line-height:1.4;',
+              '  font-weight:900;',
+              '  letter-spacing:.17em;',
+              '  text-transform:uppercase;',
+              '}',
+              '#company .introduction-subhead::before{',
+              '  content:"";',
+              '  display:block;',
+              '  width:28px;',
+              '  height:1px;',
+              '  flex:0 0 28px;',
+              '  background:var(--gold);',
+              '}',
+              '#company .introduction-subhead--focus{',
+              '  margin-top:clamp(30px,4vw,46px);',
+              '  margin-bottom:16px;',
+              '}',
+              '#company .introduction-subhead--difference{',
+              '  margin-top:clamp(38px,4.5vw,52px);',
+              '  margin-bottom:16px;',
+              '}',
+              '#company .introduction-subhead--focus + .company-intro-list{',
+              '  width:min(100%,1040px);',
+              '  margin-top:0;',
+              '  margin-left:auto;',
+              '  margin-right:auto;',
+              '}',
+              '#company .introduction-subhead--difference + .difference-grid[data-ss-merged-introduction="1"]{',
+              '  margin-top:0;',
+              '}',
+              '@media(max-width:760px){',
+              '  #company .introduction-subhead{',
+              '    gap:10px;',
+              '    font-size:10px;',
+              '    letter-spacing:.145em;',
+              '  }',
+              '  #company .introduction-subhead::before{',
+              '    width:22px;',
+              '    flex-basis:22px;',
+              '  }',
+              '  #company .introduction-subhead--focus{',
+              '    margin-top:26px;',
+              '    margin-bottom:12px;',
+              '  }',
+              '  #company .introduction-subhead--difference{',
+              '    margin-top:30px;',
+              '    margin-bottom:12px;',
+              '  }',
+              '}', ''
+          ]
+          css += '\n'.join(css_lines)
+          css_path.write_text(css)
+          html_path=Path('index.html')
+          html=html_path.read_text()
+          old_css='assets/case-study-split.css?v=introduction-founder-career-20260907'
+          new_css='assets/case-study-split.css?v=introduction-subheads-20260907'
+          old_js='assets/site-enhancements.js?v=introduction-founder-career-20260907'
+          new_js='assets/site-enhancements.js?v=introduction-subheads-20260907'
+          if html.count(old_css)!=1 or html.count(old_js)!=1: raise SystemExit('Expected current cache-busting references exactly once')
+          html=html.replace(old_css,new_css,1).replace(old_js,new_js,1)
+          html_path.write_text(html)
+          PY
+          node --check assets/site-enhancements.js
+          grep -q "WHAT WE STAND FOR" assets/site-enhancements.js
+          grep -q "differenceHeading.textContent='DIFFERENCE'" assets/site-enhancements.js
+          grep -q "Introduction subsection headings" assets/case-study-split.css
+          git diff --check
+      - name: Commit scoped site update
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/temp-introduction-subheads-v2.yml
+          git add assets/site-enhancements.js assets/case-study-split.css index.html
+          git commit -m "content: add Introduction subsection headings"
+          git push origin HEAD:content/introduction-subheads-20260907

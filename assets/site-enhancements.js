@@ -58,13 +58,13 @@
 
     var lang=currentLanguage();
     var navCopies={
-      en:{home:'HOME',introduction:'INTRODUCTION',foundation:'FOUNDATION / PURPOSE',nameLogo:'NAME / LOGO',standFor:'WHAT WE STAND FOR',difference:'DIFFERENCE',founder:'FOUNDER',career:'CAREER',network:'NETWORK',caseStudy:'CASE STUDY',insights:'INSIGHTS',workWithUs:'WORK WITH US',contact:'CONTACT',submenu:' subsections'},
-      ja:{home:'ホーム',introduction:'会社紹介',foundation:'創立 / 理念',nameLogo:'名称 / ロゴ',standFor:'私たちの理念',difference:'私たちの強み',founder:'創業者',career:'経歴',network:'ネットワーク',caseStudy:'ケーススタディ',insights:'インサイト',workWithUs:'ご相談・協業',contact:'お問い合わせ',submenu:'のサブメニュー'},
-      zhtw:{home:'首頁',introduction:'公司簡介',foundation:'創立 / 理念',nameLogo:'名稱 / LOGO',standFor:'核心理念',difference:'差異化優勢',founder:'創辦人',career:'職涯',network:'產業網絡',caseStudy:'案例研究',insights:'洞察',workWithUs:'合作洽談',contact:'聯絡我們',submenu:'子選單'},
-      zhcn:{home:'首页',introduction:'公司简介',foundation:'创立 / 理念',nameLogo:'名称 / LOGO',standFor:'核心理念',difference:'差异化优势',founder:'创办人',career:'职业经历',network:'行业网络',caseStudy:'案例研究',insights:'洞察',workWithUs:'合作洽谈',contact:'联系我们',submenu:'子菜单'}
+      en:{home:'HOME',introduction:'INTRODUCTION',foundation:'FOUNDATION / PURPOSE',nameLogo:'NAME / LOGO',standFor:'WHAT WE STAND FOR',difference:'DIFFERENCE',founder:'FOUNDER',career:'CAREER',network:'NETWORK',caseStudy:'CASE STUDY',insights:'INSIGHTS',contact:'CONTACT',submenu:' subsections'},
+      ja:{home:'ホーム',introduction:'会社紹介',foundation:'創立 / 理念',nameLogo:'名称 / ロゴ',standFor:'私たちの理念',difference:'私たちの強み',founder:'創業者',career:'経歴',network:'ネットワーク',caseStudy:'ケーススタディ',insights:'インサイト',contact:'お問い合わせ',submenu:'のサブメニュー'},
+      zhtw:{home:'首頁',introduction:'公司簡介',foundation:'創立 / 理念',nameLogo:'名稱 / LOGO',standFor:'核心理念',difference:'差異化優勢',founder:'創辦人',career:'職涯',network:'產業網絡',caseStudy:'案例研究',insights:'洞察',contact:'聯絡我們',submenu:'子選單'},
+      zhcn:{home:'首页',introduction:'公司简介',foundation:'创立 / 理念',nameLogo:'名称 / LOGO',standFor:'核心理念',difference:'差异化优势',founder:'创办人',career:'职业经历',network:'行业网络',caseStudy:'案例研究',insights:'洞察',contact:'联系我们',submenu:'子菜单'}
     };
     var c=navCopies[lang]||navCopies.en;
-    var version='20260907-work-with-us-i18n-v5-'+lang;
+    var version='20260908-contact-work-with-us-i18n-v6-'+lang;
     var groups=[
       {href:'#home',label:c.home,classes:'nav-home nav-level-1'},
       {href:'#company',label:c.introduction,classes:'nav-level-1 nav-parent',children:[
@@ -80,7 +80,6 @@
         {href:'#capabilities',label:c.caseStudy}
       ]},
       {href:'#insights',label:c.insights,classes:'nav-level-1'},
-      {href:'#work-with-us',label:c.workWithUs,classes:'nav-level-1'},
       {href:'#contact',label:c.contact,classes:'nav-level-1 contact-mini'}
     ];
     var flat=[];
@@ -553,105 +552,47 @@ function patchWorkWithUs(){
   var contact=document.querySelector('#contact');
   if(!contact)return;
 
+  var inner=contact.querySelector('.contact-inner');
+  if(!inner)return;
+
+  var legacy=document.querySelector('#work-with-us');
+  if(legacy&&legacy!==contact)legacy.remove();
+
   var lang=currentLanguage();
   var copies={
-    en:{
-      htmlLang:'en',
-      kicker:'WORK WITH US',
-      heading:'When to Talk to Sweet Spot',
-      intro:'You may want to speak with Sweet Spot if you are:',
-      items:[
-        'Exploring opportunities in Japan',
-        'Looking for the right local partners',
-        'Developing a sports or entertainment partnership',
-        'Seeking access to relevant industry stakeholders',
-        'Evaluating sponsorship strategy or activation',
-        'Looking for an experienced local perspective before making a decision'
-      ]
-    },
-    ja:{
-      htmlLang:'ja',
-      kicker:'ご相談・協業',
-      heading:'Sweet Spotにご相談いただきたいとき',
-      intro:'以下のようなご要望がある場合は、ぜひ Sweet Spot にご相談ください。',
-      items:[
-        '日本でのビジネス機会を検討している',
-        '最適な現地パートナーを探している',
-        'スポーツまたはエンターテインメント分野のパートナーシップを構築したい',
-        '関連する業界関係者との接点を求めている',
-        'スポンサーシップ戦略やアクティベーションを検討している',
-        '意思決定の前に、経験に基づく現地視点を得たい'
-      ]
-    },
-    zhtw:{
-      htmlLang:'zh-Hant',
-      kicker:'合作洽談',
-      heading:'適合與 Sweet Spot 洽談的時機',
-      intro:'如果您有以下需求，歡迎與 Sweet Spot 洽談：',
-      items:[
-        '探索日本市場的商業機會',
-        '尋找合適的在地合作夥伴',
-        '規劃體育或娛樂領域的合作關係',
-        '希望接觸相關產業的關鍵利害關係人',
-        '評估贊助策略或贊助活化方案',
-        '在做出決策前，希望獲得具經驗的在地觀點'
-      ]
-    },
-    zhcn:{
-      htmlLang:'zh-Hans',
-      kicker:'合作洽谈',
-      heading:'适合与 Sweet Spot 洽谈的时机',
-      intro:'如果您有以下需求，欢迎与 Sweet Spot 洽谈：',
-      items:[
-        '探索日本市场的商业机会',
-        '寻找合适的本地合作伙伴',
-        '规划体育或娱乐领域的合作关系',
-        '希望接触相关行业的关键利益相关方',
-        '评估赞助策略或赞助激活方案',
-        '在做出决策前，希望获得有经验的本地视角'
-      ]
-    }
+    en:{htmlLang:'en',heading:'When to Talk to Sweet Spot',intro:'You may want to speak with Sweet Spot if you are:',items:['Exploring opportunities in Japan','Looking for the right local partners','Developing a sports or entertainment partnership','Seeking access to relevant industry stakeholders','Evaluating sponsorship strategy or activation','Looking for an experienced local perspective before making a decision']},
+    ja:{htmlLang:'ja',heading:'Sweet Spotにご相談いただきたいとき',intro:'以下のようなご要望がある場合は、ぜひ Sweet Spot にご相談ください。',items:['日本でのビジネス機会を検討している','最適な現地パートナーを探している','スポーツまたはエンターテインメント分野のパートナーシップを構築したい','関連する業界関係者との接点を求めている','スポンサーシップ戦略やアクティベーションを検討している','意思決定の前に、経験に基づく現地視点を得たい']},
+    zhtw:{htmlLang:'zh-Hant',heading:'適合與 Sweet Spot 洽談的時機',intro:'如果您有以下需求，歡迎與 Sweet Spot 洽談：',items:['探索日本市場的商業機會','尋找合適的在地合作夥伴','規劃體育或娛樂領域的合作關係','希望接觸相關產業的關鍵利害關係人','評估贊助策略或贊助活化方案','在做出決策前，希望獲得具經驗的在地觀點']},
+    zhcn:{htmlLang:'zh-Hans',heading:'适合与 Sweet Spot 洽谈的时机',intro:'如果您有以下需求，欢迎与 Sweet Spot 洽谈：',items:['探索日本市场的商业机会','寻找合适的本地合作伙伴','规划体育或娱乐领域的合作关系','希望接触相关行业的关键利益相关方','评估赞助策略或赞助激活方案','在做出决策前，希望获得有经验的本地视角']}
   };
   var copy=copies[lang]||copies.en;
 
-  var section=document.querySelector('#work-with-us');
-  if(!section){
-    section=document.createElement('section');
-    section.id='work-with-us';
-    section.className='content-section work-with-us-section';
-    section.setAttribute('aria-labelledby','work-with-us-title');
-    contact.insertAdjacentElement('beforebegin',section);
-  }else if(section.nextElementSibling!==contact){
-    contact.insertAdjacentElement('beforebegin',section);
+  var block=inner.querySelector('.work-with-us-inline');
+  if(!block){
+    block=document.createElement('div');
+    block.className='work-with-us-inline';
+    block.id='contact-work-with-us';
+    block.setAttribute('aria-labelledby','contact-work-with-us-title');
+    var buttons=inner.querySelector('.contact-buttons');
+    if(buttons)buttons.insertAdjacentElement('beforebegin',block);
+    else inner.appendChild(block);
   }
 
-  section.setAttribute('lang',copy.htmlLang);
-  if(section.getAttribute('data-ss-work-lang')===lang)return;
-  section.setAttribute('data-ss-work-lang',lang);
-  section.textContent='';
+  block.setAttribute('lang',copy.htmlLang);
+  if(block.getAttribute('data-ss-work-lang')===lang)return;
+  block.setAttribute('data-ss-work-lang',lang);
+  block.textContent='';
 
-  var shell=document.createElement('div');
-  shell.className='section-shell work-with-us-shell';
-
-  var header=document.createElement('div');
-  header.className='work-with-us-heading';
-
-  var eyebrow=document.createElement('p');
-  eyebrow.className='eyebrow work-with-us-eyebrow';
-  eyebrow.appendChild(document.createElement('span'));
-  eyebrow.appendChild(document.createTextNode(copy.kicker));
-  header.appendChild(eyebrow);
-
-  var heading=document.createElement('h2');
-  heading.id='work-with-us-title';
+  var heading=document.createElement('h3');
+  heading.id='contact-work-with-us-title';
+  heading.className='work-with-us-inline-title';
   heading.textContent=copy.heading;
-  header.appendChild(heading);
+  block.appendChild(heading);
 
   var intro=document.createElement('p');
   intro.className='work-with-us-intro';
   intro.textContent=copy.intro;
-  header.appendChild(intro);
-  shell.appendChild(header);
+  block.appendChild(intro);
 
   var list=document.createElement('ul');
   list.className='work-with-us-list';
@@ -668,8 +609,7 @@ function patchWorkWithUs(){
     item.appendChild(label);
     list.appendChild(item);
   });
-  shell.appendChild(list);
-  section.appendChild(shell);
+  block.appendChild(list);
 }
 
 function patchFounderIdentity(){

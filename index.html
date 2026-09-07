@@ -1633,7 +1633,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #75b7ff;outline-offset:4p
 </style>
 
 <style></style>
-<link rel="stylesheet" href="assets/case-study-split.css?v=introduction-subheads-20260907">
+<link rel="stylesheet" href="assets/case-study-split.css?v=navigation-heading-hierarchy-20260907">
 </head>
 <body>
   <div id="root"></div>
@@ -2125,70 +2125,7 @@ react/cjs/react-jsx-runtime.production.js:
 <!-- SS FOUR LANGUAGE SWITCH END -->
 
 
-<!-- Section hierarchy navigation -->
-<script>
-(function(){
-  var queued=false;
-  function lang(){
-    var m=document.documentElement.getAttribute('data-ss-lang-mode')||'';
-    if(m==='zhtw'||m==='zhcn')return'zh';
-    if(m==='ja')return'ja';
-    var active=document.querySelector('.lang-switch button.active');
-    var x=(active&&active.textContent||'EN').trim();
-    return x==='日'?'ja':x==='中'?'zh':'en';
-  }
-  var navLabels={
-    en:{company:'Company Introduction',points:'Points of Difference',founder:'Introducing the Founder',experience:'Professional Journey',network:'Broad Influence and Access',capabilities:'Case Study: Apple'},
-    ja:{company:'会社紹介',points:'私たちの強み',founder:'創業者紹介',experience:'プロフェッショナル・ジャーニー',network:'幅広い影響力とアクセス',capabilities:'ケーススタディ Apple'},
-    zh:{company:'公司簡介',points:'核心優勢',founder:'創辦人介紹',experience:'專業歷程',network:'廣泛的影響力與資源管道',capabilities:'案例研究 Apple'}
-  };
-  function setLabel(a,v){if(document.documentElement.getAttribute('data-ss-lang-mode')==='zhcn'&&window.__ssToSimplified)v=window.__ssToSimplified(v);if(a&&a.textContent!==v)a.textContent=v;}
-  function apply(){
-    var nav=document.querySelector('.site-header nav');
-    if(!nav)return;
-    var founder=nav.querySelector('a[href="#founder"]');
-    var career=nav.querySelector('a[href="#experience"]');
-    if(!career&&founder){
-      career=document.createElement('a');
-      career.href='#experience';
-      career.className='nav-career';
-      founder.insertAdjacentElement('afterend',career);
-    }
-    var links={
-      company:nav.querySelector('a[href="#company"]'),
-      points:nav.querySelector('a[href="#points"]'),
-      founder:nav.querySelector('a[href="#founder"]'),
-      experience:nav.querySelector('a[href="#experience"]'),
-      network:nav.querySelector('a[href="#network"]'),
-      capabilities:nav.querySelector('a[href="#capabilities"]')
-    };
-    Object.keys(links).forEach(function(k){
-      var a=links[k]; if(!a)return;
-      a.classList.remove('intro-nav-main','intro-nav-subitem','nav-level-1','nav-level-2','nav-level-3','nav-parent');
-    });
-    if(links.company)links.company.classList.add('nav-level-1','nav-parent');
-    if(links.points)links.points.classList.add('nav-level-2');
-    if(links.founder)links.founder.classList.add('nav-level-2');
-    if(links.experience)links.experience.classList.add('nav-level-3','nav-career');
-    if(links.network)links.network.classList.add('nav-level-1','nav-parent');
-    if(links.capabilities)links.capabilities.classList.add('nav-level-2');
-
-    var l=lang();
-    var labels=navLabels[l];
-    Object.keys(labels).forEach(function(k){setLabel(links[k],labels[k]);});
-  }
-  function queue(){
-    if(queued)return;
-    queued=true;
-    requestAnimationFrame(function(){queued=false;apply();});
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',queue);else queue();
-  window.addEventListener('resize',queue,{passive:true});
-  document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.lang-switch'))setTimeout(queue,0);});
-  new MutationObserver(queue).observe(document.body,{childList:true,subtree:true});
-})();
-</script>
-<!-- /Section hierarchy navigation -->
+<!-- Section hierarchy navigation is handled by assets/site-enhancements.js -->
 
 
 <!-- Career Playbook accordion JS START -->

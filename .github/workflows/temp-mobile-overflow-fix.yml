@@ -1,0 +1,37 @@
+name: Temporary mobile horizontal overflow fix
+on:
+  push:
+    branches: [fix/mobile-horizontal-overflow-20260907]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: fix/mobile-horizontal-overflow-20260907
+      - name: Lock root horizontal overflow
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:82px}body{margin:0;background:var(--ink);color:var(--paper);font-family:Arial,Helvetica,sans-serif;overflow-x:hidden}'
+          new='*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:82px;overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}body{margin:0;background:var(--ink);color:var(--paper);font-family:Arial,Helvetica,sans-serif;overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}'
+          assert s.count(old)==1, f'expected one root overflow rule, found {s.count(old)}'
+          s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Verify patch
+        run: |
+          grep -F 'html{scroll-behavior:smooth;scroll-padding-top:82px;overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}' index.html
+          git diff --check
+      - name: Commit site fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "fix: prevent mobile horizontal page scrolling"
+          git push origin HEAD:fix/mobile-horizontal-overflow-20260907

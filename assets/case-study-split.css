@@ -918,3 +918,107 @@
     line-height:1.2;
   }
 }
+
+
+/* Work With Us conversion section */
+#work-with-us{
+  scroll-margin-top:96px;
+}
+.work-with-us-section{
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 84% 18%,rgba(215,169,54,.085),transparent 30%),
+    linear-gradient(180deg,#0a0f16 0%,#080c12 100%);
+}
+.work-with-us-shell{
+  position:relative;
+  z-index:1;
+}
+.work-with-us-heading{
+  max-width:860px;
+  margin-bottom:clamp(30px,4vw,46px);
+}
+.work-with-us-eyebrow{
+  margin-bottom:18px;
+}
+.work-with-us-heading h2{
+  margin:0;
+  color:#fff;
+  font-size:clamp(36px,5vw,64px);
+  font-weight:950;
+  line-height:.98;
+  letter-spacing:-.05em;
+}
+.work-with-us-intro{
+  max-width:720px;
+  margin:22px 0 0;
+  color:#aeb7c3;
+  font-size:clamp(15px,1.2vw,17px);
+  line-height:1.7;
+}
+.work-with-us-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1px;
+  margin:0;
+  padding:1px;
+  list-style:none;
+  background:rgba(255,255,255,.12);
+}
+.work-with-us-item{
+  position:relative;
+  display:flex;
+  align-items:flex-start;
+  gap:18px;
+  min-height:112px;
+  padding:26px 28px;
+  background:linear-gradient(145deg,rgba(255,255,255,.038),rgba(255,255,255,.015));
+}
+.work-with-us-marker{
+  display:block;
+  width:24px;
+  height:1px;
+  flex:0 0 24px;
+  margin-top:.72em;
+  background:var(--gold);
+  box-shadow:8px 0 18px rgba(215,169,54,.18);
+}
+.work-with-us-item-text{
+  color:#f1f3f6;
+  font-size:clamp(15px,1.25vw,18px);
+  font-weight:720;
+  line-height:1.5;
+}
+@media(max-width:760px){
+  .work-with-us-heading{
+    margin-bottom:26px;
+  }
+  .work-with-us-eyebrow{
+    margin-bottom:14px;
+  }
+  .work-with-us-heading h2{
+    font-size:clamp(34px,10.5vw,46px);
+    line-height:1.02;
+  }
+  .work-with-us-intro{
+    margin-top:18px;
+    font-size:15px;
+    line-height:1.65;
+  }
+  .work-with-us-list{
+    grid-template-columns:1fr;
+  }
+  .work-with-us-item{
+    min-height:0;
+    gap:14px;
+    padding:21px 18px;
+  }
+  .work-with-us-marker{
+    width:20px;
+    flex-basis:20px;
+  }
+  .work-with-us-item-text{
+    font-size:15px;
+    line-height:1.55;
+  }
+}

@@ -375,13 +375,9 @@
 
     var foundationEyebrow=document.createElement('div');
     foundationEyebrow.className='company-story-eyebrow';
-    var foundationIndex=document.createElement('span');
-    foundationIndex.className='company-story-index';
-    foundationIndex.textContent='01';
     var foundationKicker=document.createElement('span');
     foundationKicker.className='company-story-kicker';
     foundationKicker.textContent=copy.foundationKicker;
-    foundationEyebrow.appendChild(foundationIndex);
     foundationEyebrow.appendChild(foundationKicker);
     foundation.appendChild(foundationEyebrow);
 
@@ -400,13 +396,9 @@
 
     var originEyebrow=document.createElement('div');
     originEyebrow.className='company-story-eyebrow';
-    var originIndex=document.createElement('span');
-    originIndex.className='company-story-index';
-    originIndex.textContent='02';
     var originKicker=document.createElement('span');
     originKicker.className='company-story-kicker';
     originKicker.textContent=copy.originKicker;
-    originEyebrow.appendChild(originIndex);
     originEyebrow.appendChild(originKicker);
     origin.appendChild(originEyebrow);
 

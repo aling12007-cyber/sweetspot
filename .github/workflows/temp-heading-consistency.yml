@@ -22,7 +22,6 @@ jobs:
               assert count==1, f'{label}: expected 1 match, found {count}'
               return text.replace(old,new,1)
 
-          # index.html: unified heading copy + explicit Insights copy + cache bust.
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
           replacements=[
@@ -43,7 +42,6 @@ jobs:
               s=replace_once(s,old,new,label)
           p.write_text(s,encoding='utf-8')
 
-          # assets/site-enhancements.js: localized navigation + Introduction fallback labels.
           p=Path('assets/site-enhancements.js')
           j=p.read_text(encoding='utf-8')
           j=replace_once(j, "version='20260907-heading-hierarchy-i18n-v3-'+lang", "version='20260907-heading-hierarchy-i18n-v4-'+lang", 'nav version')
@@ -57,31 +55,6 @@ jobs:
           for old,new,label in nav_replacements:
               j=replace_once(j,old,new,label)
           p.write_text(j,encoding='utf-8')
-
-          # Required-check source of truth must match the corrected hierarchy.
-          p=Path('.github/workflows/validate-heading-integrity.yml')
-          w=p.read_text(encoding='utf-8')
-          check_replacements=[
-            ("company:['Introduction','Company Introduction','']", "company:['INTRODUCTION','Company Introduction','']", 'CI EN Introduction'),
-            ("company:['会社','会社紹介','']", "company:['会社紹介','Sweet Spotについて','']", 'CI JA Introduction'),
-            ("company:['公司','公司簡介','']", "company:['公司簡介','關於 Sweet Spot','']", 'CI ZH Introduction'),
-            ("points:['Difference','Points of Difference','']", "points:['DIFFERENCE','Points of Difference','']", 'CI Difference'),
-            ("founder:['Founder','Sam L. Pearson','']", "founder:['FOUNDER','Sam L. Pearson','']", 'CI Founder'),
-            ("experience:['Career','Professional Journey','Built across APAC']", "experience:['CAREER','Professional Journey','Built across APAC']", 'CI Career'),
-            ("network:['Network','Broad Influence and Access','Services rendered to:']", "network:['NETWORK','Broad Influence and Access','Services rendered to:']", 'CI Network'),
-            ("capabilities:['Case','Case Study: Apple','Demonstrated high-level facilitation capability']", "capabilities:['CASE STUDY','Case Study: Apple','Demonstrated high-level facilitation capability']", 'CI EN Case'),
-            ("capabilities:['案例','案例研究：Apple','展現高水準的協調促成能力']", "capabilities:['案例研究','案例研究：Apple','展現高水準的協調促成能力']", 'CI ZH Case'),
-            ("version='20260907-heading-hierarchy-i18n-v3-'+lang", "version='20260907-heading-hierarchy-i18n-v4-'+lang", 'CI nav version'),
-          ]
-          for old,new,label in check_replacements:
-              w=replace_once(w,old,new,label)
-          anchor='            "window.__ssRefreshUnifiedHeadings=run;"\n'
-          assert anchor in w
-          w=w.replace(anchor, '            "insights:[\'INSIGHTS\',\'Insights & Perspectives\',\'\']",\n            "insights:[\'インサイト\',\'インサイトと視点\',\'\']",\n            "insights:[\'洞察\',\'洞察與觀點\',\'\']",\n'+anchor,1)
-          nav_anchor='            "{href:\'#capabilities\',label:c.caseStudy}",\n'
-          assert nav_anchor in w
-          w=w.replace(nav_anchor, nav_anchor+'            "caseStudy:\'CASE STUDY\',insights:\'INSIGHTS\'",\n            "caseStudy:\'ケーススタディ\',insights:\'インサイト\'",\n            "caseStudy:\'案例研究\',insights:\'洞察\'",\n',1)
-          p.write_text(w,encoding='utf-8')
           PY
       - name: Validate patched JavaScript syntax
         run: |
@@ -96,11 +69,11 @@ jobs:
           subprocess.run(['node','--check','.heading-check.js'],check=True)
           Path('.heading-check.js').unlink()
           PY
-      - name: Commit patched files
+      - name: Commit patched site files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html assets/site-enhancements.js .github/workflows/validate-heading-integrity.yml
+          git add index.html assets/site-enhancements.js
           git diff --cached --check
           git commit -m "fix: normalize heading hierarchy and translations"
           git push origin HEAD:fix/heading-consistency-i18n-20260907

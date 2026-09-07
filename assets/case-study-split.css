@@ -837,3 +837,61 @@
     width:100%!important;
   }
 }
+
+
+/* Story subsection headings — match Introduction small headings */
+#company .company-story-panel::after{
+  content:none!important;
+  display:none!important;
+}
+
+#company .company-story-index{
+  display:none!important;
+}
+
+#company .company-story-eyebrow{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  margin:0 0 16px;
+  color:#c8b56e;
+  font-size:11px;
+  line-height:1.4;
+  font-weight:900;
+  letter-spacing:.17em;
+  text-transform:uppercase;
+}
+
+#company .company-story-eyebrow::before{
+  content:"";
+  display:block;
+  width:28px;
+  height:1px;
+  flex:0 0 28px;
+  background:var(--gold);
+}
+
+#company .company-story-kicker{
+  color:inherit;
+  font-size:inherit;
+  line-height:inherit;
+  font-weight:inherit;
+  letter-spacing:inherit;
+}
+
+@media(max-width:760px){
+  #company .company-story-eyebrow{
+    gap:10px;
+    margin-bottom:13px;
+    font-size:10px;
+    letter-spacing:.145em;
+  }
+
+  #company .company-story-eyebrow::before{
+    width:22px;
+    flex-basis:22px;
+  }
+}

@@ -34,29 +34,36 @@ jobs:
 
           a=s.index(start); b=s.index(end,a); block=s[a:b]
           required_heading=[
-            "company:['Introduction','Company Introduction','']",
-            "company:['会社','会社紹介','']",
-            "company:['公司','公司簡介','']",
-            "points:['Difference','Points of Difference','']",
-            "founder:['Founder','Sam L. Pearson','']",
+            "company:['INTRODUCTION','Company Introduction','']",
+            "company:['会社紹介','Sweet Spotについて','']",
+            "company:['公司簡介','關於 Sweet Spot','']",
+            "points:['DIFFERENCE','Points of Difference','']",
+            "founder:['FOUNDER','Sam L. Pearson','']",
             "founder:['創業者','Sam L. Pearson','']",
             "founder:['創辦人','Sam L. Pearson','']",
-            "experience:['Career','Professional Journey','Built across APAC']",
-            "network:['Network','Broad Influence and Access','Services rendered to:']",
-            "capabilities:['Case','Case Study: Apple','Demonstrated high-level facilitation capability']",
-            "capabilities:['案例','案例研究：Apple','展現高水準的協調促成能力']",
+            "experience:['CAREER','Professional Journey','Built across APAC']",
+            "network:['NETWORK','Broad Influence and Access','Services rendered to:']",
+            "capabilities:['CASE STUDY','Case Study: Apple','Demonstrated high-level facilitation capability']",
+            "capabilities:['ケーススタディ','ケーススタディ Apple','高水準のファシリテーション能力を実証']",
+            "capabilities:['案例研究','案例研究：Apple','展現高水準的協調促成能力']",
+            "insights:['INSIGHTS','Insights & Perspectives','']",
+            "insights:['インサイト','インサイトと視点','']",
+            "insights:['洞察','洞察與觀點','']",
             "window.__ssRefreshUnifiedHeadings=run;"
           ]
           for x in required_heading:
               assert x in s, 'Required unified heading copy missing: '+x
 
           required_nav=[
-            "version='20260907-heading-hierarchy-i18n-v3-'+lang",
+            "version='20260907-heading-hierarchy-i18n-v4-'+lang",
             "var navCopies={",
             "en:{home:'HOME',introduction:'INTRODUCTION',foundation:'FOUNDATION / PURPOSE'",
             "ja:{home:'ホーム',introduction:'会社紹介',foundation:'創立 / 理念'",
             "zhtw:{home:'首頁',introduction:'公司簡介',foundation:'創立 / 理念'",
             "zhcn:{home:'首页',introduction:'公司简介',foundation:'创立 / 理念'",
+            "caseStudy:'CASE STUDY',insights:'INSIGHTS'",
+            "caseStudy:'ケーススタディ',insights:'インサイト'",
+            "caseStudy:'案例研究',insights:'洞察'",
             "{href:'#home',label:c.home,classes:'nav-home nav-level-1'}",
             "{href:'#company',label:c.introduction,classes:'nav-level-1 nav-parent',children:[",
             "{href:'#foundation-purpose',label:c.foundation}",

@@ -48,26 +48,36 @@ jobs:
               assert x in s, 'Required unified heading copy missing: '+x
 
           required_nav=[
-            "version='20260907-heading-hierarchy-v2'",
-            "{href:'#home',label:'HOME',classes:'nav-home nav-level-1'}",
-            "{href:'#company',label:'INTRODUCTION',classes:'nav-level-1 nav-parent',children:[",
-            "{href:'#foundation-purpose',label:'FUNDATION/PURPOSE'}",
-            "{href:'#name-logo',label:'NAME/LOGO'}",
-            "{href:'#what-we-stand-for',label:'WHAT WE STAND FOR'}",
-            "{href:'#difference',label:'DIFFERENCE'}",
-            "{href:'#founder',label:'FOUNDER',classes:'nav-level-1 nav-parent',children:[",
-            "{href:'#experience',label:'CAREER'}",
-            "{href:'#network',label:'NETWORK',classes:'nav-level-1 nav-parent',children:[",
-            "{href:'#capabilities',label:'CASE'}",
-            "{href:'#insights',label:'INSIGHTS',classes:'nav-level-1'}",
-            "{href:'#contact',label:'CONTACT',classes:'nav-level-1 contact-mini'}",
+            "version='20260907-heading-hierarchy-i18n-v3-'+lang",
+            "var navCopies={",
+            "en:{home:'HOME',introduction:'INTRODUCTION',foundation:'FOUNDATION / PURPOSE'",
+            "ja:{home:'ホーム',introduction:'会社紹介',foundation:'創立 / 理念'",
+            "zhtw:{home:'首頁',introduction:'公司簡介',foundation:'創立 / 理念'",
+            "zhcn:{home:'首页',introduction:'公司简介',foundation:'创立 / 理念'",
+            "{href:'#home',label:c.home,classes:'nav-home nav-level-1'}",
+            "{href:'#company',label:c.introduction,classes:'nav-level-1 nav-parent',children:[",
+            "{href:'#foundation-purpose',label:c.foundation}",
+            "{href:'#name-logo',label:c.nameLogo}",
+            "{href:'#what-we-stand-for',label:c.standFor}",
+            "{href:'#difference',label:c.difference}",
+            "{href:'#founder',label:c.founder,classes:'nav-level-1 nav-parent',children:[",
+            "{href:'#experience',label:c.career}",
+            "{href:'#network',label:c.network,classes:'nav-level-1 nav-parent',children:[",
+            "{href:'#capabilities',label:c.caseStudy}",
+            "{href:'#insights',label:c.insights,classes:'nav-level-1'}",
+            "{href:'#contact',label:c.contact,classes:'nav-level-1 contact-mini'}",
             "foundation.id='foundation-purpose'",
             "origin.id='name-logo'",
             "focusHeading.id='what-we-stand-for'",
-            "differenceHeading.id='difference'"
+            "differenceHeading.id='difference'",
+            "focusHeading.textContent=focusLabels[lang]||focusLabels.en;",
+            "differenceHeading.textContent=differenceLabels[lang]||differenceLabels.en;",
+            "閱讀更多創辦人的職涯",
+            "創業者の経歴をもっと見る"
           ]
           for x in required_nav:
-              assert x in j, 'Required navigation hierarchy token missing: '+x
+              assert x in j, 'Required localized navigation/content token missing: '+x
+          assert 'FUNDATION/PURPOSE' not in j, 'Misspelled Foundation label returned'
 
           m=re.search(r'<script id="ss-single-heading-script">(.*?)</script>',block,re.S)
           assert m, 'Unified heading script missing'
@@ -75,6 +85,6 @@ jobs:
           t.write_text(m.group(1),encoding='utf-8')
           subprocess.run(['node','--check',str(t)],check=True)
           t.unlink()
-          print('Heading and navigation hierarchy integrity check passed')
+          print('Heading and localized navigation integrity check passed')
           PY
-# Validates the current unified heading and requested navigation hierarchy source of truth.
+# Validates the current unified heading and localized navigation hierarchy source of truth.

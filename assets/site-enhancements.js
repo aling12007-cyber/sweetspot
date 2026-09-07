@@ -56,36 +56,53 @@
     var navs=document.querySelectorAll('.site-header nav');
     if(!navs.length)return;
 
-    var homeLabels={
-      en:'Home',
-      ja:'ホーム',
-      zhtw:'首頁',
-      zhcn:'首页'
-    };
-    var lang=currentLanguage();
-    var label=homeLabels[lang]||homeLabels.en;
-    var introductionLabels={
-      en:'Introduction',
-      ja:'会社紹介',
-      zhtw:'簡介',
-      zhcn:'简介'
-    };
+    var version='20260907-heading-hierarchy';
+    var items=[
+      {href:'#home',label:'HOME',classes:'nav-home nav-level-1'},
+      {href:'#company',label:'INTRODUCTION',classes:'nav-level-1 nav-parent'},
+      {href:'#foundation-purpose',label:'FUNDATION/PURPOSE',classes:'nav-level-2'},
+      {href:'#name-logo',label:'NAME/LOGO',classes:'nav-level-2'},
+      {href:'#what-we-stand-for',label:'WHAT WE STAND FOR',classes:'nav-level-2'},
+      {href:'#difference',label:'DIFFERENCE',classes:'nav-level-2'},
+      {href:'#founder',label:'FOUNDER',classes:'nav-level-1 nav-parent'},
+      {href:'#experience',label:'CAREER',classes:'nav-level-2'},
+      {href:'#network',label:'NETWORK',classes:'nav-level-1 nav-parent'},
+      {href:'#capabilities',label:'CASE',classes:'nav-level-2'},
+      {href:'#insights',label:'INSIGHTS',classes:'nav-level-1'},
+      {href:'#contact',label:'CONTACT',classes:'nav-level-1 contact-mini'}
+    ];
 
     navs.forEach(function(nav){
-      var homeLink=nav.querySelector('a.nav-home[href="#home"]');
-      if(!homeLink){
-        homeLink=document.createElement('a');
-        homeLink.className='nav-home nav-level-1';
-        homeLink.href='#home';
-        nav.insertBefore(homeLink,nav.firstElementChild);
-      }
-      setLinkLabel(homeLink,label);
+      var current=Array.prototype.slice.call(nav.querySelectorAll('a[href^="#"]'));
+      var ready=nav.getAttribute('data-ss-nav-version')===version&&
+        current.length===items.length&&
+        items.every(function(item,index){
+          var link=current[index];
+          if(!link)return false;
+          return link.getAttribute('href')===item.href&&
+            (link.textContent||'').trim()===item.label&&
+            item.classes.split(' ').every(function(name){return link.classList.contains(name);});
+        });
+      if(ready)return;
 
-      var companyLink=nav.querySelector('a[href="#company"]');
-      if(companyLink)setLinkLabel(companyLink,introductionLabels[lang]||introductionLabels.en);
+      var byHref={};
+      current.forEach(function(link){
+        var href=link.getAttribute('href');
+        if(href&&!byHref[href])byHref[href]=link;
+      });
 
-      var pointsLink=nav.querySelector('a[href="#points"]');
-      if(pointsLink)pointsLink.remove();
+      var ordered=items.map(function(item){
+        var link=byHref[item.href]||document.createElement('a');
+        var wasActive=link.classList.contains('is-active');
+        link.setAttribute('href',item.href);
+        link.className=item.classes+(wasActive?' is-active':'');
+        link.textContent=item.label;
+        return link;
+      });
+
+      current.forEach(function(link){link.remove();});
+      ordered.forEach(function(link){nav.appendChild(link);});
+      nav.setAttribute('data-ss-nav-version',version);
     });
   }
 
@@ -299,6 +316,7 @@
 
     var foundation=document.createElement('section');
     foundation.className='company-story-panel company-story-foundation';
+    foundation.id='foundation-purpose';
 
     var foundationEyebrow=document.createElement('div');
     foundationEyebrow.className='company-story-eyebrow';
@@ -323,6 +341,7 @@
 
     var origin=document.createElement('section');
     origin.className='company-story-panel company-story-origin';
+    origin.id='name-logo';
 
     var originEyebrow=document.createElement('div');
     originEyebrow.className='company-story-eyebrow';
@@ -411,6 +430,7 @@ function patchIntroduction(){
     focusHeading.className='introduction-subhead introduction-subhead--focus';
   }
   if(focusHeading&&list){
+    focusHeading.id='what-we-stand-for';
     focusHeading.textContent='WHAT WE STAND FOR';
     list.insertAdjacentElement('beforebegin',focusHeading);
   }
@@ -429,6 +449,7 @@ function patchIntroduction(){
       differenceHeading=document.createElement('div');
       differenceHeading.className='introduction-subhead introduction-subhead--difference';
     }
+    differenceHeading.id='difference';
     differenceHeading.textContent='DIFFERENCE';
     grid.insertAdjacentElement('beforebegin',differenceHeading);
   }

@@ -208,40 +208,86 @@
     var company=document.querySelector('#company');
     if(!company)return;
 
+    var lang=currentLanguage();
+    var copies={
+      en:{
+        htmlLang:'en',
+        heading:'Sweet Spot’s Foundation Story and Purpose',
+        first:'Sam’s experience across rights holders (WTA, FIFA), agencies (Octagon, CSM) and brands (AIG) has provided a comprehensive appreciation of the sports ecosystem and objectives and challenges across the various parties. In particular, the 8 years leading AIG’s sports marketing function ensured a focus on maximizing sponsorship benefits to achieve tangible business results.',
+        second:'Sweet Spot was founded to share this solution-focused experience and offer high level facilitation to multiple clients.',
+        namePrefix:'The name represents the sweet feeling when perfectly hitting a ball with the middle part of the bat, racquet or club. The logo brings together an ancient quartz crystal in the center of a traditional Mexican ',
+        nameTerm:'serape',
+        nameSuffix:'.',
+        closing:'Welcome to the Sweet Spot!'
+      },
+      ja:{
+        htmlLang:'ja',
+        heading:'Sweet Spotの創立ストーリーと理念',
+        first:'Samは、権利保有者（WTA、FIFA）、エージェンシー（Octagon、CSM）、ブランド（AIG）それぞれの立場で経験を積み、スポーツ業界全体のエコシステムと、各関係者が抱える目標や課題を幅広く理解してきました。特に、AIGで8年間スポーツマーケティング部門を率いた経験を通じ、スポンサーシップの価値を最大化し、具体的なビジネス成果につなげることに注力してきました。',
+        second:'Sweet Spotは、この課題解決を重視した経験を共有し、さまざまなクライアントに高度な調整・支援を提供するために設立されました。',
+        namePrefix:'「Sweet Spot」という名前は、バット、ラケット、クラブの芯でボールを完璧に捉えたときに感じる心地よさを表しています。ロゴは、メキシコの伝統的な ',
+        nameTerm:'serape',
+        nameSuffix:'（サラペ）の中央に古代の水晶を配したデザインです。',
+        closing:'Sweet Spotへようこそ！'
+      },
+      zhtw:{
+        htmlLang:'zh-Hant',
+        heading:'Sweet Spot 的創立故事與理念',
+        first:'Sam 曾在權利持有方（WTA、FIFA）、代理商（Octagon、CSM）以及品牌（AIG）累積經驗，使他得以全面理解體育產業生態，以及不同參與者各自的目標與面臨的挑戰。尤其是在 AIG 領導體育行銷業務的八年間，他始終專注於最大化贊助合作的效益，並將其轉化為具體的商業成果。',
+        second:'Sweet Spot 的成立，是為了分享這些以解決問題為核心的經驗，並為不同客戶提供高層次的協調與支援。',
+        namePrefix:'「Sweet Spot」這個名稱，代表使用球棒、球拍或球桿的中心部位完美擊中球時，那種令人愉悅的感受。品牌標誌則將一顆古老的石英水晶置於墨西哥傳統 ',
+        nameTerm:'serape',
+        nameSuffix:' 織毯的中央。',
+        closing:'歡迎來到 Sweet Spot！'
+      },
+      zhcn:{
+        htmlLang:'zh-Hans',
+        heading:'Sweet Spot 的创立故事与理念',
+        first:'Sam 曾在权利持有方（WTA、FIFA）、代理机构（Octagon、CSM）以及品牌（AIG）积累经验，使他得以全面理解体育产业生态，以及不同参与方各自的目标与面临的挑战。尤其是在 AIG 领导体育营销业务的八年间，他始终专注于最大化赞助合作的效益，并将其转化为具体的商业成果。',
+        second:'Sweet Spot 的成立，是为了分享这些以解决问题为核心的经验，并为不同客户提供高层次的协调与支持。',
+        namePrefix:'“Sweet Spot”这个名称，代表使用球棒、球拍或球杆的中心部位完美击中球时，那种令人愉悦的感受。品牌标志则将一颗古老的石英水晶置于墨西哥传统 ',
+        nameTerm:'serape',
+        nameSuffix:' 织毯的中央。',
+        closing:'欢迎来到 Sweet Spot！'
+      }
+    };
+    var copy=copies[lang]||copies.en;
+
     var story=company.querySelector('.company-foundation-story');
-    if(story){
-      story.hidden=false;
-      return;
+    if(!story){
+      var list=company.querySelector('.company-intro-list');
+      if(!list)return;
+
+      story=document.createElement('div');
+      story.className='company-foundation-story';
+      story.setAttribute('aria-labelledby','company-foundation-story-title');
+      list.insertAdjacentElement('afterend',story);
     }
 
-    var list=company.querySelector('.company-intro-list');
-    if(!list)return;
+    story.hidden=false;
+    if(story.getAttribute('data-ss-story-lang')===lang)return;
 
-    story=document.createElement('div');
-    story.className='company-foundation-story';
-    story.setAttribute('lang','en');
-    story.setAttribute('aria-labelledby','company-foundation-story-title');
+    story.setAttribute('data-ss-story-lang',lang);
+    story.setAttribute('lang',copy.htmlLang);
+    story.textContent='';
 
     var heading=document.createElement('h3');
     heading.id='company-foundation-story-title';
-    heading.textContent='Sweet Spot’s Foundation Story and Purpose';
+    heading.textContent=copy.heading;
     story.appendChild(heading);
 
-    appendStoryParagraph(story,'Sam’s experience across rights holders (WTA, FIFA), agencies (Octagon, CSM) and brands (AIG) has provided a comprehensive appreciation of the sports ecosystem and objectives and challenges across the various parties. In particular, the 8 years leading AIG’s sports marketing function ensured a focus on maximizing sponsorship benefits to achieve tangible business results.');
-
-    appendStoryParagraph(story,'Sweet Spot was founded to share this solution-focused experience and offer high level facilitation to multiple clients.');
+    appendStoryParagraph(story,copy.first);
+    appendStoryParagraph(story,copy.second);
 
     var nameParagraph=document.createElement('p');
-    nameParagraph.appendChild(document.createTextNode('The name represents the sweet feeling when perfectly hitting a ball with the middle part of the bat, racquet or club. The logo brings together an ancient quartz crystal in the center of a traditional Mexican '));
+    nameParagraph.appendChild(document.createTextNode(copy.namePrefix));
     var serape=document.createElement('em');
-    serape.textContent='serape';
+    serape.textContent=copy.nameTerm;
     nameParagraph.appendChild(serape);
-    nameParagraph.appendChild(document.createTextNode('.'));
+    nameParagraph.appendChild(document.createTextNode(copy.nameSuffix));
     story.appendChild(nameParagraph);
 
-    appendStoryParagraph(story,'Welcome to the Sweet Spot!');
-
-    list.insertAdjacentElement('afterend',story);
+    appendStoryParagraph(story,copy.closing);
   }
 
   function patchEmptySemantics(){

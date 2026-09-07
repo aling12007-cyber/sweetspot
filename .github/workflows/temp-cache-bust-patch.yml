@@ -1,0 +1,36 @@
+name: Temporary cache-bust patch
+
+on:
+  push:
+    branches:
+      - fix/cache-bust-site-enhancements-20260907
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Version site enhancements asset URL
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          old = '<script src="assets/site-enhancements.js"></script>'
+          new = '<script src="assets/site-enhancements.js?v=foundation-i18n-20260907"></script>'
+          if old not in text:
+              raise SystemExit('Expected unversioned site-enhancements script tag was not found')
+          if text.count(old) != 1:
+              raise SystemExit('Expected exactly one site-enhancements script tag')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+      - name: Commit cache-bust change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "fix: bust site enhancements cache"
+          git push

@@ -1,0 +1,295 @@
+name: Temporary Introduction and Founder layout
+
+on:
+  push:
+    branches:
+      - content/introduction-founder-career-20260907
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Apply requested content and layout changes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from textwrap import dedent
+          import re
+
+          def replace_once(text, old, new, label):
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'Expected exactly one {label} block, found {count}')
+              return text.replace(old, new, 1)
+
+          js_path = Path('assets/site-enhancements.js')
+          js = js_path.read_text(encoding='utf-8')
+
+          # Header navigation: Company -> Introduction; remove the standalone Difference link.
+          js = replace_once(
+              js,
+              "    var label=homeLabels[currentLanguage()]||homeLabels.en;\n\n    navs.forEach(function(nav){",
+              "    var lang=currentLanguage();\n    var label=homeLabels[lang]||homeLabels.en;\n    var introductionLabels={\n      en:'Introduction',\n      ja:'会社紹介',\n      zhtw:'簡介',\n      zhcn:'简介'\n    };\n\n    navs.forEach(function(nav){",
+              'navigation language setup'
+          )
+          js = replace_once(
+              js,
+              "      setLinkLabel(homeLink,label);\n    });",
+              "      setLinkLabel(homeLink,label);\n\n      var companyLink=nav.querySelector('a[href=\"#company\"]');\n      if(companyLink)setLinkLabel(companyLink,introductionLabels[lang]||introductionLabels.en);\n\n      var pointsLink=nav.querySelector('a[href=\"#points\"]');\n      if(pointsLink)pointsLink.remove();\n    });",
+              'navigation links'
+          )
+
+          # Split the name/logo explanation into two paragraphs in every supported language.
+          replacements = [
+              (
+                  "        namePrefix:'The name represents the sweet feeling when perfectly hitting a ball with the middle part of the bat, racquet or club. The logo brings together an ancient quartz crystal in the center of a traditional Mexican ',",
+                  "        nameFirst:'The name represents the sweet feeling when perfectly hitting a ball with the middle part of the bat, racquet or club.',\n        logoPrefix:'The logo brings together an ancient quartz crystal in the center of a traditional Mexican ',",
+                  'English origin copy'
+              ),
+              (
+                  "        namePrefix:'「Sweet Spot」という名前は、バット、ラケット、クラブの芯でボールを完璧に捉えたときに感じる心地よさを表しています。ロゴは、メキシコの伝統的な ',",
+                  "        nameFirst:'「Sweet Spot」という名前は、バット、ラケット、クラブの芯でボールを完璧に捉えたときに感じる心地よさを表しています。',\n        logoPrefix:'ロゴは、メキシコの伝統的な ',",
+                  'Japanese origin copy'
+              ),
+              (
+                  "        namePrefix:'「Sweet Spot」這個名稱，代表使用球棒、球拍或球桿的中心部位完美擊中球時，那種令人愉悅的感受。品牌標誌則將一顆古老的石英水晶置於墨西哥傳統 ',",
+                  "        nameFirst:'「Sweet Spot」這個名稱，代表使用球棒、球拍或球桿的中心部位完美擊中球時，那種令人愉悅的感受。',\n        logoPrefix:'品牌標誌則將一顆古老的石英水晶置於墨西哥傳統 ',",
+                  'Traditional Chinese origin copy'
+              ),
+              (
+                  "        namePrefix:'“Sweet Spot”这个名称，代表使用球棒、球拍或球杆的中心部位完美击中球时，那种令人愉悦的感受。品牌标志则将一颗古老的石英水晶置于墨西哥传统 ',",
+                  "        nameFirst:'“Sweet Spot”这个名称，代表使用球棒、球拍或球杆的中心部位完美击中球时，那种令人愉悦的感受。',\n        logoPrefix:'品牌标志则将一颗古老的石英水晶置于墨西哥传统 ',",
+                  'Simplified Chinese origin copy'
+              ),
+          ]
+          for old, new, label in replacements:
+              js = replace_once(js, old, new, label)
+
+          js = replace_once(
+              js,
+              "    var nameParagraph=document.createElement('p');\n    nameParagraph.className='company-story-origin-copy';\n    nameParagraph.appendChild(document.createTextNode(copy.namePrefix));\n    var serape=document.createElement('em');\n    serape.textContent=copy.nameTerm;\n    nameParagraph.appendChild(serape);\n    nameParagraph.appendChild(document.createTextNode(copy.nameSuffix));\n    originLayout.appendChild(nameParagraph);",
+              "    var originCopy=document.createElement('div');\n    originCopy.className='company-story-origin-copy-group';\n\n    var nameParagraph=appendStoryParagraph(originCopy,copy.nameFirst);\n    nameParagraph.className='company-story-origin-copy';\n\n    var logoParagraph=document.createElement('p');\n    logoParagraph.className='company-story-origin-copy';\n    logoParagraph.appendChild(document.createTextNode(copy.logoPrefix));\n    var serape=document.createElement('em');\n    serape.textContent=copy.nameTerm;\n    logoParagraph.appendChild(serape);\n    logoParagraph.appendChild(document.createTextNode(copy.nameSuffix));\n    originCopy.appendChild(logoParagraph);\n    originLayout.appendChild(originCopy);",
+              'origin paragraph DOM'
+          )
+
+          # Merge Difference cards into Introduction and make Career a collapsed disclosure inside Founder.
+          insertion = dedent(r'''
+            function patchIntroduction(){
+              var company=document.querySelector('#company');
+              if(!company)return;
+
+              var lang=currentLanguage();
+              var introductionLabels={
+                en:'Introduction',
+                ja:'会社紹介',
+                zhtw:'簡介',
+                zhcn:'简介'
+              };
+              var kicker=company.querySelector('.section-title p');
+              if(kicker)kicker.textContent=introductionLabels[lang]||introductionLabels.en;
+
+              var points=document.querySelector('#points');
+              var grid=company.querySelector('.difference-grid[data-ss-merged-introduction="1"]');
+              if(!grid&&points)grid=points.querySelector('.difference-grid');
+              if(grid){
+                grid.setAttribute('data-ss-merged-introduction','1');
+                var welcome=company.querySelector('.company-story-welcome');
+                if(welcome)welcome.insertAdjacentElement('beforebegin',grid);
+                else company.appendChild(grid);
+              }
+
+              if(points){
+                points.hidden=true;
+                points.setAttribute('aria-hidden','true');
+              }
+            }
+
+            function patchFounderCareer(){
+              var founder=document.querySelector('#founder');
+              var experience=document.querySelector('#experience');
+              if(!founder||!experience)return;
+
+              if(experience.parentElement!==founder)founder.appendChild(experience);
+              experience.setAttribute('data-ss-founder-career','1');
+
+              var grid=founder.querySelector('.founder-grid');
+              if(!grid)return;
+
+              var wrap=founder.querySelector('.founder-career-disclosure-wrap');
+              var button=wrap&&wrap.querySelector('.founder-career-disclosure');
+              if(!wrap){
+                wrap=document.createElement('div');
+                wrap.className='founder-career-disclosure-wrap';
+                button=document.createElement('button');
+                button.className='founder-career-disclosure';
+                button.type='button';
+                button.setAttribute('aria-controls','experience');
+                wrap.appendChild(button);
+                grid.insertAdjacentElement('afterend',wrap);
+                button.addEventListener('click',function(){
+                  var isOpen=founder.getAttribute('data-ss-career-open')==='true';
+                  founder.setAttribute('data-ss-career-open',isOpen?'false':'true');
+                  patchFounderCareer();
+                });
+              }
+
+              if(!founder.hasAttribute('data-ss-career-open'))founder.setAttribute('data-ss-career-open','false');
+              var isOpen=founder.getAttribute('data-ss-career-open')==='true';
+              experience.hidden=!isOpen;
+
+              var lang=currentLanguage();
+              var labels={
+                en:{more:'Read more about the Founder’s career',less:'Hide the Founder’s career'},
+                ja:{more:'Founderの職歴をもっと見る',less:'Founderの職歴を閉じる'},
+                zhtw:{more:'閱讀更多Founder的職涯',less:'收起Founder的職涯'},
+                zhcn:{more:'阅读更多Founder的职业经历',less:'收起Founder的职业经历'}
+              };
+              var copy=labels[lang]||labels.en;
+              button.textContent=isOpen?copy.less:copy.more;
+              button.setAttribute('aria-expanded',isOpen?'true':'false');
+            }
+
+          ''')
+          marker = '  function patchEmptySemantics(){'
+          if 'function patchFounderCareer(){' not in js:
+              if marker not in js:
+                  raise SystemExit('patchEmptySemantics marker not found')
+              js = js.replace(marker, insertion + marker, 1)
+
+          js = replace_once(
+              js,
+              "      patchFoundationStory();\n      patchEmptySemantics();",
+              "      patchFoundationStory();\n      patchIntroduction();\n      patchFounderCareer();\n      patchEmptySemantics();",
+              'apply sequence'
+          )
+
+          required_js = [
+              "en:'Introduction'",
+              "pointsLink.remove()",
+              "copy.nameFirst",
+              "copy.logoPrefix",
+              "data-ss-merged-introduction",
+              "閱讀更多Founder的職涯",
+              "experience.hidden=!isOpen",
+          ]
+          for token in required_js:
+              if token not in js:
+                  raise SystemExit(f'Missing expected JS token: {token}')
+          js_path.write_text(js, encoding='utf-8')
+
+          css_path = Path('assets/case-study-split.css')
+          css = css_path.read_text(encoding='utf-8')
+          css_marker = '/* Introduction merge + Founder career disclosure */'
+          if css_marker not in css:
+              css += dedent(r'''
+
+              /* Introduction merge + Founder career disclosure */
+              #company .company-story-origin-copy-group{
+                display:grid;
+                gap:18px;
+                min-width:0;
+              }
+              #company .company-story-origin-copy-group .company-story-origin-copy{
+                margin:0;
+              }
+              #company .difference-grid[data-ss-merged-introduction="1"]{
+                width:min(100%,1040px);
+                margin:clamp(26px,3.5vw,42px) auto 0;
+              }
+              #points[hidden]{
+                display:none!important;
+              }
+              #founder .founder-career-disclosure-wrap{
+                width:min(1180px,calc(100% - 48px));
+                margin:clamp(28px,4vw,44px) auto 0;
+                text-align:center;
+              }
+              #founder .founder-career-disclosure{
+                min-height:48px;
+                padding:0 22px;
+                border:1px solid rgba(215,169,54,.58);
+                background:rgba(215,169,54,.055);
+                color:var(--gold-pale);
+                font-size:12px;
+                font-weight:900;
+                letter-spacing:.06em;
+                cursor:pointer;
+                transition:transform .2s ease,background .2s ease,border-color .2s ease;
+              }
+              #founder .founder-career-disclosure:hover{
+                transform:translateY(-2px);
+                border-color:rgba(215,169,54,.9);
+                background:rgba(215,169,54,.1);
+              }
+              #founder > #experience[data-ss-founder-career="1"]{
+                margin-top:clamp(26px,3vw,38px);
+                padding-top:clamp(38px,5vw,58px);
+                padding-bottom:0;
+                border-top:1px solid rgba(255,255,255,.12);
+              }
+              #founder > #experience[data-ss-founder-career="1"][hidden]{
+                display:none!important;
+              }
+              @media(max-width:760px){
+                #company .company-story-origin-copy-group{
+                  gap:14px;
+                }
+                #company .difference-grid[data-ss-merged-introduction="1"]{
+                  margin-top:24px;
+                }
+                #founder .founder-career-disclosure-wrap{
+                  width:min(100% - 30px,620px);
+                  margin-top:28px;
+                }
+                #founder .founder-career-disclosure{
+                  width:100%;
+                  min-height:50px;
+                  padding-inline:16px;
+                }
+                #founder > #experience[data-ss-founder-career="1"]{
+                  margin-top:24px;
+                  padding-top:34px;
+                }
+              }
+              ''')
+              css_path.write_text(css, encoding='utf-8')
+
+          index_path = Path('index.html')
+          index = index_path.read_text(encoding='utf-8')
+
+          js_re = re.compile(r'assets/site-enhancements\.js(?:\?v=[^"\']+)?')
+          js_matches = js_re.findall(index)
+          if len(js_matches) != 1:
+              raise SystemExit(f'Expected one site-enhancements script reference, found {len(js_matches)}')
+          index = index.replace(js_matches[0], 'assets/site-enhancements.js?v=introduction-founder-career-20260907', 1)
+
+          css_re = re.compile(r'assets/case-study-split\.css(?:\?v=[^"\']+)?')
+          css_matches = css_re.findall(index)
+          if len(css_matches) == 1:
+              index = index.replace(css_matches[0], 'assets/case-study-split.css?v=introduction-founder-career-20260907', 1)
+          elif len(css_matches) > 1:
+              raise SystemExit(f'Expected at most one case-study stylesheet reference, found {len(css_matches)}')
+
+          index_path.write_text(index, encoding='utf-8')
+          PY
+
+          node --check assets/site-enhancements.js
+          git diff --check
+          grep -q "introduction-founder-career-20260907" index.html
+          grep -q "閱讀更多Founder的職涯" assets/site-enhancements.js
+          grep -q "data-ss-merged-introduction" assets/site-enhancements.js
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/site-enhancements.js assets/case-study-split.css index.html
+          if git diff --cached --quiet; then
+            echo 'No changes to commit'
+            exit 0
+          fi
+          git commit -m 'content: merge introduction and collapse founder career'
+          git push

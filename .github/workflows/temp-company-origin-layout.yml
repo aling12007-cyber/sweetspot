@@ -18,6 +18,7 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          from textwrap import dedent
 
           js_path = Path('assets/site-enhancements.js')
           js = js_path.read_text(encoding='utf-8')
@@ -27,33 +28,33 @@ jobs:
 
           updated = old
           updated = updated.replace(
-            "    var story=company.querySelector('.company-foundation-story');\n    if(!story){\n      var list=company.querySelector('.company-intro-list');\n      if(!list)return;\n\n      story=document.createElement('section');",
-            "    var list=company.querySelector('.company-intro-list');\n    if(!list)return;\n\n    var story=company.querySelector('.company-foundation-story');\n    if(!story){\n      story=document.createElement('section');"
+              "    var story=company.querySelector('.company-foundation-story');\n    if(!story){\n      var list=company.querySelector('.company-intro-list');\n      if(!list)return;\n\n      story=document.createElement('section');",
+              "    var list=company.querySelector('.company-intro-list');\n    if(!list)return;\n\n    var story=company.querySelector('.company-foundation-story');\n    if(!story){\n      story=document.createElement('section');"
           )
           updated = updated.replace(
-            "    story.hidden=false;\n    if(story.getAttribute('data-ss-story-lang')===lang)return;\n\n    story.setAttribute('data-ss-story-lang',lang);\n    story.setAttribute('lang',copy.htmlLang);\n    story.setAttribute('aria-label',copy.foundationHeading);\n    story.textContent='';",
-            "    story.hidden=false;\n    var needsRebuild=story.getAttribute('data-ss-story-lang')!==lang;\n\n    story.setAttribute('lang',copy.htmlLang);\n    story.setAttribute('aria-label',copy.foundationHeading);\n\n    if(needsRebuild){\n      story.setAttribute('data-ss-story-lang',lang);\n      story.textContent='';"
+              "    story.hidden=false;\n    if(story.getAttribute('data-ss-story-lang')===lang)return;\n\n    story.setAttribute('data-ss-story-lang',lang);\n    story.setAttribute('lang',copy.htmlLang);\n    story.setAttribute('aria-label',copy.foundationHeading);\n    story.textContent='';",
+              "    story.hidden=false;\n    var needsRebuild=story.getAttribute('data-ss-story-lang')!==lang;\n\n    story.setAttribute('lang',copy.htmlLang);\n    story.setAttribute('aria-label',copy.foundationHeading);\n\n    if(needsRebuild){\n      story.setAttribute('data-ss-story-lang',lang);\n      story.textContent='';"
           )
           updated = updated.replace(
-            "    var origin=makePanel('origin','02','Name / Logo',copy.originHeading);\n    var logoStage=document.createElement('figure');",
-            "    var origin=makePanel('origin','02','Name / Logo',copy.originHeading);\n    var originLayout=document.createElement('div');\n    originLayout.className='company-story-origin-layout';\n\n    var logoStage=document.createElement('figure');"
+              "    var origin=makePanel('origin','02','Name / Logo',copy.originHeading);\n    var logoStage=document.createElement('figure');",
+              "    var origin=makePanel('origin','02','Name / Logo',copy.originHeading);\n    var originLayout=document.createElement('div');\n    originLayout.className='company-story-origin-layout';\n\n    var logoStage=document.createElement('figure');"
           )
           updated = updated.replace(
-            "    logoStage.appendChild(logo);\n    origin.appendChild(logoStage);",
-            "    logoStage.appendChild(logo);\n    originLayout.appendChild(logoStage);"
+              "    logoStage.appendChild(logo);\n    origin.appendChild(logoStage);",
+              "    logoStage.appendChild(logo);\n    originLayout.appendChild(logoStage);"
           )
           updated = updated.replace(
-            "    originCopy.appendChild(nameParagraph);\n\n    var closing=appendStoryParagraph(originCopy,copy.closing);\n    closing.className='company-story-closing';\n    origin.appendChild(originCopy);\n\n    story.appendChild(foundation);\n    story.appendChild(origin);\n  }",
-            "    originCopy.appendChild(nameParagraph);\n    originLayout.appendChild(originCopy);\n    origin.appendChild(originLayout);\n\n    story.appendChild(foundation);\n    story.appendChild(origin);\n    }\n\n    story.insertAdjacentElement('afterend',list);\n\n    var welcome=company.querySelector('.company-story-welcome');\n    if(!welcome){\n      welcome=document.createElement('p');\n      welcome.className='company-story-welcome';\n    }\n    welcome.setAttribute('lang',copy.htmlLang);\n    welcome.textContent=copy.closing;\n    list.insertAdjacentElement('afterend',welcome);\n  }"
+              "    originCopy.appendChild(nameParagraph);\n\n    var closing=appendStoryParagraph(originCopy,copy.closing);\n    closing.className='company-story-closing';\n    origin.appendChild(originCopy);\n\n    story.appendChild(foundation);\n    story.appendChild(origin);\n  }",
+              "    originCopy.appendChild(nameParagraph);\n    originLayout.appendChild(originCopy);\n    origin.appendChild(originLayout);\n\n    story.appendChild(foundation);\n    story.appendChild(origin);\n    }\n\n    story.insertAdjacentElement('afterend',list);\n\n    var welcome=company.querySelector('.company-story-welcome');\n    if(!welcome){\n      welcome=document.createElement('p');\n      welcome.className='company-story-welcome';\n    }\n    welcome.setAttribute('lang',copy.htmlLang);\n    welcome.textContent=copy.closing;\n    list.insertAdjacentElement('afterend',welcome);\n  }"
           )
 
           if updated == old:
               raise SystemExit('No Foundation Story changes applied')
-          for token in [
+          for token in (
               "originLayout.className='company-story-origin-layout'",
               "story.insertAdjacentElement('afterend',list)",
               "welcome.className='company-story-welcome'",
-          ]:
+          ):
               if token not in updated:
                   raise SystemExit(f'Missing expected JS token: {token}')
           js_path.write_text(js[:start] + updated + js[end:], encoding='utf-8')
@@ -62,69 +63,69 @@ jobs:
           css = css_path.read_text(encoding='utf-8')
           marker = '/* Company Foundation Story — origin side-by-side refinement */'
           if marker not in css:
-              css += r'''
-
-/* Company Foundation Story — origin side-by-side refinement */
-.company-story-origin-layout{
-  display:grid;
-  grid-template-columns:minmax(220px,.72fr) minmax(0,1.45fr);
-  gap:clamp(30px,4.8vw,66px);
-  align-items:center;
-}
-.company-story-origin-layout .company-story-logo-stage{
-  min-height:0;
-  margin:0;
-  padding:clamp(14px,2vw,24px);
-}
-.company-story-origin-layout .company-story-logo-stage:before{width:clamp(170px,18vw,230px)}
-.company-story-origin-layout .company-story-logo-stage:after{width:clamp(150px,16vw,205px)}
-.company-story-origin-layout .company-story-logo{width:clamp(126px,13vw,172px)}
-.company-story-origin-layout .company-story-copy--origin{
-  max-width:none;
-  margin:0;
-  text-align:left;
-}
-#company .company-foundation-story + .company-intro-list{
-  width:min(100%,1080px);
-  margin-top:clamp(22px,3vw,34px);
-}
-#company .company-story-welcome{
-  position:relative;
-  z-index:2;
-  width:min(100%,1080px);
-  margin:clamp(34px,4.5vw,52px) auto 0;
-  padding-top:clamp(24px,3vw,34px);
-  border-top:1px solid rgba(215,169,54,.24);
-  color:var(--gold);
-  text-align:center;
-  font-family:Georgia,"Times New Roman",serif;
-  font-size:clamp(31px,4.3vw,54px);
-  font-weight:600;
-  line-height:1.08;
-  letter-spacing:-.035em;
-}
-@media(max-width:760px){
-  .company-story-origin-layout{
-    grid-template-columns:1fr;
-    gap:20px;
-  }
-  .company-story-origin-layout .company-story-logo-stage{
-    min-height:172px;
-    padding:8px 0 14px;
-  }
-  .company-story-origin-layout .company-story-logo-stage:before{width:176px}
-  .company-story-origin-layout .company-story-logo-stage:after{width:150px}
-  .company-story-origin-layout .company-story-logo{width:122px}
-  #company .company-foundation-story + .company-intro-list{margin-top:18px}
-  #company .company-story-welcome{
-    margin-top:28px;
-    padding-top:24px;
-    font-size:clamp(30px,9vw,40px);
-    line-height:1.12;
-  }
-}
-'''
-              css_path.write_text(css, encoding='utf-8')
+              css_block = dedent(r'''
+              
+              /* Company Foundation Story — origin side-by-side refinement */
+              .company-story-origin-layout{
+                display:grid;
+                grid-template-columns:minmax(220px,.72fr) minmax(0,1.45fr);
+                gap:clamp(30px,4.8vw,66px);
+                align-items:center;
+              }
+              .company-story-origin-layout .company-story-logo-stage{
+                min-height:0;
+                margin:0;
+                padding:clamp(14px,2vw,24px);
+              }
+              .company-story-origin-layout .company-story-logo-stage:before{width:clamp(170px,18vw,230px)}
+              .company-story-origin-layout .company-story-logo-stage:after{width:clamp(150px,16vw,205px)}
+              .company-story-origin-layout .company-story-logo{width:clamp(126px,13vw,172px)}
+              .company-story-origin-layout .company-story-copy--origin{
+                max-width:none;
+                margin:0;
+                text-align:left;
+              }
+              #company .company-foundation-story + .company-intro-list{
+                width:min(100%,1080px);
+                margin-top:clamp(22px,3vw,34px);
+              }
+              #company .company-story-welcome{
+                position:relative;
+                z-index:2;
+                width:min(100%,1080px);
+                margin:clamp(34px,4.5vw,52px) auto 0;
+                padding-top:clamp(24px,3vw,34px);
+                border-top:1px solid rgba(215,169,54,.24);
+                color:var(--gold);
+                text-align:center;
+                font-family:Georgia,"Times New Roman",serif;
+                font-size:clamp(31px,4.3vw,54px);
+                font-weight:600;
+                line-height:1.08;
+                letter-spacing:-.035em;
+              }
+              @media(max-width:760px){
+                .company-story-origin-layout{
+                  grid-template-columns:1fr;
+                  gap:20px;
+                }
+                .company-story-origin-layout .company-story-logo-stage{
+                  min-height:172px;
+                  padding:8px 0 14px;
+                }
+                .company-story-origin-layout .company-story-logo-stage:before{width:176px}
+                .company-story-origin-layout .company-story-logo-stage:after{width:150px}
+                .company-story-origin-layout .company-story-logo{width:122px}
+                #company .company-foundation-story + .company-intro-list{margin-top:18px}
+                #company .company-story-welcome{
+                  margin-top:28px;
+                  padding-top:24px;
+                  font-size:clamp(30px,9vw,40px);
+                  line-height:1.12;
+                }
+              }
+              ''')
+              css_path.write_text(css + css_block, encoding='utf-8')
 
           index_path = Path('index.html')
           index = index_path.read_text(encoding='utf-8')

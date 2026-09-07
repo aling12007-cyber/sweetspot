@@ -56,23 +56,31 @@
     var navs=document.querySelectorAll('.site-header nav');
     if(!navs.length)return;
 
-    var version='20260907-heading-hierarchy-v2';
+    var lang=currentLanguage();
+    var navCopies={
+      en:{home:'HOME',introduction:'INTRODUCTION',foundation:'FOUNDATION / PURPOSE',nameLogo:'NAME / LOGO',standFor:'WHAT WE STAND FOR',difference:'DIFFERENCE',founder:'FOUNDER',career:'CAREER',network:'NETWORK',caseStudy:'CASE',insights:'INSIGHTS',contact:'CONTACT',submenu:' subsections'},
+      ja:{home:'ホーム',introduction:'会社紹介',foundation:'創立 / 理念',nameLogo:'名称 / ロゴ',standFor:'私たちの理念',difference:'私たちの強み',founder:'創業者',career:'経歴',network:'ネットワーク',caseStudy:'事例',insights:'インサイト',contact:'お問い合わせ',submenu:'のサブメニュー'},
+      zhtw:{home:'首頁',introduction:'公司簡介',foundation:'創立 / 理念',nameLogo:'名稱 / LOGO',standFor:'核心理念',difference:'差異化優勢',founder:'創辦人',career:'職涯',network:'產業網絡',caseStudy:'案例',insights:'洞察',contact:'聯絡我們',submenu:'子選單'},
+      zhcn:{home:'首页',introduction:'公司简介',foundation:'创立 / 理念',nameLogo:'名称 / LOGO',standFor:'核心理念',difference:'差异化优势',founder:'创办人',career:'职业经历',network:'行业网络',caseStudy:'案例',insights:'洞察',contact:'联系我们',submenu:'子菜单'}
+    };
+    var c=navCopies[lang]||navCopies.en;
+    var version='20260907-heading-hierarchy-i18n-v3-'+lang;
     var groups=[
-      {href:'#home',label:'HOME',classes:'nav-home nav-level-1'},
-      {href:'#company',label:'INTRODUCTION',classes:'nav-level-1 nav-parent',children:[
-        {href:'#foundation-purpose',label:'FUNDATION/PURPOSE'},
-        {href:'#name-logo',label:'NAME/LOGO'},
-        {href:'#what-we-stand-for',label:'WHAT WE STAND FOR'},
-        {href:'#difference',label:'DIFFERENCE'}
+      {href:'#home',label:c.home,classes:'nav-home nav-level-1'},
+      {href:'#company',label:c.introduction,classes:'nav-level-1 nav-parent',children:[
+        {href:'#foundation-purpose',label:c.foundation},
+        {href:'#name-logo',label:c.nameLogo},
+        {href:'#what-we-stand-for',label:c.standFor},
+        {href:'#difference',label:c.difference}
       ]},
-      {href:'#founder',label:'FOUNDER',classes:'nav-level-1 nav-parent',children:[
-        {href:'#experience',label:'CAREER'}
+      {href:'#founder',label:c.founder,classes:'nav-level-1 nav-parent',children:[
+        {href:'#experience',label:c.career}
       ]},
-      {href:'#network',label:'NETWORK',classes:'nav-level-1 nav-parent',children:[
-        {href:'#capabilities',label:'CASE'}
+      {href:'#network',label:c.network,classes:'nav-level-1 nav-parent',children:[
+        {href:'#capabilities',label:c.caseStudy}
       ]},
-      {href:'#insights',label:'INSIGHTS',classes:'nav-level-1'},
-      {href:'#contact',label:'CONTACT',classes:'nav-level-1 contact-mini'}
+      {href:'#insights',label:c.insights,classes:'nav-level-1'},
+      {href:'#contact',label:c.contact,classes:'nav-level-1 contact-mini'}
     ];
     var flat=[];
     groups.forEach(function(group){
@@ -127,7 +135,7 @@
 
         var submenu=document.createElement('div');
         submenu.className='ss-nav-submenu';
-        submenu.setAttribute('aria-label',group.label+' subsections');
+        submenu.setAttribute('aria-label',group.label+c.submenu);
         group.children.forEach(function(child){
           submenu.appendChild(prepareLink(child,'nav-level-2'));
         });
@@ -242,7 +250,13 @@
       image.loading='lazy';
       image.setAttribute('data-case-study-activity','1');
     }
-    image.alt='Apple case study activity';
+    var caseAltLabels={
+      en:'Apple case study activity',
+      ja:'Apple ケーススタディの活動イメージ',
+      zhtw:'Apple 案例研究活動圖片',
+      zhcn:'Apple 案例研究活动图片'
+    };
+    image.alt=caseAltLabels[currentLanguage()]||caseAltLabels.en;
 
     var split=document.createElement('div');
     split.className='case-study-split';
@@ -275,9 +289,11 @@
     var copies={
       en:{
         htmlLang:'en',
+        foundationKicker:'FOUNDATION / PURPOSE',
         foundationHeading:'Foundation Story and Purpose',
         first:'Founder Sam’s experience across rights holders (WTA, FIFA), agencies (Octagon, CSM) and brands (AIG) has provided a comprehensive appreciation of the sports ecosystem and objectives and challenges across the various parties. In particular, the 8 years leading AIG’s sports marketing function ensured a focus on maximizing sponsorship benefits to achieve tangible business results.',
         second:'Sweet Spot was founded to share this solution-focused experience and offer high level facilitation to multiple clients.',
+        originKicker:'NAME / LOGO',
         originHeading:'The Origin of the “Sweet Spot” Name and Logo',
         logoAlt:'Sweet Spot logo',
         nameFirst:'The name represents the sweet feeling when perfectly hitting a ball with the middle part of the bat, racquet or club.',
@@ -288,41 +304,47 @@
       },
       ja:{
         htmlLang:'ja',
+        foundationKicker:'創立 / 理念',
         foundationHeading:'創立ストーリーと理念',
-        first:'創業者 Sam は、権利保有者（WTA、FIFA）、エージェンシー（Octagon、CSM）、ブランド（AIG）それぞれの立場で経験を積み、スポーツ業界全体のエコシステムと、各関係者が抱える目標や課題を幅広く理解してきました。特に、AIGで8年間スポーツマーケティング部門を率いた経験を通じ、スポンサーシップの価値を最大化し、具体的なビジネス成果につなげることに注力してきました。',
-        second:'Sweet Spotは、この課題解決を重視した経験を共有し、さまざまなクライアントに高度な調整・支援を提供するために設立されました。',
+        first:'創業者 Sam は、ライツホルダー（WTA、FIFA）、エージェンシー（Octagon、CSM）、ブランド（AIG）での経験を通じて、スポーツ業界のエコシステム全体と、各関係者の目標や課題を包括的に理解してきました。特に、AIG のスポーツマーケティング部門を8年間率いた経験では、スポンサーシップの価値を最大化し、具体的なビジネス成果につなげることに注力しました。',
+        second:'Sweet Spot は、この課題解決型の経験を共有し、複数のクライアントに高度なファシリテーションを提供するために設立されました。',
+        originKicker:'名称 / ロゴ',
         originHeading:'「Sweet Spot」の名前とロゴの由来',
         logoAlt:'Sweet Spot ロゴ',
         nameFirst:'「Sweet Spot」という名前は、バット、ラケット、クラブの芯でボールを完璧に捉えたときに感じる心地よさを表しています。',
-        logoPrefix:'ロゴは、メキシコの伝統的な ',
+        logoPrefix:'ロゴは、古代の水晶をメキシコの伝統的なサラペ（',
         nameTerm:'serape',
-        nameSuffix:'（サラペ）の中央に古代の水晶を配したデザインです。',
+        nameSuffix:'）の中央に配置したデザインです。',
         closing:'Sweet Spotへようこそ！'
       },
       zhtw:{
         htmlLang:'zh-Hant',
+        foundationKicker:'創立 / 理念',
         foundationHeading:'創立故事與理念',
-        first:'創辦人 Sam 曾在權利持有方（WTA、FIFA）、代理商（Octagon、CSM）以及品牌（AIG）累積經驗，使他得以全面理解體育產業生態，以及不同參與者各自的目標與面臨的挑戰。尤其是在 AIG 領導體育行銷業務的八年間，他始終專注於最大化贊助合作的效益，並將其轉化為具體的商業成果。',
-        second:'Sweet Spot 的成立，是為了分享這些以解決問題為核心的經驗，並為不同客戶提供高層次的協調與支援。',
+        first:'創辦人 Sam 曾在權利持有方（WTA、FIFA）、代理商（Octagon、CSM）以及品牌（AIG）累積經驗，使他對體育產業生態，以及不同參與方的目標與挑戰，建立了全面的理解。尤其是在 AIG 領導體育行銷部門的八年間，他專注於最大化贊助效益，並將其轉化為具體的商業成果。',
+        second:'Sweet Spot 的成立，旨在分享這些以解決方案為導向的經驗，並為多元客戶提供高層次的協調促成服務。',
+        originKicker:'名稱 / LOGO',
         originHeading:'「Sweet Spot」的名稱和 LOGO 的由來',
         logoAlt:'Sweet Spot 品牌 LOGO',
-        nameFirst:'「Sweet Spot」這個名稱，代表使用球棒、球拍或球桿的中心部位完美擊中球時，那種令人愉悅的感受。',
-        logoPrefix:'品牌標誌則將一顆古老的石英水晶置於墨西哥傳統 ',
+        nameFirst:'「Sweet Spot」這個名稱，代表用球棒、球拍或球桿的中心部位完美擊中球時，那種令人愉悅的手感。',
+        logoPrefix:'品牌 LOGO 將一顆古老的石英水晶置於墨西哥傳統 ',
         nameTerm:'serape',
-        nameSuffix:' 織毯的中央。',
+        nameSuffix:' 織品的中央。',
         closing:'歡迎來到 Sweet Spot！'
       },
       zhcn:{
         htmlLang:'zh-Hans',
+        foundationKicker:'创立 / 理念',
         foundationHeading:'创立故事与理念',
-        first:'创办人 Sam 曾在权利持有方（WTA、FIFA）、代理机构（Octagon、CSM）以及品牌（AIG）积累经验，使他得以全面理解体育产业生态，以及不同参与方各自的目标与面临的挑战。尤其是在 AIG 领导体育营销业务的八年间，他始终专注于最大化赞助合作的效益，并将其转化为具体的商业成果。',
-        second:'Sweet Spot 的成立，是为了分享这些以解决问题为核心的经验，并为不同客户提供高层次的协调与支持。',
+        first:'创办人 Sam 曾在权利持有方（WTA、FIFA）、代理机构（Octagon、CSM）以及品牌（AIG）积累经验，使他对体育产业生态，以及不同参与方的目标与挑战，建立了全面的理解。尤其是在 AIG 领导体育营销部门的八年间，他专注于最大化赞助效益，并将其转化为具体的商业成果。',
+        second:'Sweet Spot 的成立，旨在分享这些以解决方案为导向的经验，并为多元客户提供高层次的协调促成服务。',
+        originKicker:'名称 / LOGO',
         originHeading:'“Sweet Spot”的名称和 LOGO 的由来',
         logoAlt:'Sweet Spot 品牌 LOGO',
-        nameFirst:'“Sweet Spot”这个名称，代表使用球棒、球拍或球杆的中心部位完美击中球时，那种令人愉悦的感受。',
-        logoPrefix:'品牌标志则将一颗古老的石英水晶置于墨西哥传统 ',
+        nameFirst:'“Sweet Spot”这个名称，代表用球棒、球拍或球杆的中心部位完美击中球时，那种令人愉悦的手感。',
+        logoPrefix:'品牌 LOGO 将一颗古老的石英水晶置于墨西哥传统 ',
         nameTerm:'serape',
-        nameSuffix:' 织毯的中央。',
+        nameSuffix:' 织物的中央。',
         closing:'欢迎来到 Sweet Spot！'
       }
     };
@@ -358,7 +380,7 @@
     foundationIndex.textContent='01';
     var foundationKicker=document.createElement('span');
     foundationKicker.className='company-story-kicker';
-    foundationKicker.textContent='FOUNDATION / PURPOSE';
+    foundationKicker.textContent=copy.foundationKicker;
     foundationEyebrow.appendChild(foundationIndex);
     foundationEyebrow.appendChild(foundationKicker);
     foundation.appendChild(foundationEyebrow);
@@ -383,7 +405,7 @@
     originIndex.textContent='02';
     var originKicker=document.createElement('span');
     originKicker.className='company-story-kicker';
-    originKicker.textContent='NAME / LOGO';
+    originKicker.textContent=copy.originKicker;
     originEyebrow.appendChild(originIndex);
     originEyebrow.appendChild(originKicker);
     origin.appendChild(originEyebrow);
@@ -450,8 +472,20 @@ function patchIntroduction(){
   var introductionLabels={
     en:'Introduction',
     ja:'会社紹介',
-    zhtw:'簡介',
-    zhcn:'简介'
+    zhtw:'公司簡介',
+    zhcn:'公司简介'
+  };
+  var focusLabels={
+    en:'WHAT WE STAND FOR',
+    ja:'私たちの理念',
+    zhtw:'核心理念',
+    zhcn:'核心理念'
+  };
+  var differenceLabels={
+    en:'DIFFERENCE',
+    ja:'私たちの強み',
+    zhtw:'差異化優勢',
+    zhcn:'差异化优势'
   };
   var kicker=company.querySelector('.section-title p');
   if(kicker)kicker.textContent=introductionLabels[lang]||introductionLabels.en;
@@ -464,7 +498,7 @@ function patchIntroduction(){
   }
   if(focusHeading&&list){
     focusHeading.id='what-we-stand-for';
-    focusHeading.textContent='WHAT WE STAND FOR';
+    focusHeading.textContent=focusLabels[lang]||focusLabels.en;
     list.insertAdjacentElement('beforebegin',focusHeading);
   }
 
@@ -483,7 +517,7 @@ function patchIntroduction(){
       differenceHeading.className='introduction-subhead introduction-subhead--difference';
     }
     differenceHeading.id='difference';
-    differenceHeading.textContent='DIFFERENCE';
+    differenceHeading.textContent=differenceLabels[lang]||differenceLabels.en;
     grid.insertAdjacentElement('beforebegin',differenceHeading);
   }
 
@@ -529,9 +563,9 @@ function patchFounderCareer(){
   var lang=currentLanguage();
   var labels={
     en:{more:'Read more about the Founder’s career',less:'Hide the Founder’s career'},
-    ja:{more:'Founderの職歴をもっと見る',less:'Founderの職歴を閉じる'},
-    zhtw:{more:'閱讀更多Founder的職涯',less:'收起Founder的職涯'},
-    zhcn:{more:'阅读更多Founder的职业经历',less:'收起Founder的职业经历'}
+    ja:{more:'創業者の経歴をもっと見る',less:'創業者の経歴を閉じる'},
+    zhtw:{more:'閱讀更多創辦人的職涯',less:'收起創辦人的職涯'},
+    zhcn:{more:'阅读更多创办人的职业经历',less:'收起创办人的职业经历'}
   };
   var copy=labels[lang]||labels.en;
   button.textContent=isOpen?copy.less:copy.more;

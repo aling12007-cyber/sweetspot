@@ -1,0 +1,163 @@
+from pathlib import Path
+import re
+
+js=Path('assets/site-enhancements.js')
+s=js.read_text(encoding='utf-8')
+for token in [",workWithUs:'WORK WITH US'",",workWithUs:'ご相談・協業'",",workWithUs:'合作洽談'",",workWithUs:'合作洽谈'"]:
+    s=s.replace(token,'')
+s=s.replace("var version='20260907-work-with-us-i18n-v5-'+lang;","var version='20260908-contact-work-with-us-i18n-v6-'+lang;")
+s=s.replace("      {href:'#work-with-us',label:c.workWithUs,classes:'nav-level-1'},\n",'')
+
+new_func=r'''function patchWorkWithUs(){
+  var contact=document.querySelector('#contact');
+  if(!contact)return;
+
+  var inner=contact.querySelector('.contact-inner');
+  if(!inner)return;
+
+  var legacy=document.querySelector('#work-with-us');
+  if(legacy&&legacy!==contact)legacy.remove();
+
+  var lang=currentLanguage();
+  var copies={
+    en:{htmlLang:'en',heading:'When to Talk to Sweet Spot',intro:'You may want to speak with Sweet Spot if you are:',items:['Exploring opportunities in Japan','Looking for the right local partners','Developing a sports or entertainment partnership','Seeking access to relevant industry stakeholders','Evaluating sponsorship strategy or activation','Looking for an experienced local perspective before making a decision']},
+    ja:{htmlLang:'ja',heading:'Sweet Spotにご相談いただきたいとき',intro:'以下のようなご要望がある場合は、ぜひ Sweet Spot にご相談ください。',items:['日本でのビジネス機会を検討している','最適な現地パートナーを探している','スポーツまたはエンターテインメント分野のパートナーシップを構築したい','関連する業界関係者との接点を求めている','スポンサーシップ戦略やアクティベーションを検討している','意思決定の前に、経験に基づく現地視点を得たい']},
+    zhtw:{htmlLang:'zh-Hant',heading:'適合與 Sweet Spot 洽談的時機',intro:'如果您有以下需求，歡迎與 Sweet Spot 洽談：',items:['探索日本市場的商業機會','尋找合適的在地合作夥伴','規劃體育或娛樂領域的合作關係','希望接觸相關產業的關鍵利害關係人','評估贊助策略或贊助活化方案','在做出決策前，希望獲得具經驗的在地觀點']},
+    zhcn:{htmlLang:'zh-Hans',heading:'适合与 Sweet Spot 洽谈的时机',intro:'如果您有以下需求，欢迎与 Sweet Spot 洽谈：',items:['探索日本市场的商业机会','寻找合适的本地合作伙伴','规划体育或娱乐领域的合作关系','希望接触相关行业的关键利益相关方','评估赞助策略或赞助激活方案','在做出决策前，希望获得有经验的本地视角']}
+  };
+  var copy=copies[lang]||copies.en;
+
+  var block=inner.querySelector('.work-with-us-inline');
+  if(!block){
+    block=document.createElement('div');
+    block.className='work-with-us-inline';
+    block.id='contact-work-with-us';
+    block.setAttribute('aria-labelledby','contact-work-with-us-title');
+    var buttons=inner.querySelector('.contact-buttons');
+    if(buttons)buttons.insertAdjacentElement('beforebegin',block);
+    else inner.appendChild(block);
+  }
+
+  block.setAttribute('lang',copy.htmlLang);
+  if(block.getAttribute('data-ss-work-lang')===lang)return;
+  block.setAttribute('data-ss-work-lang',lang);
+  block.textContent='';
+
+  var heading=document.createElement('h3');
+  heading.id='contact-work-with-us-title';
+  heading.className='work-with-us-inline-title';
+  heading.textContent=copy.heading;
+  block.appendChild(heading);
+
+  var intro=document.createElement('p');
+  intro.className='work-with-us-intro';
+  intro.textContent=copy.intro;
+  block.appendChild(intro);
+
+  var list=document.createElement('ul');
+  list.className='work-with-us-list';
+  copy.items.forEach(function(text){
+    var item=document.createElement('li');
+    item.className='work-with-us-item';
+    var marker=document.createElement('span');
+    marker.className='work-with-us-marker';
+    marker.setAttribute('aria-hidden','true');
+    var label=document.createElement('span');
+    label.className='work-with-us-item-text';
+    label.textContent=text;
+    item.appendChild(marker);
+    item.appendChild(label);
+    list.appendChild(item);
+  });
+  block.appendChild(list);
+}
+'''
+pattern=r"function patchWorkWithUs\(\)\{.*?\n\}\n\nfunction patchFounderIdentity\(\)\{"
+s,n=re.subn(pattern,new_func+"\nfunction patchFounderIdentity(){",s,flags=re.S)
+assert n==1, f'patchWorkWithUs replacement count: {n}'
+js.write_text(s,encoding='utf-8')
+
+css=Path('assets/case-study-split.css')
+c=css.read_text(encoding='utf-8')
+new_css=r'''/* Work With Us content merged into Contact */
+#contact .work-with-us-inline{
+  width:min(820px,100%);
+  margin:26px auto 0;
+  text-align:left;
+}
+#contact .work-with-us-inline-title{
+  margin:0;
+  color:#fff;
+  font-size:clamp(22px,2.4vw,30px);
+  font-weight:850;
+  line-height:1.15;
+  letter-spacing:-.025em;
+}
+#contact .work-with-us-intro{
+  max-width:680px;
+  margin:10px 0 14px;
+  color:#aeb7c3;
+  font-size:15px;
+  line-height:1.6;
+}
+#contact .work-with-us-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:0 30px;
+  margin:0;
+  padding:0;
+  list-style:none;
+  background:transparent;
+}
+#contact .work-with-us-item{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  min-height:0;
+  padding:10px 0;
+  background:transparent;
+}
+#contact .work-with-us-marker{
+  display:block;
+  width:20px;
+  height:1px;
+  flex:0 0 20px;
+  margin-top:.7em;
+  background:var(--gold);
+  box-shadow:none;
+}
+#contact .work-with-us-item-text{
+  color:#f1f3f6;
+  font-size:clamp(14px,1.15vw,16px);
+  font-weight:680;
+  line-height:1.45;
+}
+#contact .work-with-us-inline + .contact-buttons{margin-top:24px;}
+@media(max-width:760px){
+  #contact .work-with-us-inline{width:100%;margin-top:22px;}
+  #contact .work-with-us-inline-title{font-size:21px;line-height:1.2;}
+  #contact .work-with-us-intro{margin-top:8px;margin-bottom:10px;font-size:14px;line-height:1.55;}
+  #contact .work-with-us-list{grid-template-columns:1fr;gap:0;}
+  #contact .work-with-us-item{gap:10px;padding:8px 0;}
+  #contact .work-with-us-marker{width:17px;flex-basis:17px;}
+  #contact .work-with-us-item-text{font-size:14px;line-height:1.45;}
+  #contact .work-with-us-inline + .contact-buttons{margin-top:20px;}
+}
+'''
+c,n=re.subn(r"/\* Work With Us conversion section \*/.*\Z",new_css,c,flags=re.S)
+assert n==1, f'Work With Us CSS replacement count: {n}'
+css.write_text(c,encoding='utf-8')
+
+idx=Path('index.html')
+h=idx.read_text(encoding='utf-8')
+h=h.replace('assets/case-study-split.css?v=work-with-us-compact-20260908','assets/case-study-split.css?v=contact-work-with-us-20260908')
+h=h.replace('assets/site-enhancements.js?v=work-with-us-20260907','assets/site-enhancements.js?v=contact-work-with-us-20260908')
+idx.write_text(h,encoding='utf-8')
+
+wf=Path('.github/workflows/validate-heading-integrity.yml')
+w=wf.read_text(encoding='utf-8')
+w=w.replace("version='20260907-work-with-us-i18n-v5-'+lang","version='20260908-contact-work-with-us-i18n-v6-'+lang")
+for token in [",workWithUs:'WORK WITH US'",",workWithUs:'ご相談・協業'",",workWithUs:'合作洽談'",",workWithUs:'合作洽谈'"]:
+    w=w.replace(token,'')
+w=w.replace('            "{href:\'#work-with-us\',label:c.workWithUs,classes:\'nav-level-1\'}",\n','')
+wf.write_text(w,encoding='utf-8')

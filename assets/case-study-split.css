@@ -1007,3 +1007,14 @@
     font-size:18px!important;
   }
 }
+
+
+/* Contact heading emphasis — 35% above main heading scale */
+#contact .contact-inner h2{
+  font-size:clamp(46px,5.4vw,78px)!important;
+}
+@media(max-width:760px){
+  #contact .contact-inner h2{
+    font-size:46px!important;
+  }
+}

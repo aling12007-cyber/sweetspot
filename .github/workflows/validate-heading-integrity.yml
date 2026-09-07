@@ -34,7 +34,7 @@ jobs:
 
           a=s.index(start); b=s.index(end,a); block=s[a:b]
           required_heading=[
-            "company:['Company','Company Introduction','']",
+            "company:['Introduction','Company Introduction','']",
             "company:['会社','会社紹介','']",
             "company:['公司','公司簡介','']",
             "points:['Difference','Points of Difference','']",

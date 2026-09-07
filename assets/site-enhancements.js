@@ -62,7 +62,14 @@
       zhtw:'首頁',
       zhcn:'首页'
     };
-    var label=homeLabels[currentLanguage()]||homeLabels.en;
+    var lang=currentLanguage();
+    var label=homeLabels[lang]||homeLabels.en;
+    var introductionLabels={
+      en:'Introduction',
+      ja:'会社紹介',
+      zhtw:'簡介',
+      zhcn:'简介'
+    };
 
     navs.forEach(function(nav){
       var homeLink=nav.querySelector('a.nav-home[href="#home"]');
@@ -73,6 +80,12 @@
         nav.insertBefore(homeLink,nav.firstElementChild);
       }
       setLinkLabel(homeLink,label);
+
+      var companyLink=nav.querySelector('a[href="#company"]');
+      if(companyLink)setLinkLabel(companyLink,introductionLabels[lang]||introductionLabels.en);
+
+      var pointsLink=nav.querySelector('a[href="#points"]');
+      if(pointsLink)pointsLink.remove();
     });
   }
 
@@ -218,7 +231,8 @@
         second:'Sweet Spot was founded to share this solution-focused experience and offer high level facilitation to multiple clients.',
         originHeading:'The Origin of the “Sweet Spot” Name and Logo',
         logoAlt:'Sweet Spot logo',
-        namePrefix:'The name represents the sweet feeling when perfectly hitting a ball with the middle part of the bat, racquet or club. The logo brings together an ancient quartz crystal in the center of a traditional Mexican ',
+        nameFirst:'The name represents the sweet feeling when perfectly hitting a ball with the middle part of the bat, racquet or club.',
+        logoPrefix:'The logo brings together an ancient quartz crystal in the center of a traditional Mexican ',
         nameTerm:'serape',
         nameSuffix:'.',
         closing:'Welcome to the Sweet Spot!'
@@ -231,7 +245,8 @@
         second:'Sweet Spotは、この課題解決を重視した経験を共有し、さまざまなクライアントに高度な調整・支援を提供するために設立されました。',
         originHeading:'「Sweet Spot」の名前とロゴの由来',
         logoAlt:'Sweet Spot ロゴ',
-        namePrefix:'「Sweet Spot」という名前は、バット、ラケット、クラブの芯でボールを完璧に捉えたときに感じる心地よさを表しています。ロゴは、メキシコの伝統的な ',
+        nameFirst:'「Sweet Spot」という名前は、バット、ラケット、クラブの芯でボールを完璧に捉えたときに感じる心地よさを表しています。',
+        logoPrefix:'ロゴは、メキシコの伝統的な ',
         nameTerm:'serape',
         nameSuffix:'（サラペ）の中央に古代の水晶を配したデザインです。',
         closing:'Sweet Spotへようこそ！'
@@ -244,7 +259,8 @@
         second:'Sweet Spot 的成立，是為了分享這些以解決問題為核心的經驗，並為不同客戶提供高層次的協調與支援。',
         originHeading:'「Sweet Spot」的名稱和 LOGO 的由來',
         logoAlt:'Sweet Spot 品牌 LOGO',
-        namePrefix:'「Sweet Spot」這個名稱，代表使用球棒、球拍或球桿的中心部位完美擊中球時，那種令人愉悅的感受。品牌標誌則將一顆古老的石英水晶置於墨西哥傳統 ',
+        nameFirst:'「Sweet Spot」這個名稱，代表使用球棒、球拍或球桿的中心部位完美擊中球時，那種令人愉悅的感受。',
+        logoPrefix:'品牌標誌則將一顆古老的石英水晶置於墨西哥傳統 ',
         nameTerm:'serape',
         nameSuffix:' 織毯的中央。',
         closing:'歡迎來到 Sweet Spot！'
@@ -257,7 +273,8 @@
         second:'Sweet Spot 的成立，是为了分享这些以解决问题为核心的经验，并为不同客户提供高层次的协调与支持。',
         originHeading:'“Sweet Spot”的名称和 LOGO 的由来',
         logoAlt:'Sweet Spot 品牌 LOGO',
-        namePrefix:'“Sweet Spot”这个名称，代表使用球棒、球拍或球杆的中心部位完美击中球时，那种令人愉悦的感受。品牌标志则将一颗古老的石英水晶置于墨西哥传统 ',
+        nameFirst:'“Sweet Spot”这个名称，代表使用球棒、球拍或球杆的中心部位完美击中球时，那种令人愉悦的感受。',
+        logoPrefix:'品牌标志则将一颗古老的石英水晶置于墨西哥传统 ',
         nameTerm:'serape',
         nameSuffix:' 织毯的中央。',
         closing:'欢迎来到 Sweet Spot！'
@@ -344,14 +361,21 @@
     logoStage.appendChild(logo);
     originLayout.appendChild(logoStage);
 
-    var nameParagraph=document.createElement('p');
+    var originCopy=document.createElement('div');
+    originCopy.className='company-story-origin-copy-group';
+
+    var nameParagraph=appendStoryParagraph(originCopy,copy.nameFirst);
     nameParagraph.className='company-story-origin-copy';
-    nameParagraph.appendChild(document.createTextNode(copy.namePrefix));
+
+    var logoParagraph=document.createElement('p');
+    logoParagraph.className='company-story-origin-copy';
+    logoParagraph.appendChild(document.createTextNode(copy.logoPrefix));
     var serape=document.createElement('em');
     serape.textContent=copy.nameTerm;
-    nameParagraph.appendChild(serape);
-    nameParagraph.appendChild(document.createTextNode(copy.nameSuffix));
-    originLayout.appendChild(nameParagraph);
+    logoParagraph.appendChild(serape);
+    logoParagraph.appendChild(document.createTextNode(copy.nameSuffix));
+    originCopy.appendChild(logoParagraph);
+    originLayout.appendChild(originCopy);
     origin.appendChild(originLayout);
     story.appendChild(origin);
     }
@@ -366,8 +390,86 @@
     }
     welcome.setAttribute('lang',copy.htmlLang);
     welcome.textContent=copy.closing;
-    list.insertAdjacentElement('afterend',welcome);
+    var mergedDifference=company.querySelector('.difference-grid[data-ss-merged-introduction="1"]');
+    if(mergedDifference)mergedDifference.insertAdjacentElement('afterend',welcome);
+    else list.insertAdjacentElement('afterend',welcome);
   }
+
+
+function patchIntroduction(){
+  var company=document.querySelector('#company');
+  if(!company)return;
+
+  var lang=currentLanguage();
+  var introductionLabels={
+    en:'Introduction',
+    ja:'会社紹介',
+    zhtw:'簡介',
+    zhcn:'简介'
+  };
+  var kicker=company.querySelector('.section-title p');
+  if(kicker)kicker.textContent=introductionLabels[lang]||introductionLabels.en;
+
+  var points=document.querySelector('#points');
+  var grid=company.querySelector('.difference-grid[data-ss-merged-introduction="1"]');
+  if(!grid&&points)grid=points.querySelector('.difference-grid');
+  if(grid){
+    grid.setAttribute('data-ss-merged-introduction','1');
+    var welcome=company.querySelector('.company-story-welcome');
+    if(welcome)welcome.insertAdjacentElement('beforebegin',grid);
+    else company.appendChild(grid);
+  }
+
+  if(points){
+    points.hidden=true;
+    points.setAttribute('aria-hidden','true');
+  }
+}
+
+function patchFounderCareer(){
+  var founder=document.querySelector('#founder');
+  var experience=document.querySelector('#experience');
+  if(!founder||!experience)return;
+
+  if(experience.parentElement!==founder)founder.appendChild(experience);
+  experience.setAttribute('data-ss-founder-career','1');
+
+  var grid=founder.querySelector('.founder-grid');
+  if(!grid)return;
+
+  var wrap=founder.querySelector('.founder-career-disclosure-wrap');
+  var button=wrap&&wrap.querySelector('.founder-career-disclosure');
+  if(!wrap){
+    wrap=document.createElement('div');
+    wrap.className='founder-career-disclosure-wrap';
+    button=document.createElement('button');
+    button.className='founder-career-disclosure';
+    button.type='button';
+    button.setAttribute('aria-controls','experience');
+    wrap.appendChild(button);
+    grid.insertAdjacentElement('afterend',wrap);
+    button.addEventListener('click',function(){
+      var isOpen=founder.getAttribute('data-ss-career-open')==='true';
+      founder.setAttribute('data-ss-career-open',isOpen?'false':'true');
+      patchFounderCareer();
+    });
+  }
+
+  if(!founder.hasAttribute('data-ss-career-open'))founder.setAttribute('data-ss-career-open','false');
+  var isOpen=founder.getAttribute('data-ss-career-open')==='true';
+  experience.hidden=!isOpen;
+
+  var lang=currentLanguage();
+  var labels={
+    en:{more:'Read more about the Founder’s career',less:'Hide the Founder’s career'},
+    ja:{more:'Founderの職歴をもっと見る',less:'Founderの職歴を閉じる'},
+    zhtw:{more:'閱讀更多Founder的職涯',less:'收起Founder的職涯'},
+    zhcn:{more:'阅读更多Founder的职业经历',less:'收起Founder的职业经历'}
+  };
+  var copy=labels[lang]||labels.en;
+  button.textContent=isOpen?copy.less:copy.more;
+  button.setAttribute('aria-expanded',isOpen?'true':'false');
+}
 
   function patchEmptySemantics(){
   document.querySelectorAll('.hero-lede,.hero-note,.section-title h2').forEach(function(element){
@@ -405,6 +507,8 @@
       patchContact();
       patchCaseStudy();
       patchFoundationStory();
+      patchIntroduction();
+      patchFounderCareer();
       patchEmptySemantics();
     }finally{
       applying=false;

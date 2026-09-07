@@ -479,6 +479,18 @@ function patchIntroduction(){
     zhtw:'差異化優勢',
     zhcn:'差异化优势'
   };
+  var focusTitleLabels={
+    en:'Our Commitment',
+    ja:'私たちのコミットメント',
+    zhtw:'我們的承諾',
+    zhcn:'我们的承诺'
+  };
+  var differenceTitleLabels={
+    en:'What Sets Sweet Spot Apart',
+    ja:'Sweet Spotならではの強み',
+    zhtw:'Sweet Spot 的獨特優勢',
+    zhcn:'Sweet Spot 的独特优势'
+  };
   var kicker=company.querySelector('.section-title p');
   if(kicker)kicker.textContent=introductionLabels[lang]||introductionLabels.en;
 
@@ -492,6 +504,14 @@ function patchIntroduction(){
     focusHeading.id='what-we-stand-for';
     focusHeading.textContent=focusLabels[lang]||focusLabels.en;
     list.insertAdjacentElement('beforebegin',focusHeading);
+
+    var focusTitle=company.querySelector('.introduction-section-heading--focus');
+    if(!focusTitle){
+      focusTitle=document.createElement('h3');
+      focusTitle.className='introduction-section-heading introduction-section-heading--focus';
+    }
+    focusTitle.textContent=focusTitleLabels[lang]||focusTitleLabels.en;
+    list.insertAdjacentElement('beforebegin',focusTitle);
   }
 
   var points=document.querySelector('#points');
@@ -511,6 +531,14 @@ function patchIntroduction(){
     differenceHeading.id='difference';
     differenceHeading.textContent=differenceLabels[lang]||differenceLabels.en;
     grid.insertAdjacentElement('beforebegin',differenceHeading);
+
+    var differenceTitle=company.querySelector('.introduction-section-heading--difference');
+    if(!differenceTitle){
+      differenceTitle=document.createElement('h3');
+      differenceTitle.className='introduction-section-heading introduction-section-heading--difference';
+    }
+    differenceTitle.textContent=differenceTitleLabels[lang]||differenceTitleLabels.en;
+    grid.insertAdjacentElement('beforebegin',differenceTitle);
   }
 
   if(points){

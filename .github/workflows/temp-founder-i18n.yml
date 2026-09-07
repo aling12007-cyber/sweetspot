@@ -1,0 +1,47 @@
+name: Temporary founder i18n patch
+on:
+  push:
+    branches:
+      - fix/founder-i18n-20260907
+    paths:
+      - '.github/workflows/temp-founder-i18n.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: fix/founder-i18n-20260907
+      - name: Apply Founder localization fix
+        shell: bash
+        run: |
+          python .github/apply-founder-i18n.py
+          node --check assets/site-enhancements.js
+          git diff --check
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          j=Path('assets/site-enhancements.js').read_text(encoding='utf-8')
+          w=Path('.github/workflows/validate-heading-integrity.yml').read_text(encoding='utf-8')
+          required=[
+            "founder:['Founder','Sam L. Pearson','']",
+            "founder:['創業者','Sam L. Pearson','']",
+            "founder:['創辦人','Sam L. Pearson','']",
+            "zhtw:{role:'創辦人',location:'東京，日本'}",
+            "zhcn:{role:'创办人',location:'东京，日本'}",
+            "patchFounderIdentity();"
+          ]
+          for item in required:
+              assert item in (s+j+w), item
+          print('Founder localization checks passed')
+          PY
+      - name: Commit Founder localization fix
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html assets/site-enhancements.js .github/workflows/validate-heading-integrity.yml
+          git commit -m 'fix: localize Founder labels and location'
+          git push origin HEAD:fix/founder-i18n-20260907

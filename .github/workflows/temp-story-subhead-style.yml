@@ -1,0 +1,43 @@
+name: Temporary story subhead style patch
+on:
+  push:
+    branches:
+      - fix/story-subhead-style-20260907
+    paths:
+      - '.github/workflows/temp-story-subhead-style.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: fix/story-subhead-style-20260907
+      - name: Apply story subhead style fix
+        shell: bash
+        run: |
+          python .github/apply-story-subhead-style.py
+          node --check assets/site-enhancements.js
+          git diff --check
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          j=Path('assets/site-enhancements.js').read_text(encoding='utf-8')
+          c=Path('assets/case-study-split.css').read_text(encoding='utf-8')
+          assert 'foundationIndex' not in j
+          assert 'originIndex' not in j
+          assert '/* Story subsection headings — match Introduction small headings */' in c
+          assert '#company .company-story-panel::after' in c and 'content:none!important' in c
+          assert 'assets/case-study-split.css?v=story-subheads-20260907' in s
+          assert 'assets/site-enhancements.js?v=story-subheads-20260907' in s
+          print('Story subsection heading checks passed')
+          PY
+      - name: Commit story subhead style fix
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html assets/site-enhancements.js assets/case-study-split.css
+          git commit -m 'fix: align story subsection headings with introduction style'
+          git push origin HEAD:fix/story-subhead-style-20260907

@@ -2207,28 +2207,31 @@ react/cjs/react-jsx-runtime.production.js:
   ];
   var copy={
     en:{
-      company:['Introduction','Company Introduction',''],
-      points:['Difference','Points of Difference',''],
-      founder:['Founder','Sam L. Pearson',''],
-      experience:['Career','Professional Journey','Built across APAC'],
-      network:['Network','Broad Influence and Access','Services rendered to:'],
-      capabilities:['Case','Case Study: Apple','Demonstrated high-level facilitation capability']
+      company:['INTRODUCTION','Company Introduction',''],
+      points:['DIFFERENCE','Points of Difference',''],
+      founder:['FOUNDER','Sam L. Pearson',''],
+      experience:['CAREER','Professional Journey','Built across APAC'],
+      network:['NETWORK','Broad Influence and Access','Services rendered to:'],
+      capabilities:['CASE STUDY','Case Study: Apple','Demonstrated high-level facilitation capability'],
+      insights:['INSIGHTS','Insights & Perspectives','']
     },
     ja:{
-      company:['会社','会社紹介',''],
+      company:['会社紹介','Sweet Spotについて',''],
       points:['差別化','私たちの強み',''],
       founder:['創業者','Sam L. Pearson',''],
       experience:['キャリア','プロフェッショナル・ジャーニー','APACで築いたキャリア'],
       network:['ネットワーク','幅広い影響力とアクセス','サービス提供先：'],
-      capabilities:['ケース','ケーススタディ Apple','高水準のファシリテーション能力を実証']
+      capabilities:['ケーススタディ','ケーススタディ Apple','高水準のファシリテーション能力を実証'],
+      insights:['インサイト','インサイトと視点','']
     },
     zh:{
-      company:['公司','公司簡介',''],
+      company:['公司簡介','關於 Sweet Spot',''],
       points:['差異','核心優勢',''],
       founder:['創辦人','Sam L. Pearson',''],
       experience:['職涯','專業歷程','深耕亞太地區'],
       network:['網絡','廣泛的影響力與資源管道','曾服務的對象包括：'],
-      capabilities:['案例','案例研究：Apple','展現高水準的協調促成能力']
+      capabilities:['案例研究','案例研究：Apple','展現高水準的協調促成能力'],
+      insights:['洞察','洞察與觀點','']
     }
   };
   var queued=false;
@@ -2239,7 +2242,7 @@ react/cjs/react-jsx-runtime.production.js:
   function allSources(section,d){var out=[];d.sels.forEach(function(sel){section.querySelectorAll(sel).forEach(function(el){if(!el.classList.contains('ss-unified-heading')&&out.indexOf(el)<0)out.push(el)})});return out}
   function score(el){var h=el.querySelector('h2'),k=el.querySelector('.heading-ref-row,.major-kicker-row,.hierarchy-kicker-row,.eyebrow,.section-kicker,.major-kicker,.hierarchy-kicker');return(txt(h)?10:0)+(txt(k)?5:0)+(el.dataset.ssHeadingSource==='1'?50:0)}
   function chooseSource(section,d){var a=allSources(section,d);if(!a.length)return null;a.sort(function(x,y){return score(y)-score(x)});var src=a[0];src.dataset.ssHeadingSource='1';a.forEach(function(el){imp(el,{display:'none',visibility:'hidden',height:'0px','min-height':'0px',margin:'0px',padding:'0px',overflow:'hidden'})});return src}
-  function extract(src,d){var h=src.querySelector('h2'),k=src.querySelector('.heading-ref-row,.major-kicker-row,.hierarchy-kicker-row,.eyebrow,.section-kicker,.major-kicker,.hierarchy-kicker'),title=txt(h),kicker=txt(k);if(!kicker){var f={company:'Company',points:'Difference',founder:'Founder',experience:'Career',network:'Network',capabilities:'Case',insights:'Insights & Perspectives'};kicker=f[d.id]||''}if(!title)title=kicker;var support='',sup=src.querySelector('.hierarchy-support,.major-support,.founder-name-support');if(sup)support=txt(sup);if(support===title||support===kicker)support='';return{kicker:kicker,title:title,support:support}}
+  function extract(src,d){var h=src.querySelector('h2'),k=src.querySelector('.heading-ref-row,.major-kicker-row,.hierarchy-kicker-row,.eyebrow,.section-kicker,.major-kicker,.hierarchy-kicker'),title=txt(h),kicker=txt(k);if(!kicker){var f={company:'INTRODUCTION',points:'DIFFERENCE',founder:'FOUNDER',experience:'CAREER',network:'NETWORK',capabilities:'CASE STUDY',insights:'INSIGHTS'};kicker=f[d.id]||''}if(!title)title=kicker;var support='',sup=src.querySelector('.hierarchy-support,.major-support,.founder-name-support');if(sup)support=txt(sup);if(support===title||support===kicker)support='';return{kicker:kicker,title:title,support:support}}
   function make(section,src,d,data){
     var wrap=section.querySelector(':scope .ss-unified-heading[data-ss-section="'+d.id+'"]');
     if(!wrap){wrap=document.createElement('div');wrap.className='ss-unified-heading';wrap.dataset.ssSection=d.id;var eye=document.createElement('div');eye.className='ss-unified-eyebrow';var rule=document.createElement('span');rule.className='ss-unified-rule';rule.setAttribute('aria-hidden','true');var kl=document.createElement('span');kl.className='ss-unified-kicker';eye.appendChild(rule);eye.appendChild(kl);var h=document.createElement('h2');h.className='ss-unified-title';var sp=document.createElement('p');sp.className='ss-unified-support';wrap.appendChild(eye);wrap.appendChild(h);wrap.appendChild(sp);src.parentNode.insertBefore(wrap,src)}
@@ -2427,6 +2430,6 @@ window.__ssRefreshUnifiedHeadings=run;
 })();
 </script>
 <!-- Language dropdown selector END -->
-<script src="assets/site-enhancements.js?v=intro-big-headings-20260907" defer></script>
+<script src="assets/site-enhancements.js?v=heading-consistency-i18n-20260907" defer></script>
 </body>
 </html>

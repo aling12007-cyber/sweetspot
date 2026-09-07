@@ -56,36 +56,86 @@
     var navs=document.querySelectorAll('.site-header nav');
     if(!navs.length)return;
 
-    var homeLabels={
-      en:'Home',
-      ja:'ホーム',
-      zhtw:'首頁',
-      zhcn:'首页'
-    };
-    var lang=currentLanguage();
-    var label=homeLabels[lang]||homeLabels.en;
-    var introductionLabels={
-      en:'Introduction',
-      ja:'会社紹介',
-      zhtw:'簡介',
-      zhcn:'简介'
-    };
+    var version='20260907-heading-hierarchy-v2';
+    var groups=[
+      {href:'#home',label:'HOME',classes:'nav-home nav-level-1'},
+      {href:'#company',label:'INTRODUCTION',classes:'nav-level-1 nav-parent',children:[
+        {href:'#foundation-purpose',label:'FUNDATION/PURPOSE'},
+        {href:'#name-logo',label:'NAME/LOGO'},
+        {href:'#what-we-stand-for',label:'WHAT WE STAND FOR'},
+        {href:'#difference',label:'DIFFERENCE'}
+      ]},
+      {href:'#founder',label:'FOUNDER',classes:'nav-level-1 nav-parent',children:[
+        {href:'#experience',label:'CAREER'}
+      ]},
+      {href:'#network',label:'NETWORK',classes:'nav-level-1 nav-parent',children:[
+        {href:'#capabilities',label:'CASE'}
+      ]},
+      {href:'#insights',label:'INSIGHTS',classes:'nav-level-1'},
+      {href:'#contact',label:'CONTACT',classes:'nav-level-1 contact-mini'}
+    ];
+    var flat=[];
+    groups.forEach(function(group){
+      flat.push({href:group.href,label:group.label,classes:group.classes});
+      (group.children||[]).forEach(function(child){
+        flat.push({href:child.href,label:child.label,classes:'nav-level-2'});
+      });
+    });
 
     navs.forEach(function(nav){
-      var homeLink=nav.querySelector('a.nav-home[href="#home"]');
-      if(!homeLink){
-        homeLink=document.createElement('a');
-        homeLink.className='nav-home nav-level-1';
-        homeLink.href='#home';
-        nav.insertBefore(homeLink,nav.firstElementChild);
+      var current=Array.prototype.slice.call(nav.querySelectorAll('a[href^="#"]'));
+      var ready=nav.getAttribute('data-ss-nav-version')===version&&
+        current.length===flat.length&&
+        nav.querySelectorAll('.ss-nav-group').length===3&&
+        flat.every(function(item,index){
+          var link=current[index];
+          if(!link)return false;
+          return link.getAttribute('href')===item.href&&
+            (link.textContent||'').trim()===item.label&&
+            item.classes.split(' ').every(function(name){return link.classList.contains(name);});
+        });
+      if(ready)return;
+
+      var byHref={};
+      current.forEach(function(link){
+        var href=link.getAttribute('href');
+        if(href&&!byHref[href])byHref[href]=link;
+      });
+
+      function prepareLink(item,extraClass){
+        var link=byHref[item.href]||document.createElement('a');
+        var wasActive=link.classList.contains('is-active');
+        link.setAttribute('href',item.href);
+        link.className=(extraClass||item.classes)+(wasActive?' is-active':'');
+        link.textContent=item.label;
+        return link;
       }
-      setLinkLabel(homeLink,label);
 
-      var companyLink=nav.querySelector('a[href="#company"]');
-      if(companyLink)setLinkLabel(companyLink,introductionLabels[lang]||introductionLabels.en);
+      current.forEach(function(link){link.remove();});
+      nav.querySelectorAll('.ss-nav-group').forEach(function(group){group.remove();});
 
-      var pointsLink=nav.querySelector('a[href="#points"]');
-      if(pointsLink)pointsLink.remove();
+      groups.forEach(function(group){
+        var parent=prepareLink(group);
+        if(!group.children){
+          nav.appendChild(parent);
+          return;
+        }
+
+        var wrap=document.createElement('div');
+        wrap.className='ss-nav-group';
+        wrap.appendChild(parent);
+
+        var submenu=document.createElement('div');
+        submenu.className='ss-nav-submenu';
+        submenu.setAttribute('aria-label',group.label+' subsections');
+        group.children.forEach(function(child){
+          submenu.appendChild(prepareLink(child,'nav-level-2'));
+        });
+        wrap.appendChild(submenu);
+        nav.appendChild(wrap);
+      });
+
+      nav.setAttribute('data-ss-nav-version',version);
     });
   }
 
@@ -299,6 +349,7 @@
 
     var foundation=document.createElement('section');
     foundation.className='company-story-panel company-story-foundation';
+    foundation.id='foundation-purpose';
 
     var foundationEyebrow=document.createElement('div');
     foundationEyebrow.className='company-story-eyebrow';
@@ -323,6 +374,7 @@
 
     var origin=document.createElement('section');
     origin.className='company-story-panel company-story-origin';
+    origin.id='name-logo';
 
     var originEyebrow=document.createElement('div');
     originEyebrow.className='company-story-eyebrow';
@@ -411,6 +463,7 @@ function patchIntroduction(){
     focusHeading.className='introduction-subhead introduction-subhead--focus';
   }
   if(focusHeading&&list){
+    focusHeading.id='what-we-stand-for';
     focusHeading.textContent='WHAT WE STAND FOR';
     list.insertAdjacentElement('beforebegin',focusHeading);
   }
@@ -429,6 +482,7 @@ function patchIntroduction(){
       differenceHeading=document.createElement('div');
       differenceHeading.className='introduction-subhead introduction-subhead--difference';
     }
+    differenceHeading.id='difference';
     differenceHeading.textContent='DIFFERENCE';
     grid.insertAdjacentElement('beforebegin',differenceHeading);
   }

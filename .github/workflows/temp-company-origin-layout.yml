@@ -20,36 +20,49 @@ jobs:
           from pathlib import Path
           from textwrap import dedent
 
+          def replace_once(text, old, new, label):
+              if old not in text:
+                  raise SystemExit(f'Expected {label} block not found')
+              return text.replace(old, new, 1)
+
           js_path = Path('assets/site-enhancements.js')
           js = js_path.read_text(encoding='utf-8')
           start = js.index('  function patchFoundationStory(){')
           end = js.index('\n\n  function patchEmptySemantics(){', start)
           old = js[start:end]
-
           updated = old
-          updated = updated.replace(
-              "    var story=company.querySelector('.company-foundation-story');\n    if(!story){\n      var list=company.querySelector('.company-intro-list');\n      if(!list)return;\n\n      story=document.createElement('section');",
-              "    var list=company.querySelector('.company-intro-list');\n    if(!list)return;\n\n    var story=company.querySelector('.company-foundation-story');\n    if(!story){\n      story=document.createElement('section');"
+
+          updated = replace_once(
+              updated,
+              "    var story=company.querySelector('.company-foundation-story');\n    if(!story){\n      var list=company.querySelector('.company-intro-list');\n      if(!list)return;\n\n      story=document.createElement('div');",
+              "    var list=company.querySelector('.company-intro-list');\n    if(!list)return;\n\n    var story=company.querySelector('.company-foundation-story');\n    if(!story){\n      story=document.createElement('div');",
+              'story/list setup'
           )
-          updated = updated.replace(
-              "    story.hidden=false;\n    if(story.getAttribute('data-ss-story-lang')===lang)return;\n\n    story.setAttribute('data-ss-story-lang',lang);\n    story.setAttribute('lang',copy.htmlLang);\n    story.setAttribute('aria-label',copy.foundationHeading);\n    story.textContent='';",
-              "    story.hidden=false;\n    var needsRebuild=story.getAttribute('data-ss-story-lang')!==lang;\n\n    story.setAttribute('lang',copy.htmlLang);\n    story.setAttribute('aria-label',copy.foundationHeading);\n\n    if(needsRebuild){\n      story.setAttribute('data-ss-story-lang',lang);\n      story.textContent='';"
+          updated = replace_once(
+              updated,
+              "    story.hidden=false;\n    if(story.getAttribute('data-ss-story-lang')===lang)return;\n\n    story.setAttribute('data-ss-story-lang',lang);\n    story.setAttribute('lang',copy.htmlLang);\n    story.textContent='';",
+              "    story.hidden=false;\n    var needsRebuild=story.getAttribute('data-ss-story-lang')!==lang;\n    story.setAttribute('lang',copy.htmlLang);\n\n    if(needsRebuild){\n      story.setAttribute('data-ss-story-lang',lang);\n      story.textContent='';",
+              'language rebuild guard'
           )
-          updated = updated.replace(
-              "    var origin=makePanel('origin','02','Name / Logo',copy.originHeading);\n    var logoStage=document.createElement('figure');",
-              "    var origin=makePanel('origin','02','Name / Logo',copy.originHeading);\n    var originLayout=document.createElement('div');\n    originLayout.className='company-story-origin-layout';\n\n    var logoStage=document.createElement('figure');"
+          updated = replace_once(
+              updated,
+              "    originHeading.textContent=copy.originHeading;\n    origin.appendChild(originHeading);\n\n    var logoStage=document.createElement('div');",
+              "    originHeading.textContent=copy.originHeading;\n    origin.appendChild(originHeading);\n\n    var originLayout=document.createElement('div');\n    originLayout.className='company-story-origin-layout';\n\n    var logoStage=document.createElement('div');",
+              'origin layout setup'
           )
-          updated = updated.replace(
+          updated = replace_once(
+              updated,
               "    logoStage.appendChild(logo);\n    origin.appendChild(logoStage);",
-              "    logoStage.appendChild(logo);\n    originLayout.appendChild(logoStage);"
+              "    logoStage.appendChild(logo);\n    originLayout.appendChild(logoStage);",
+              'logo placement'
           )
-          updated = updated.replace(
-              "    originCopy.appendChild(nameParagraph);\n\n    var closing=appendStoryParagraph(originCopy,copy.closing);\n    closing.className='company-story-closing';\n    origin.appendChild(originCopy);\n\n    story.appendChild(foundation);\n    story.appendChild(origin);\n  }",
-              "    originCopy.appendChild(nameParagraph);\n    originLayout.appendChild(originCopy);\n    origin.appendChild(originLayout);\n\n    story.appendChild(foundation);\n    story.appendChild(origin);\n    }\n\n    story.insertAdjacentElement('afterend',list);\n\n    var welcome=company.querySelector('.company-story-welcome');\n    if(!welcome){\n      welcome=document.createElement('p');\n      welcome.className='company-story-welcome';\n    }\n    welcome.setAttribute('lang',copy.htmlLang);\n    welcome.textContent=copy.closing;\n    list.insertAdjacentElement('afterend',welcome);\n  }"
+          updated = replace_once(
+              updated,
+              "    nameParagraph.appendChild(document.createTextNode(copy.nameSuffix));\n    origin.appendChild(nameParagraph);\n\n    var closing=appendStoryParagraph(origin,copy.closing);\n    closing.className='company-story-closing';\n    story.appendChild(origin);\n  }",
+              "    nameParagraph.appendChild(document.createTextNode(copy.nameSuffix));\n    originLayout.appendChild(nameParagraph);\n    origin.appendChild(originLayout);\n    story.appendChild(origin);\n    }\n\n    // Requested reading order: Foundation, logo origin, company statements, welcome.\n    story.insertAdjacentElement('afterend',list);\n\n    var welcome=company.querySelector('.company-story-welcome');\n    if(!welcome){\n      welcome=document.createElement('p');\n      welcome.className='company-story-welcome';\n    }\n    welcome.setAttribute('lang',copy.htmlLang);\n    welcome.textContent=copy.closing;\n    list.insertAdjacentElement('afterend',welcome);\n  }",
+              'origin closing and section order'
           )
 
-          if updated == old:
-              raise SystemExit('No Foundation Story changes applied')
           for token in (
               "originLayout.className='company-story-origin-layout'",
               "story.insertAdjacentElement('afterend',list)",
@@ -66,57 +79,70 @@ jobs:
               css_block = dedent(r'''
               
               /* Company Foundation Story — origin side-by-side refinement */
-              .company-story-origin-layout{
+              #company .company-story-origin-layout{
+                position:relative;
+                z-index:1;
                 display:grid;
                 grid-template-columns:minmax(220px,.72fr) minmax(0,1.45fr);
                 gap:clamp(30px,4.8vw,66px);
                 align-items:center;
+                padding-top:4px;
               }
-              .company-story-origin-layout .company-story-logo-stage{
-                min-height:0;
+              #company .company-story-origin-layout .company-story-logo-stage{
+                min-height:220px;
                 margin:0;
-                padding:clamp(14px,2vw,24px);
+                border:0;
+                background:radial-gradient(circle at center,rgba(215,169,54,.12),transparent 60%);
               }
-              .company-story-origin-layout .company-story-logo-stage:before{width:clamp(170px,18vw,230px)}
-              .company-story-origin-layout .company-story-logo-stage:after{width:clamp(150px,16vw,205px)}
-              .company-story-origin-layout .company-story-logo{width:clamp(126px,13vw,172px)}
-              .company-story-origin-layout .company-story-copy--origin{
+              #company .company-story-origin-layout .company-story-logo{
+                width:clamp(150px,16vw,205px);
+              }
+              #company .company-story-origin-layout .company-story-origin-copy{
+                margin:0;
                 max-width:none;
-                margin:0;
                 text-align:left;
+                color:#cbd2db;
+                font-size:clamp(16px,1.2vw,18px);
+                line-height:1.82;
               }
               #company .company-foundation-story + .company-intro-list{
-                width:min(100%,1080px);
+                width:min(100%,1040px);
                 margin-top:clamp(22px,3vw,34px);
               }
               #company .company-story-welcome{
                 position:relative;
                 z-index:2;
-                width:min(100%,1080px);
+                width:min(100%,1040px);
                 margin:clamp(34px,4.5vw,52px) auto 0;
                 padding-top:clamp(24px,3vw,34px);
                 border-top:1px solid rgba(215,169,54,.24);
-                color:var(--gold);
+                color:var(--gold-pale);
                 text-align:center;
                 font-family:Georgia,"Times New Roman",serif;
-                font-size:clamp(31px,4.3vw,54px);
-                font-weight:600;
+                font-size:clamp(32px,4.4vw,54px);
+                font-weight:700;
                 line-height:1.08;
                 letter-spacing:-.035em;
               }
               @media(max-width:760px){
-                .company-story-origin-layout{
+                #company .company-story-origin-layout{
                   grid-template-columns:1fr;
-                  gap:20px;
+                  gap:18px;
                 }
-                .company-story-origin-layout .company-story-logo-stage{
-                  min-height:172px;
-                  padding:8px 0 14px;
+                #company .company-story-origin-layout .company-story-logo-stage{
+                  min-height:174px;
+                  margin:0 0 2px;
                 }
-                .company-story-origin-layout .company-story-logo-stage:before{width:176px}
-                .company-story-origin-layout .company-story-logo-stage:after{width:150px}
-                .company-story-origin-layout .company-story-logo{width:122px}
-                #company .company-foundation-story + .company-intro-list{margin-top:18px}
+                #company .company-story-origin-layout .company-story-logo{
+                  width:min(50vw,174px);
+                }
+                #company .company-story-origin-layout .company-story-origin-copy{
+                  font-size:15px;
+                  line-height:1.72;
+                }
+                #company .company-foundation-story + .company-intro-list{
+                  margin-top:18px;
+                }
                 #company .company-story-welcome{
                   margin-top:28px;
                   padding-top:24px;

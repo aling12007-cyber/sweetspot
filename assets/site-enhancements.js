@@ -212,9 +212,12 @@
     var copies={
       en:{
         htmlLang:'en',
-        heading:'Sweet Spot’s Foundation Story and Purpose',
+        foundationHeading:'Foundation Story and Purpose',
+        intro:'Founder Sam L. Pearson has built more than 15 years of experience across rights holders, agencies and brands in the APAC sports and entertainment industry.',
         first:'Sam’s experience across rights holders (WTA, FIFA), agencies (Octagon, CSM) and brands (AIG) has provided a comprehensive appreciation of the sports ecosystem and objectives and challenges across the various parties. In particular, the 8 years leading AIG’s sports marketing function ensured a focus on maximizing sponsorship benefits to achieve tangible business results.',
         second:'Sweet Spot was founded to share this solution-focused experience and offer high level facilitation to multiple clients.',
+        originHeading:'The Origin of the “Sweet Spot” Name and Logo',
+        logoAlt:'Sweet Spot logo',
         namePrefix:'The name represents the sweet feeling when perfectly hitting a ball with the middle part of the bat, racquet or club. The logo brings together an ancient quartz crystal in the center of a traditional Mexican ',
         nameTerm:'serape',
         nameSuffix:'.',
@@ -222,9 +225,12 @@
       },
       ja:{
         htmlLang:'ja',
-        heading:'Sweet Spotの創立ストーリーと理念',
+        foundationHeading:'創立ストーリーと理念',
+        intro:'創業者 Sam L. Pearson は、APAC のスポーツ・エンターテインメント業界で、権利保有者、エージェンシー、ブランドの各立場を通じて15年以上の経験を積んできました。',
         first:'Samは、権利保有者（WTA、FIFA）、エージェンシー（Octagon、CSM）、ブランド（AIG）それぞれの立場で経験を積み、スポーツ業界全体のエコシステムと、各関係者が抱える目標や課題を幅広く理解してきました。特に、AIGで8年間スポーツマーケティング部門を率いた経験を通じ、スポンサーシップの価値を最大化し、具体的なビジネス成果につなげることに注力してきました。',
         second:'Sweet Spotは、この課題解決を重視した経験を共有し、さまざまなクライアントに高度な調整・支援を提供するために設立されました。',
+        originHeading:'「Sweet Spot」の名前とロゴの由来',
+        logoAlt:'Sweet Spot ロゴ',
         namePrefix:'「Sweet Spot」という名前は、バット、ラケット、クラブの芯でボールを完璧に捉えたときに感じる心地よさを表しています。ロゴは、メキシコの伝統的な ',
         nameTerm:'serape',
         nameSuffix:'（サラペ）の中央に古代の水晶を配したデザインです。',
@@ -232,9 +238,12 @@
       },
       zhtw:{
         htmlLang:'zh-Hant',
-        heading:'Sweet Spot 的創立故事與理念',
+        foundationHeading:'創立故事與理念',
+        intro:'創辦人 Sam L. Pearson 在亞太地區的運動與娛樂產業累積超過 15 年經驗，歷練橫跨權利持有方、代理商與品牌端。',
         first:'Sam 曾在權利持有方（WTA、FIFA）、代理商（Octagon、CSM）以及品牌（AIG）累積經驗，使他得以全面理解體育產業生態，以及不同參與者各自的目標與面臨的挑戰。尤其是在 AIG 領導體育行銷業務的八年間，他始終專注於最大化贊助合作的效益，並將其轉化為具體的商業成果。',
         second:'Sweet Spot 的成立，是為了分享這些以解決問題為核心的經驗，並為不同客戶提供高層次的協調與支援。',
+        originHeading:'「Sweet Spot」的名稱和 LOGO 的由來',
+        logoAlt:'Sweet Spot 品牌 LOGO',
         namePrefix:'「Sweet Spot」這個名稱，代表使用球棒、球拍或球桿的中心部位完美擊中球時，那種令人愉悅的感受。品牌標誌則將一顆古老的石英水晶置於墨西哥傳統 ',
         nameTerm:'serape',
         nameSuffix:' 織毯的中央。',
@@ -242,9 +251,12 @@
       },
       zhcn:{
         htmlLang:'zh-Hans',
-        heading:'Sweet Spot 的创立故事与理念',
+        foundationHeading:'创立故事与理念',
+        intro:'创办人 Sam L. Pearson 在亚太地区的体育与娱乐产业积累超过 15 年经验，历练横跨权利持有方、代理机构与品牌端。',
         first:'Sam 曾在权利持有方（WTA、FIFA）、代理机构（Octagon、CSM）以及品牌（AIG）积累经验，使他得以全面理解体育产业生态，以及不同参与方各自的目标与面临的挑战。尤其是在 AIG 领导体育营销业务的八年间，他始终专注于最大化赞助合作的效益，并将其转化为具体的商业成果。',
         second:'Sweet Spot 的成立，是为了分享这些以解决问题为核心的经验，并为不同客户提供高层次的协调与支持。',
+        originHeading:'“Sweet Spot”的名称和 LOGO 的由来',
+        logoAlt:'Sweet Spot 品牌 LOGO',
         namePrefix:'“Sweet Spot”这个名称，代表使用球棒、球拍或球杆的中心部位完美击中球时，那种令人愉悦的感受。品牌标志则将一颗古老的石英水晶置于墨西哥传统 ',
         nameTerm:'serape',
         nameSuffix:' 织毯的中央。',
@@ -271,23 +283,75 @@
     story.setAttribute('lang',copy.htmlLang);
     story.textContent='';
 
+    var foundation=document.createElement('section');
+    foundation.className='company-story-panel company-story-foundation';
+
+    var foundationEyebrow=document.createElement('div');
+    foundationEyebrow.className='company-story-eyebrow';
+    var foundationIndex=document.createElement('span');
+    foundationIndex.className='company-story-index';
+    foundationIndex.textContent='01';
+    var foundationKicker=document.createElement('span');
+    foundationKicker.className='company-story-kicker';
+    foundationKicker.textContent='FOUNDATION / PURPOSE';
+    foundationEyebrow.appendChild(foundationIndex);
+    foundationEyebrow.appendChild(foundationKicker);
+    foundation.appendChild(foundationEyebrow);
+
     var heading=document.createElement('h3');
     heading.id='company-foundation-story-title';
-    heading.textContent=copy.heading;
-    story.appendChild(heading);
+    heading.textContent=copy.foundationHeading;
+    foundation.appendChild(heading);
 
-    appendStoryParagraph(story,copy.first);
-    appendStoryParagraph(story,copy.second);
+    var intro=appendStoryParagraph(foundation,copy.intro);
+    intro.className='company-story-intro';
+    appendStoryParagraph(foundation,copy.first);
+    appendStoryParagraph(foundation,copy.second);
+    story.appendChild(foundation);
+
+    var origin=document.createElement('section');
+    origin.className='company-story-panel company-story-origin';
+
+    var originEyebrow=document.createElement('div');
+    originEyebrow.className='company-story-eyebrow';
+    var originIndex=document.createElement('span');
+    originIndex.className='company-story-index';
+    originIndex.textContent='02';
+    var originKicker=document.createElement('span');
+    originKicker.className='company-story-kicker';
+    originKicker.textContent='NAME / LOGO';
+    originEyebrow.appendChild(originIndex);
+    originEyebrow.appendChild(originKicker);
+    origin.appendChild(originEyebrow);
+
+    var originHeading=document.createElement('h3');
+    originHeading.className='company-story-origin-title';
+    originHeading.textContent=copy.originHeading;
+    origin.appendChild(originHeading);
+
+    var logoStage=document.createElement('div');
+    logoStage.className='company-story-logo-stage';
+    var logo=document.createElement('img');
+    logo.className='company-story-logo';
+    logo.src='assets/images/site-e8a84d6c8ba9.webp';
+    logo.alt=copy.logoAlt;
+    logo.loading='lazy';
+    logo.decoding='async';
+    logoStage.appendChild(logo);
+    origin.appendChild(logoStage);
 
     var nameParagraph=document.createElement('p');
+    nameParagraph.className='company-story-origin-copy';
     nameParagraph.appendChild(document.createTextNode(copy.namePrefix));
     var serape=document.createElement('em');
     serape.textContent=copy.nameTerm;
     nameParagraph.appendChild(serape);
     nameParagraph.appendChild(document.createTextNode(copy.nameSuffix));
-    story.appendChild(nameParagraph);
+    origin.appendChild(nameParagraph);
 
-    appendStoryParagraph(story,copy.closing);
+    var closing=appendStoryParagraph(origin,copy.closing);
+    closing.className='company-story-closing';
+    story.appendChild(origin);
   }
 
   function patchEmptySemantics(){

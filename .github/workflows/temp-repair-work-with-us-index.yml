@@ -1,0 +1,31 @@
+name: Temporary Work With Us index repair
+on:
+  push:
+    branches: [feat/work-with-us-section-20260907]
+permissions:
+  contents: write
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: feat/work-with-us-section-20260907
+          fetch-depth: 0
+      - name: Repair index from main
+        run: |
+          git fetch origin main
+          python .github/scripts/temp_repair_work_with_us_index.py
+      - name: Verify repair
+        run: |
+          grep -F "assets/case-study-split.css?v=work-with-us-20260907" index.html
+          grep -F "assets/site-enhancements.js?v=work-with-us-20260907" index.html
+          grep -F "<!-- Career Playbook accordion JS START -->" index.html
+          git diff --check
+      - name: Commit repaired index
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "fix: preserve index while busting Work With Us assets"
+          git push origin HEAD:feat/work-with-us-section-20260907

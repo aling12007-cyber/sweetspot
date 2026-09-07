@@ -1,0 +1,55 @@
+name: Temporary introduction big heading patch
+on:
+  push:
+    branches:
+      - feat/introduction-big-headings-20260907
+    paths:
+      - '.github/workflows/temp-introduction-big-headings.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: feat/introduction-big-headings-20260907
+      - name: Apply introduction major headings
+        shell: bash
+        run: |
+          python .github/apply-introduction-big-headings.py
+          node --check assets/site-enhancements.js
+          git diff --check
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          j=Path('assets/site-enhancements.js').read_text(encoding='utf-8')
+          c=Path('assets/case-study-split.css').read_text(encoding='utf-8')
+          for text in [
+            'Our Commitment',
+            '私たちのコミットメント',
+            '我們的承諾',
+            '我们的承诺',
+            'What Sets Sweet Spot Apart',
+            'Sweet Spotならではの強み',
+            'Sweet Spot 的獨特優勢',
+            'Sweet Spot 的独特优势',
+          ]:
+            assert text in j, text
+          assert 'introduction-section-heading--focus' in j
+          assert 'introduction-section-heading--difference' in j
+          assert '/* Introduction major subsection headings */' in c
+          assert 'font-size:clamp(27px,3vw,38px)' in c
+          assert 'font-size:24px' in c
+          assert 'assets/case-study-split.css?v=intro-big-headings-20260907' in s
+          assert 'assets/site-enhancements.js?v=intro-big-headings-20260907' in s
+          print('Introduction major heading checks passed')
+          PY
+      - name: Commit introduction major headings
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html assets/site-enhancements.js assets/case-study-split.css
+          git commit -m 'feat: add major headings to introduction subsections'
+          git push origin HEAD:feat/introduction-big-headings-20260907

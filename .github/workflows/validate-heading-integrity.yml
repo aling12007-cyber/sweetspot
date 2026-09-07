@@ -38,6 +38,9 @@ jobs:
             "company:['会社','会社紹介','']",
             "company:['公司','公司簡介','']",
             "points:['Difference','Points of Difference','']",
+            "founder:['Founder','Sam L. Pearson','']",
+            "founder:['創業者','Sam L. Pearson','']",
+            "founder:['創辦人','Sam L. Pearson','']",
             "experience:['Career','Professional Journey','Built across APAC']",
             "network:['Network','Broad Influence and Access','Services rendered to:']",
             "capabilities:['Case','Case Study: Apple','Demonstrated high-level facilitation capability']",
@@ -73,7 +76,10 @@ jobs:
             "focusHeading.textContent=focusLabels[lang]||focusLabels.en;",
             "differenceHeading.textContent=differenceLabels[lang]||differenceLabels.en;",
             "閱讀更多創辦人的職涯",
-            "創業者の経歴をもっと見る"
+            "創業者の経歴をもっと見る",
+            "function patchFounderIdentity(){",
+            "zhtw:{role:'創辦人',location:'東京，日本'}",
+            "zhcn:{role:'创办人',location:'东京，日本'}"
           ]
           for x in required_nav:
               assert x in j, 'Required localized navigation/content token missing: '+x

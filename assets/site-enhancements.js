@@ -527,6 +527,27 @@ function patchIntroduction(){
   }
 }
 
+function patchFounderIdentity(){
+  var founder=document.querySelector('#founder');
+  if(!founder)return;
+
+  var lang=currentLanguage();
+  var labels={
+    en:{role:'FOUNDER',location:'Tokyo, Japan'},
+    ja:{role:'創業者',location:'東京、日本'},
+    zhtw:{role:'創辦人',location:'東京，日本'},
+    zhcn:{role:'创办人',location:'东京，日本'}
+  };
+  var copy=labels[lang]||labels.en;
+  var caption=founder.querySelector('.founder-caption');
+  if(!caption)return;
+
+  var role=caption.querySelector('span');
+  var location=caption.querySelector('small');
+  if(role)role.textContent=copy.role;
+  if(location)location.textContent=copy.location;
+}
+
 function patchFounderCareer(){
   var founder=document.querySelector('#founder');
   var experience=document.querySelector('#experience');
@@ -609,6 +630,7 @@ function patchFounderCareer(){
       patchCaseStudy();
       patchFoundationStory();
       patchIntroduction();
+      patchFounderIdentity();
       patchFounderCareer();
       patchEmptySemantics();
     }finally{

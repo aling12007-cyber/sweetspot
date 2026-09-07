@@ -1,9 +1,10 @@
 name: Temporary navigation heading hierarchy
 on:
   push:
-    branches: [content/navigation-heading-hierarchy-20260907]
+    branches:
+      - content/navigation-heading-hierarchy-20260907
     paths:
-      - '.github/workflows/temp-navigation-heading-hierarchy.yml'
+      - .github/workflows/temp-navigation-heading-hierarchy.yml
 permissions:
   contents: write
 jobs:
@@ -16,155 +17,8 @@ jobs:
       - name: Apply requested desktop and mobile heading hierarchy
         shell: bash
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          import re
-
-          js_path = Path('assets/site-enhancements.js')
-          js = js_path.read_text(encoding='utf-8')
-
-          old_nav = '''  function patchNavigation(){
-    var navs=document.querySelectorAll('.site-header nav');
-    if(!navs.length)return;
-
-    var homeLabels={
-      en:'Home',
-      ja:'ホーム',
-      zhtw:'首頁',
-      zhcn:'首页'
-    };
-    var lang=currentLanguage();
-    var label=homeLabels[lang]||homeLabels.en;
-    var introductionLabels={
-      en:'Introduction',
-      ja:'会社紹介',
-      zhtw:'簡介',
-      zhcn:'简介'
-    };
-
-    navs.forEach(function(nav){
-      var homeLink=nav.querySelector('a.nav-home[href="#home"]');
-      if(!homeLink){
-        homeLink=document.createElement('a');
-        homeLink.className='nav-home nav-level-1';
-        homeLink.href='#home';
-        nav.insertBefore(homeLink,nav.firstElementChild);
-      }
-      setLinkLabel(homeLink,label);
-
-      var companyLink=nav.querySelector('a[href="#company"]');
-      if(companyLink)setLinkLabel(companyLink,introductionLabels[lang]||introductionLabels.en);
-
-      var pointsLink=nav.querySelector('a[href="#points"]');
-      if(pointsLink)pointsLink.remove();
-    });
-  }
-'''
-
-          new_nav = '''  function patchNavigation(){
-    var navs=document.querySelectorAll('.site-header nav');
-    if(!navs.length)return;
-
-    var version='20260907-heading-hierarchy';
-    var items=[
-      {href:'#home',label:'HOME',classes:'nav-home nav-level-1'},
-      {href:'#company',label:'INTRODUCTION',classes:'nav-level-1 nav-parent'},
-      {href:'#foundation-purpose',label:'FUNDATION/PURPOSE',classes:'nav-level-2'},
-      {href:'#name-logo',label:'NAME/LOGO',classes:'nav-level-2'},
-      {href:'#what-we-stand-for',label:'WHAT WE STAND FOR',classes:'nav-level-2'},
-      {href:'#difference',label:'DIFFERENCE',classes:'nav-level-2'},
-      {href:'#founder',label:'FOUNDER',classes:'nav-level-1 nav-parent'},
-      {href:'#experience',label:'CAREER',classes:'nav-level-2'},
-      {href:'#network',label:'NETWORK',classes:'nav-level-1 nav-parent'},
-      {href:'#capabilities',label:'CASE',classes:'nav-level-2'},
-      {href:'#insights',label:'INSIGHTS',classes:'nav-level-1'},
-      {href:'#contact',label:'CONTACT',classes:'nav-level-1 contact-mini'}
-    ];
-
-    navs.forEach(function(nav){
-      var current=Array.prototype.slice.call(nav.querySelectorAll('a[href^="#"]'));
-      var ready=nav.getAttribute('data-ss-nav-version')===version&&
-        current.length===items.length&&
-        items.every(function(item,index){
-          var link=current[index];
-          if(!link)return false;
-          return link.getAttribute('href')===item.href&&
-            (link.textContent||'').trim()===item.label&&
-            item.classes.split(' ').every(function(name){return link.classList.contains(name);});
-        });
-      if(ready)return;
-
-      var byHref={};
-      current.forEach(function(link){
-        var href=link.getAttribute('href');
-        if(href&&!byHref[href])byHref[href]=link;
-      });
-
-      var ordered=items.map(function(item){
-        var link=byHref[item.href]||document.createElement('a');
-        var wasActive=link.classList.contains('is-active');
-        link.setAttribute('href',item.href);
-        link.className=item.classes+(wasActive?' is-active':'');
-        link.textContent=item.label;
-        return link;
-      });
-
-      current.forEach(function(link){link.remove();});
-      ordered.forEach(function(link){nav.appendChild(link);});
-      nav.setAttribute('data-ss-nav-version',version);
-    });
-  }
-'''
-
-          if js.count(old_nav) != 1:
-              raise SystemExit(f'Expected exactly one patchNavigation block, found {js.count(old_nav)}')
-          js = js.replace(old_nav, new_nav, 1)
-
-          replacements = [
-              ("    foundation.className='company-story-panel company-story-foundation';\n", "    foundation.className='company-story-panel company-story-foundation';\n    foundation.id='foundation-purpose';\n"),
-              ("    origin.className='company-story-panel company-story-origin';\n", "    origin.className='company-story-panel company-story-origin';\n    origin.id='name-logo';\n"),
-              ("    focusHeading.textContent='WHAT WE STAND FOR';\n", "    focusHeading.id='what-we-stand-for';\n    focusHeading.textContent='WHAT WE STAND FOR';\n"),
-              ("    differenceHeading.textContent='DIFFERENCE';\n", "    differenceHeading.id='difference';\n    differenceHeading.textContent='DIFFERENCE';\n"),
-          ]
-          for old, new in replacements:
-              if js.count(old) != 1:
-                  raise SystemExit(f'Expected exactly one target: {old!r}; found {js.count(old)}')
-              js = js.replace(old, new, 1)
-
-          required = [
-              "label:'HOME'",
-              "label:'INTRODUCTION'",
-              "label:'FUNDATION/PURPOSE'",
-              "label:'NAME/LOGO'",
-              "label:'WHAT WE STAND FOR'",
-              "label:'DIFFERENCE'",
-              "label:'FOUNDER'",
-              "label:'CAREER'",
-              "label:'NETWORK'",
-              "label:'CASE'",
-              "label:'INSIGHTS'",
-              "label:'CONTACT'",
-              "foundation.id='foundation-purpose'",
-              "origin.id='name-logo'",
-              "focusHeading.id='what-we-stand-for'",
-              "differenceHeading.id='difference'",
-          ]
-          for token in required:
-              if token not in js:
-                  raise SystemExit(f'Missing required token after patch: {token}')
-
-          js_path.write_text(js, encoding='utf-8')
-
-          index_path = Path('index.html')
-          index = index_path.read_text(encoding='utf-8')
-          pattern = r'assets/site-enhancements\.js\?v=[A-Za-z0-9._-]+'
-          matches = re.findall(pattern, index)
-          if len(matches) != 1:
-              raise SystemExit(f'Expected exactly one site-enhancements cache key, found {len(matches)}: {matches}')
-          index = re.sub(pattern, 'assets/site-enhancements.js?v=navigation-heading-hierarchy-20260907', index, count=1)
-          index_path.write_text(index, encoding='utf-8')
-          PY
-
+          echo 'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmltcG9ydCByZQoKanNfcGF0aCA9IFBhdGgoJ2Fzc2V0cy9zaXRlLWVuaGFuY2VtZW50cy5qcycpCmpzID0ganNfcGF0aC5yZWFkX3RleHQoZW5jb2Rpbmc9J3V0Zi04JykKCm9sZF9uYXYgPSAiIiIgIGZ1bmN0aW9uIHBhdGNoTmF2aWdhdGlvbigpewogICAgdmFyIG5hdnM9ZG9jdW1lbnQucXVlcnlTZWxlY3RvckFsbCgnLnNpdGUtaGVhZGVyIG5hdicpOwogICAgaWYoIW5hdnMubGVuZ3RoKXJldHVybjsKCiAgICB2YXIgaG9tZUxhYmVscz17CiAgICAgIGVuOidIb21lJywKICAgICAgamE6J+ODm+ODvOODoCcsCiAgICAgIHpodHc6J+mmlumggScsCiAgICAgIHpoY246J+mmlumhtScKICAgIH07CiAgICB2YXIgbGFuZz1jdXJyZW50TGFuZ3VhZ2UoKTsKICAgIHZhciBsYWJlbD1ob21lTGFiZWxzW2xhbmddfHxob21lTGFiZWxzLmVuOwogICAgdmFyIGludHJvZHVjdGlvbkxhYmVscz17CiAgICAgIGVuOidJbnRyb2R1Y3Rpb24nLAogICAgICBqYTon5Lya56S+57S55LuLJywKICAgICAgemh0dzon57Ch5LuLJywKICAgICAgemhjbron566A5LuLJwogICAgfTsKCiAgICBuYXZzLmZvckVhY2goZnVuY3Rpb24obmF2KXsKICAgICAgdmFyIGhvbWVMaW5rPW5hdi5xdWVyeVNlbGVjdG9yKCdhLm5hdi1ob21lW2hyZWY9IiNob21lIl0nKTsKICAgICAgaWYoIWhvbWVMaW5rKXsKICAgICAgICBob21lTGluaz1kb2N1bWVudC5jcmVhdGVFbGVtZW50KCdhJyk7CiAgICAgICAgaG9tZUxpbmsuY2xhc3NOYW1lPSduYXYtaG9tZSBuYXYtbGV2ZWwtMSc7CiAgICAgICAgaG9tZUxpbmsuaHJlZj0nI2hvbWUnOwogICAgICAgIG5hdi5pbnNlcnRCZWZvcmUoaG9tZUxpbmssbmF2LmZpcnN0RWxlbWVudENoaWxkKTsKICAgICAgfQogICAgICBzZXRMaW5rTGFiZWwoaG9tZUxpbmssbGFiZWwpOwoKICAgICAgdmFyIGNvbXBhbnlMaW5rPW5hdi5xdWVyeVNlbGVjdG9yKCdhW2hyZWY9IiNjb21wYW55Il0nKTsKICAgICAgaWYoY29tcGFueUxpbmspc2V0TGlua0xhYmVsKGNvbXBhbnlMaW5rLGludHJvZHVjdGlvbkxhYmVsc1tsYW5nXXx8aW50cm9kdWN0aW9uTGFiZWxzLmVuKTsKCiAgICAgIHZhciBwb2ludHNMaW5rPW5hdi5xdWVyeVNlbGVjdG9yKCdhW2hyZWY9IiNwb2ludHMiXScpOwogICAgICBpZihwb2ludHNMaW5rKXBvaW50c0xpbmsucmVtb3ZlKCk7CiAgICB9KTsKICB9CiIiIgoKbmV3X25hdiA9ICIiIiAgZnVuY3Rpb24gcGF0Y2hOYXZpZ2F0aW9uKCl7CiAgICB2YXIgbmF2cz1kb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCcuc2l0ZS1oZWFkZXIgbmF2Jyk7CiAgICBpZighbmF2cy5sZW5ndGgpcmV0dXJuOwoKICAgIHZhciB2ZXJzaW9uPScyMDI2MDkwNy1oZWFkaW5nLWhpZXJhcmNoeSc7CiAgICB2YXIgaXRlbXM9WwogICAgICB7aHJlZjonI2hvbWUnLGxhYmVsOidIT01FJyxjbGFzc2VzOiduYXYtaG9tZSBuYXYtbGV2ZWwtMSd9LAogICAgICB7aHJlZjonI2NvbXBhbnknLGxhYmVsOidJTlRST0RVQ1RJT04nLGNsYXNzZXM6J25hdi1sZXZlbC0xIG5hdi1wYXJlbnQnfSwKICAgICAge2hyZWY6JyNmb3VuZGF0aW9uLXB1cnBvc2UnLGxhYmVsOidGVU5EQVRJT04vUFVSUE9TRScsY2xhc3NlczonbmF2LWxldmVsLTInfSwKICAgICAge2hyZWY6JyNuYW1lLWxvZ28nLGxhYmVsOidOQU1FL0xPR08nLGNsYXNzZXM6J25hdi1sZXZlbC0yJ30sCiAgICAgIHtocmVmOicjd2hhdC13ZS1zdGFuZC1mb3InLGxhYmVsOidXSEFUIFdFIFNUQU5EIEZPUicsY2xhc3NlczonbmF2LWxldmVsLTInfSwKICAgICAge2hyZWY6JyNkaWZmZXJlbmNlJyxsYWJlbDonRElGRkVSRU5DRScsY2xhc3NlczonbmF2LWxldmVsLTInfSwKICAgICAge2hyZWY6JyNmb3VuZGVyJyxsYWJlbDonRk9VTkRFUicsY2xhc3NlczonbmF2LWxldmVsLTEgbmF2LXBhcmVudCd9LAogICAgICB7aHJlZjonI2V4cGVyaWVuY2UnLGxhYmVsOidDQVJFRVInLGNsYXNzZXM6J25hdi1sZXZlbC0yJ30sCiAgICAgIHtocmVmOicjbmV0d29yaycsbGFiZWw6J05FVFdPUksnLGNsYXNzZXM6J25hdi1sZXZlbC0xIG5hdi1wYXJlbnQnfSwKICAgICAge2hyZWY6JyNjYXBhYmlsaXRpZXMnLGxhYmVsOidDQVNFJyxjbGFzc2VzOiduYXYtbGV2ZWwtMid9LAogICAgICB7aHJlZjonI2luc2lnaHRzJyxsYWJlbDonSU5TSUdIVFMnLGNsYXNzZXM6J25hdi1sZXZlbC0xJ30sCiAgICAgIHtocmVmOicjY29udGFjdCcsbGFiZWw6J0NPTlRBQ1QnLGNsYXNzZXM6J25hdi1sZXZlbC0xIGNvbnRhY3QtbWluaSd9CiAgICBdOwoKICAgIG5hdnMuZm9yRWFjaChmdW5jdGlvbihuYXYpewogICAgICB2YXIgY3VycmVudD1BcnJheS5wcm90b3R5cGUuc2xpY2UuY2FsbChuYXYucXVlcnlTZWxlY3RvckFsbCgnYVtocmVmXj0iIyJdJykpOwogICAgICB2YXIgcmVhZHk9bmF2LmdldEF0dHJpYnV0ZSgnZGF0YS1zcy1uYXYtdmVyc2lvbicpPT09dmVyc2lvbiYmCiAgICAgICAgY3VycmVudC5sZW5ndGg9PT1pdGVtcy5sZW5ndGgmJgogICAgICAgIGl0ZW1zLmV2ZXJ5KGZ1bmN0aW9uKGl0ZW0saW5kZXgpewogICAgICAgICAgdmFyIGxpbms9Y3VycmVudFtpbmRleF07CiAgICAgICAgICBpZighbGluaylyZXR1cm4gZmFsc2U7CiAgICAgICAgICByZXR1cm4gbGluay5nZXRBdHRyaWJ1dGUoJ2hyZWYnKT09PWl0ZW0uaHJlZiYmCiAgICAgICAgICAgIChsaW5rLnRleHRDb250ZW50fHwnJykudHJpbSgpPT09aXRlbS5sYWJlbCYmCiAgICAgICAgICAgIGl0ZW0uY2xhc3Nlcy5zcGxpdCgnICcpLmV2ZXJ5KGZ1bmN0aW9uKG5hbWUpe3JldHVybiBsaW5rLmNsYXNzTGlzdC5jb250YWlucyhuYW1lKTt9KTsKICAgICAgICB9KTsKICAgICAgaWYocmVhZHkpcmV0dXJuOwoKICAgICAgdmFyIGJ5SHJlZj17fTsKICAgICAgY3VycmVudC5mb3JFYWNoKGZ1bmN0aW9uKGxpbmspewogICAgICAgIHZhciBocmVmPWxpbmsuZ2V0QXR0cmlidXRlKCdocmVmJyk7CiAgICAgICAgaWYoaHJlZiYmIWJ5SHJlZltoaHJlZl0pYnlIcmVmW2hyZWZdPWxpbms7CiAgICAgIH0pOwoKICAgICAgdmFyIG9yZGVyZWQ9aXRlbXMubWFwKGZ1bmN0aW9uKGl0ZW0pewogICAgICAgIHZhciBsaW5rPWJ5SHJlZltpdGVtLmhyZWZdfHxkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdhJyk7CiAgICAgICAgdmFyIHdhc0FjdGl2ZT1saW5rLmNsYXNzTGlzdC5jb250YWlucygnaXMtYWN0aXZlJyk7CiAgICAgICAgbGluay5zZXRBdHRyaWJ1dGUoJ2hyZWYnLGl0ZW0uaHJlZik7CiAgICAgICAgbGluay5jbGFzc05hbWU9aXRlbS5jbGFzc2VzKyh3YXNBY3RpdmU/JyBpcy1hY3RpdmUnOicnKTsKICAgICAgICBsaW5rLnRleHRDb250ZW50PWl0ZW0ubGFiZWw7CiAgICAgICAgcmV0dXJuIGxpbms7CiAgICAgIH0pOwoKICAgICAgY3VycmVudC5mb3JFYWNoKGZ1bmN0aW9uKGxpbmspe2xpbmsucmVtb3ZlKCk7fSk7CiAgICAgIG9yZGVyZWQuZm9yRWFjaChmdW5jdGlvbihsaW5rKXtuYXYuYXBwZW5kQ2hpbGQobGluayk7fSk7CiAgICAgIG5hdi5zZXRBdHRyaWJ1dGUoJ2RhdGEtc3MtbmF2LXZlcnNpb24nLHZlcnNpb24pOwogICAgfSk7CiAgfQoiIiIKCmlmIGpzLmNvdW50KG9sZF9uYXYpICE9IDE6CiAgICByYWlzZSBTeXN0ZW1FeGl0KGYnRXhwZWN0ZWQgZXhhY3RseSBvbmUgcGF0Y2hOYXZpZ2F0aW9uIGJsb2NrLCBmb3VuZCB7anMuY291bnQob2xkX25hdil9JykKanMgPSBqcy5yZXBsYWNlKG9sZF9uYXYsIG5ld19uYXYsIDEpCgpyZXBsYWNlbWVudHMgPSBbCiAgICAoIiAgICBmb3VuZGF0aW9uLmNsYXNzTmFtZT0nY29tcGFueS1zdG9yeS1wYW5lbCBjb21wYW55LXN0b3J5LWZvdW5kYXRpb24nO1xuIiwgIiAgICBmb3VuZGF0aW9uLmNsYXNzTmFtZT0nY29tcGFueS1zdG9yeS1wYW5lbCBjb21wYW55LXN0b3J5LWZvdW5kYXRpb24nO1xuICAgIGZvdW5kYXRpb24uaWQ9J2ZvdW5kYXRpb24tcHVycG9zZSc7XG4iKSwKICAgICgiICAgIG9yaWdpbi5jbGFzc05hbWU9J2NvbXBhbnktc3RvcnktcGFuZWwgY29tcGFueS1zdG9yeS1vcmlnaW4nO1xuIiwgIiAgICBvcmlnaW4uY2xhc3NOYW1lPSdjb21wYW55LXN0b3J5LXBhbmVsIGNvbXBhbnktc3Rvcnktb3JpZ2luJztcbiAgICBvcmlnaW4uaWQ9J25hbWUtbG9nbyc7XG4iKSwKICAgICgiICAgIGZvY3VzSGVhZGluZy50ZXh0Q29udGVudD0nV0hBVCBXRSBTVEFORCBGT1InO1xuIiwgIiAgICBmb2N1c0hlYWRpbmcuaWQ9J3doYXQtd2Utc3RhbmQtZm9yJztcbiAgICBmb2N1c0hlYWRpbmcudGV4dENvbnRlbnQ9J1dIQVQgV0UgU1RBTkQgRk9SJztcbiIpLAogICAgKCIgICAgZGlmZmVyZW5jZUhlYWRpbmcudGV4dENvbnRlbnQ9J0RJRkZFUkVOQ0UnO1xuIiwgIiAgICBkaWZmZXJlbmNlSGVhZGluZy5pZD0nZGlmZmVyZW5jZSc7XG4gICAgZGlmZmVyZW5jZUhlYWRpbmcudGV4dENvbnRlbnQ9J0RJRkZFUkVOQ0UnO1xuIiksCl0KZm9yIG9sZCwgbmV3IGluIHJlcGxhY2VtZW50czoKICAgIGlmIGpzLmNvdW50KG9sZCkgIT0gMToKICAgICAgICByYWlzZSBTeXN0ZW1FeGl0KGYnRXhwZWN0ZWQgZXhhY3RseSBvbmUgdGFyZ2V0OiB7b2xkIXJ9OyBmb3VuZCB7anMuY291bnQob2xkKX0nKQogICAganMgPSBqcy5yZXBsYWNlKG9sZCwgbmV3LCAxKQoKcmVxdWlyZWQgPSBbCiAgICAibGFiZWw6J0hPTUUnIiwKICAgICJsYWJlbDonSU5UUk9EVUNUSU9OJyIsCiAgICAibGFiZWw6J0ZVTkRBVElPTi9QVVJQT1NFJyIsCiAgICAibGFiZWw6J05BTUUvTE9HTyciLAogICAgImxhYmVsOidXSEFUIFdFIFNUQU5EIEZPUiciLAogICAgImxhYmVsOidESUZGRVJFTkNFJyIsCiAgICAibGFiZWw6J0ZPVU5ERVInIiwKICAgICJsYWJlbDonQ0FSRUVSJyIsCiAgICAibGFiZWw6J05FVFdPUksnIiwKICAgICJsYWJlbDonQ0FTRSciLAogICAgImxhYmVsOidJTlNJR0hUUyciLAogICAgImxhYmVsOidDT05UQUNUJyIsCiAgICAiZm91bmRhdGlvbi5pZD0nZm91bmRhdGlvbi1wdXJwb3NlJyIsCiAgICAib3JpZ2luLmlkPSduYW1lLWxvZ28nIiwKICAgICJmb2N1c0hlYWRpbmcuaWQ9J3doYXQtd2Utc3RhbmQtZm9yJyIsCiAgICAiZGlmZmVyZW5jZUhlYWRpbmcuaWQ9J2RpZmZlcmVuY2UnIiwKXQpmb3IgdG9rZW4gaW4gcmVxdWlyZWQ6CiAgICBpZiB0b2tlbiBub3QgaW4ganM6CiAgICAgICAgcmFpc2UgU3lzdGVtRXhpdChmJ01pc3NpbmcgcmVxdWlyZWQgdG9rZW4gYWZ0ZXIgcGF0Y2g6IHt0b2tlbn0nKQoKanNfcGF0aC53cml0ZV90ZXh0KGpzLCBlbmNvZGluZz0ndXRmLTgnKQoKaW5kZXhfcGF0aCA9IFBhdGgoJ2luZGV4Lmh0bWwnKQppbmRleCA9IGluZGV4X3BhdGgucmVhZF90ZXh0KGVuY29kaW5nPSd1dGYtOCcpCnBhdHRlcm4gPSByJ2Fzc2V0cy9zaXRlLWVuaGFuY2VtZW50c1wuanNcP3Y9W0EtWmEtejAtOS5fLV0rJwptYXRjaGVzID0gcmUuZmluZGFsbChwYXR0ZXJuLCBpbmRleCkKaWYgbGVuKG1hdGNoZXMpICE9IDE6CiAgICByYWlzZSBTeXN0ZW1FeGl0KGYnRXhwZWN0ZWQgZXhhY3RseSBvbmUgc2l0ZS1lbmhhbmNlbWVudHMgY2FjaGUga2V5LCBmb3VuZCB7bGVuKG1hdGNoZXMpfToge21hdGNoZXN9JykKaW5kZXggPSByZS5zdWIocGF0dGVybiwgJ2Fzc2V0cy9zaXRlLWVuaGFuY2VtZW50cy5qcz92PW5hdmlnYXRpb24taGVhZGluZy1oaWVyYXJjaHktMjAyNjA5MDcnLCBpbmRleCwgY291bnQ9MSkKaW5kZXhfcGF0aC53cml0ZV90ZXh0KGluZGV4LCBlbmNvZGluZz0ndXRmLTgnKQo=' | base64 -d > /tmp/apply-navigation.py
+          python /tmp/apply-navigation.py
           git diff --check
           git status --short
           grep -F "label:'FUNDATION/PURPOSE'" assets/site-enhancements.js

@@ -410,6 +410,17 @@ function patchIntroduction(){
   var kicker=company.querySelector('.section-title p');
   if(kicker)kicker.textContent=introductionLabels[lang]||introductionLabels.en;
 
+  var list=company.querySelector('.company-intro-list');
+  var focusHeading=company.querySelector('.introduction-subhead--focus');
+  if(!focusHeading&&list){
+    focusHeading=document.createElement('div');
+    focusHeading.className='introduction-subhead introduction-subhead--focus';
+  }
+  if(focusHeading&&list){
+    focusHeading.textContent='WHAT WE STAND FOR';
+    list.insertAdjacentElement('beforebegin',focusHeading);
+  }
+
   var points=document.querySelector('#points');
   var grid=company.querySelector('.difference-grid[data-ss-merged-introduction="1"]');
   if(!grid&&points)grid=points.querySelector('.difference-grid');
@@ -418,6 +429,14 @@ function patchIntroduction(){
     var welcome=company.querySelector('.company-story-welcome');
     if(welcome)welcome.insertAdjacentElement('beforebegin',grid);
     else company.appendChild(grid);
+
+    var differenceHeading=company.querySelector('.introduction-subhead--difference');
+    if(!differenceHeading){
+      differenceHeading=document.createElement('div');
+      differenceHeading.className='introduction-subhead introduction-subhead--difference';
+    }
+    differenceHeading.textContent='DIFFERENCE';
+    grid.insertAdjacentElement('beforebegin',differenceHeading);
   }
 
   if(points){

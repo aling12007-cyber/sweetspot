@@ -671,3 +671,66 @@
     padding-top:34px;
   }
 }
+
+
+/* Introduction subsection headings */
+#company .introduction-subhead{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:min(100%,1040px);
+  margin-left:auto;
+  margin-right:auto;
+  color:#c8b56e;
+  font-size:11px;
+  line-height:1.4;
+  font-weight:900;
+  letter-spacing:.17em;
+  text-transform:uppercase;
+}
+#company .introduction-subhead::before{
+  content:"";
+  display:block;
+  width:28px;
+  height:1px;
+  flex:0 0 28px;
+  background:var(--gold);
+}
+#company .introduction-subhead--focus{
+  margin-top:clamp(30px,4vw,46px);
+  margin-bottom:16px;
+}
+#company .introduction-subhead--difference{
+  margin-top:clamp(38px,4.5vw,52px);
+  margin-bottom:16px;
+}
+#company .introduction-subhead--focus + .company-intro-list{
+  width:min(100%,1040px);
+  margin-top:0;
+  margin-left:auto;
+  margin-right:auto;
+}
+#company .introduction-subhead--difference + .difference-grid[data-ss-merged-introduction="1"]{
+  margin-top:0;
+}
+@media(max-width:760px){
+  #company .introduction-subhead{
+    gap:10px;
+    font-size:10px;
+    letter-spacing:.145em;
+  }
+  #company .introduction-subhead::before{
+    width:22px;
+    flex-basis:22px;
+  }
+  #company .introduction-subhead--focus{
+    margin-top:26px;
+    margin-bottom:12px;
+  }
+  #company .introduction-subhead--difference{
+    margin-top:30px;
+    margin-bottom:12px;
+  }
+}

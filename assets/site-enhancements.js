@@ -226,8 +226,7 @@
       en:{
         htmlLang:'en',
         foundationHeading:'Foundation Story and Purpose',
-        intro:'Founder Sam L. Pearson has built more than 15 years of experience across rights holders, agencies and brands in the APAC sports and entertainment industry.',
-        first:'Sam’s experience across rights holders (WTA, FIFA), agencies (Octagon, CSM) and brands (AIG) has provided a comprehensive appreciation of the sports ecosystem and objectives and challenges across the various parties. In particular, the 8 years leading AIG’s sports marketing function ensured a focus on maximizing sponsorship benefits to achieve tangible business results.',
+        first:'Founder Sam’s experience across rights holders (WTA, FIFA), agencies (Octagon, CSM) and brands (AIG) has provided a comprehensive appreciation of the sports ecosystem and objectives and challenges across the various parties. In particular, the 8 years leading AIG’s sports marketing function ensured a focus on maximizing sponsorship benefits to achieve tangible business results.',
         second:'Sweet Spot was founded to share this solution-focused experience and offer high level facilitation to multiple clients.',
         originHeading:'The Origin of the “Sweet Spot” Name and Logo',
         logoAlt:'Sweet Spot logo',
@@ -240,8 +239,7 @@
       ja:{
         htmlLang:'ja',
         foundationHeading:'創立ストーリーと理念',
-        intro:'創業者 Sam L. Pearson は、APAC のスポーツ・エンターテインメント業界で、権利保有者、エージェンシー、ブランドの各立場を通じて15年以上の経験を積んできました。',
-        first:'Samは、権利保有者（WTA、FIFA）、エージェンシー（Octagon、CSM）、ブランド（AIG）それぞれの立場で経験を積み、スポーツ業界全体のエコシステムと、各関係者が抱える目標や課題を幅広く理解してきました。特に、AIGで8年間スポーツマーケティング部門を率いた経験を通じ、スポンサーシップの価値を最大化し、具体的なビジネス成果につなげることに注力してきました。',
+        first:'創業者 Sam は、権利保有者（WTA、FIFA）、エージェンシー（Octagon、CSM）、ブランド（AIG）それぞれの立場で経験を積み、スポーツ業界全体のエコシステムと、各関係者が抱える目標や課題を幅広く理解してきました。特に、AIGで8年間スポーツマーケティング部門を率いた経験を通じ、スポンサーシップの価値を最大化し、具体的なビジネス成果につなげることに注力してきました。',
         second:'Sweet Spotは、この課題解決を重視した経験を共有し、さまざまなクライアントに高度な調整・支援を提供するために設立されました。',
         originHeading:'「Sweet Spot」の名前とロゴの由来',
         logoAlt:'Sweet Spot ロゴ',
@@ -254,8 +252,7 @@
       zhtw:{
         htmlLang:'zh-Hant',
         foundationHeading:'創立故事與理念',
-        intro:'創辦人 Sam L. Pearson 在亞太地區的運動與娛樂產業累積超過 15 年經驗，歷練橫跨權利持有方、代理商與品牌端。',
-        first:'Sam 曾在權利持有方（WTA、FIFA）、代理商（Octagon、CSM）以及品牌（AIG）累積經驗，使他得以全面理解體育產業生態，以及不同參與者各自的目標與面臨的挑戰。尤其是在 AIG 領導體育行銷業務的八年間，他始終專注於最大化贊助合作的效益，並將其轉化為具體的商業成果。',
+        first:'創辦人 Sam 曾在權利持有方（WTA、FIFA）、代理商（Octagon、CSM）以及品牌（AIG）累積經驗，使他得以全面理解體育產業生態，以及不同參與者各自的目標與面臨的挑戰。尤其是在 AIG 領導體育行銷業務的八年間，他始終專注於最大化贊助合作的效益，並將其轉化為具體的商業成果。',
         second:'Sweet Spot 的成立，是為了分享這些以解決問題為核心的經驗，並為不同客戶提供高層次的協調與支援。',
         originHeading:'「Sweet Spot」的名稱和 LOGO 的由來',
         logoAlt:'Sweet Spot 品牌 LOGO',
@@ -268,8 +265,7 @@
       zhcn:{
         htmlLang:'zh-Hans',
         foundationHeading:'创立故事与理念',
-        intro:'创办人 Sam L. Pearson 在亚太地区的体育与娱乐产业积累超过 15 年经验，历练横跨权利持有方、代理机构与品牌端。',
-        first:'Sam 曾在权利持有方（WTA、FIFA）、代理机构（Octagon、CSM）以及品牌（AIG）积累经验，使他得以全面理解体育产业生态，以及不同参与方各自的目标与面临的挑战。尤其是在 AIG 领导体育营销业务的八年间，他始终专注于最大化赞助合作的效益，并将其转化为具体的商业成果。',
+        first:'创办人 Sam 曾在权利持有方（WTA、FIFA）、代理机构（Octagon、CSM）以及品牌（AIG）积累经验，使他得以全面理解体育产业生态，以及不同参与方各自的目标与面临的挑战。尤其是在 AIG 领导体育营销业务的八年间，他始终专注于最大化赞助合作的效益，并将其转化为具体的商业成果。',
         second:'Sweet Spot 的成立，是为了分享这些以解决问题为核心的经验，并为不同客户提供高层次的协调与支持。',
         originHeading:'“Sweet Spot”的名称和 LOGO 的由来',
         logoAlt:'Sweet Spot 品牌 LOGO',
@@ -321,8 +317,6 @@
     heading.textContent=copy.foundationHeading;
     foundation.appendChild(heading);
 
-    var intro=appendStoryParagraph(foundation,copy.intro);
-    intro.className='company-story-intro';
     appendStoryParagraph(foundation,copy.first);
     appendStoryParagraph(foundation,copy.second);
     story.appendChild(foundation);

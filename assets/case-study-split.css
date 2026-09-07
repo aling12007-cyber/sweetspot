@@ -527,3 +527,77 @@
     border-radius:14px;
   }
 }
+
+
+/* Company Foundation Story — origin side-by-side refinement */
+#company .company-story-origin-layout{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:minmax(220px,.72fr) minmax(0,1.45fr);
+  gap:clamp(30px,4.8vw,66px);
+  align-items:center;
+  padding-top:4px;
+}
+#company .company-story-origin-layout .company-story-logo-stage{
+  min-height:220px;
+  margin:0;
+  border:0;
+  background:radial-gradient(circle at center,rgba(215,169,54,.12),transparent 60%);
+}
+#company .company-story-origin-layout .company-story-logo{
+  width:clamp(150px,16vw,205px);
+}
+#company .company-story-origin-layout .company-story-origin-copy{
+  margin:0;
+  max-width:none;
+  text-align:left;
+  color:#cbd2db;
+  font-size:clamp(16px,1.2vw,18px);
+  line-height:1.82;
+}
+#company .company-foundation-story + .company-intro-list{
+  width:min(100%,1040px);
+  margin-top:clamp(22px,3vw,34px);
+}
+#company .company-story-welcome{
+  position:relative;
+  z-index:2;
+  width:min(100%,1040px);
+  margin:clamp(34px,4.5vw,52px) auto 0;
+  padding-top:clamp(24px,3vw,34px);
+  border-top:1px solid rgba(215,169,54,.24);
+  color:var(--gold-pale);
+  text-align:center;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(32px,4.4vw,54px);
+  font-weight:700;
+  line-height:1.08;
+  letter-spacing:-.035em;
+}
+@media(max-width:760px){
+  #company .company-story-origin-layout{
+    grid-template-columns:1fr;
+    gap:18px;
+  }
+  #company .company-story-origin-layout .company-story-logo-stage{
+    min-height:174px;
+    margin:0 0 2px;
+  }
+  #company .company-story-origin-layout .company-story-logo{
+    width:min(50vw,174px);
+  }
+  #company .company-story-origin-layout .company-story-origin-copy{
+    font-size:15px;
+    line-height:1.72;
+  }
+  #company .company-foundation-story + .company-intro-list{
+    margin-top:18px;
+  }
+  #company .company-story-welcome{
+    margin-top:28px;
+    padding-top:24px;
+    font-size:clamp(30px,9vw,40px);
+    line-height:1.12;
+  }
+}

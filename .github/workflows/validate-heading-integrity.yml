@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - index.html
+      - assets/site-enhancements.js
       - .github/workflows/validate-heading-integrity.yml
   pull_request:
   workflow_dispatch:
@@ -14,20 +15,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
-      - name: Check single heading source of truth
+      - name: Check heading and navigation hierarchy source of truth
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
           import re, subprocess
+
           s=Path('index.html').read_text(encoding='utf-8')
+          j=Path('assets/site-enhancements.js').read_text(encoding='utf-8')
+
           start='<!-- SS SINGLE UNIFIED SECTION HEADING START -->'
           end='<!-- SS SINGLE UNIFIED SECTION HEADING END -->'
           assert s.count(start)==1 and s.count(end)==1, 'Unified heading block must exist exactly once'
           assert 'Reference major heading fallback START' not in s, 'Legacy heading fallback returned'
           assert 'var ssHeadingCopy={' not in s, 'Misplaced legacy heading copy returned'
+          assert '<!-- Section hierarchy navigation -->' not in s, 'Legacy navigation hierarchy script returned'
+
           a=s.index(start); b=s.index(end,a); block=s[a:b]
-          required=[
+          required_heading=[
             "company:['Company','Company Introduction','']",
             "company:['会社','会社紹介','']",
             "company:['公司','公司簡介','']",
@@ -35,20 +41,40 @@ jobs:
             "experience:['Career','Professional Journey','Built across APAC']",
             "network:['Network','Broad Influence and Access','Services rendered to:']",
             "capabilities:['Case','Case Study: Apple','Demonstrated high-level facilitation capability']",
-            "en:{company:'Company Introduction',points:'Points of Difference',founder:'Introducing the Founder',experience:'Professional Journey',network:'Broad Influence and Access',capabilities:'Case Study: Apple'}",
-            "ja:{company:'会社紹介',points:'私たちの強み',founder:'創業者紹介',experience:'プロフェッショナル・ジャーニー',network:'幅広い影響力とアクセス',capabilities:'ケーススタディ Apple'}",
-            "zh:{company:'公司簡介',points:'核心優勢',founder:'創辦人介紹',experience:'專業歷程',network:'廣泛的影響力與資源管道',capabilities:'案例研究 Apple'}",
             "capabilities:['案例','案例研究：Apple','展現高水準的協調促成能力']",
             "window.__ssRefreshUnifiedHeadings=run;"
           ]
-          for x in required:
-              assert x in s, 'Required heading/navigation copy missing: '+x
+          for x in required_heading:
+              assert x in s, 'Required unified heading copy missing: '+x
+
+          required_nav=[
+            "version='20260907-heading-hierarchy-v2'",
+            "{href:'#home',label:'HOME',classes:'nav-home nav-level-1'}",
+            "{href:'#company',label:'INTRODUCTION',classes:'nav-level-1 nav-parent',children:[",
+            "{href:'#foundation-purpose',label:'FUNDATION/PURPOSE'}",
+            "{href:'#name-logo',label:'NAME/LOGO'}",
+            "{href:'#what-we-stand-for',label:'WHAT WE STAND FOR'}",
+            "{href:'#difference',label:'DIFFERENCE'}",
+            "{href:'#founder',label:'FOUNDER',classes:'nav-level-1 nav-parent',children:[",
+            "{href:'#experience',label:'CAREER'}",
+            "{href:'#network',label:'NETWORK',classes:'nav-level-1 nav-parent',children:[",
+            "{href:'#capabilities',label:'CASE'}",
+            "{href:'#insights',label:'INSIGHTS',classes:'nav-level-1'}",
+            "{href:'#contact',label:'CONTACT',classes:'nav-level-1 contact-mini'}",
+            "foundation.id='foundation-purpose'",
+            "origin.id='name-logo'",
+            "focusHeading.id='what-we-stand-for'",
+            "differenceHeading.id='difference'"
+          ]
+          for x in required_nav:
+              assert x in j, 'Required navigation hierarchy token missing: '+x
+
           m=re.search(r'<script id="ss-single-heading-script">(.*?)</script>',block,re.S)
           assert m, 'Unified heading script missing'
           t=Path('.heading-check.js')
           t.write_text(m.group(1),encoding='utf-8')
           subprocess.run(['node','--check',str(t)],check=True)
           t.unlink()
-          print('Heading integrity check passed')
+          print('Heading and navigation hierarchy integrity check passed')
           PY
-# Validates the current unified heading source of truth.
+# Validates the current unified heading and requested navigation hierarchy source of truth.

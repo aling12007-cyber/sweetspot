@@ -24,7 +24,6 @@ jobs:
           from pathlib import Path
           s=Path('index.html').read_text(encoding='utf-8')
           j=Path('assets/site-enhancements.js').read_text(encoding='utf-8')
-          w=Path('.github/workflows/validate-heading-integrity.yml').read_text(encoding='utf-8')
           required=[
             "founder:['Founder','Sam L. Pearson','']",
             "founder:['創業者','Sam L. Pearson','']",
@@ -34,7 +33,7 @@ jobs:
             "patchFounderIdentity();"
           ]
           for item in required:
-              assert item in (s+j+w), item
+              assert item in (s+j), item
           print('Founder localization checks passed')
           PY
       - name: Commit Founder localization fix
@@ -42,6 +41,6 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html assets/site-enhancements.js .github/workflows/validate-heading-integrity.yml
+          git add index.html assets/site-enhancements.js
           git commit -m 'fix: localize Founder labels and location'
           git push origin HEAD:fix/founder-i18n-20260907

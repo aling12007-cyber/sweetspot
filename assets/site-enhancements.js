@@ -265,11 +265,11 @@
     };
     var copy=copies[lang]||copies.en;
 
+    var list=company.querySelector('.company-intro-list');
+    if(!list)return;
+
     var story=company.querySelector('.company-foundation-story');
     if(!story){
-      var list=company.querySelector('.company-intro-list');
-      if(!list)return;
-
       story=document.createElement('div');
       story.className='company-foundation-story';
       story.setAttribute('aria-labelledby','company-foundation-story-title');
@@ -277,11 +277,12 @@
     }
 
     story.hidden=false;
-    if(story.getAttribute('data-ss-story-lang')===lang)return;
-
-    story.setAttribute('data-ss-story-lang',lang);
+    var needsRebuild=story.getAttribute('data-ss-story-lang')!==lang;
     story.setAttribute('lang',copy.htmlLang);
-    story.textContent='';
+
+    if(needsRebuild){
+      story.setAttribute('data-ss-story-lang',lang);
+      story.textContent='';
 
     var foundation=document.createElement('section');
     foundation.className='company-story-panel company-story-foundation';
@@ -329,6 +330,9 @@
     originHeading.textContent=copy.originHeading;
     origin.appendChild(originHeading);
 
+    var originLayout=document.createElement('div');
+    originLayout.className='company-story-origin-layout';
+
     var logoStage=document.createElement('div');
     logoStage.className='company-story-logo-stage';
     var logo=document.createElement('img');
@@ -338,7 +342,7 @@
     logo.loading='lazy';
     logo.decoding='async';
     logoStage.appendChild(logo);
-    origin.appendChild(logoStage);
+    originLayout.appendChild(logoStage);
 
     var nameParagraph=document.createElement('p');
     nameParagraph.className='company-story-origin-copy';
@@ -347,11 +351,22 @@
     serape.textContent=copy.nameTerm;
     nameParagraph.appendChild(serape);
     nameParagraph.appendChild(document.createTextNode(copy.nameSuffix));
-    origin.appendChild(nameParagraph);
-
-    var closing=appendStoryParagraph(origin,copy.closing);
-    closing.className='company-story-closing';
+    originLayout.appendChild(nameParagraph);
+    origin.appendChild(originLayout);
     story.appendChild(origin);
+    }
+
+    // Requested reading order: Foundation, logo origin, company statements, welcome.
+    story.insertAdjacentElement('afterend',list);
+
+    var welcome=company.querySelector('.company-story-welcome');
+    if(!welcome){
+      welcome=document.createElement('p');
+      welcome.className='company-story-welcome';
+    }
+    welcome.setAttribute('lang',copy.htmlLang);
+    welcome.textContent=copy.closing;
+    list.insertAdjacentElement('afterend',welcome);
   }
 
   function patchEmptySemantics(){

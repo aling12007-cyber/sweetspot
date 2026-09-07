@@ -44,15 +44,4 @@ assert js.count(apply_anchor) == 1, 'apply anchor mismatch'
 js = js.replace(apply_anchor, "      patchIntroduction();\n      patchFounderIdentity();\n      patchFounderCareer();", 1)
 js_path.write_text(js, encoding='utf-8')
 
-wf_path = Path('.github/workflows/validate-heading-integrity.yml')
-wf = wf_path.read_text(encoding='utf-8')
-wf_repls = {
-    "            \"points:['Difference','Points of Difference','']\",\n            \"experience:['Career','Professional Journey','Built across APAC']\",": "            \"points:['Difference','Points of Difference','']\",\n            \"founder:['Founder','Sam L. Pearson','']\",\n            \"founder:['創業者','Sam L. Pearson','']\",\n            \"founder:['創辦人','Sam L. Pearson','']\",\n            \"experience:['Career','Professional Journey','Built across APAC']\",",
-    "            \"創業者の経歴をもっと見る\"": "            \"創業者の経歴をもっと見る\",\n            \"function patchFounderIdentity(){\",\n            \"zhtw:{role:'創辦人',location:'東京，日本'}\",\n            \"zhcn:{role:'创办人',location:'东京，日本'}\"",
-}
-for old, new in wf_repls.items():
-    assert wf.count(old) == 1, f'workflow target mismatch: {old}'
-    wf = wf.replace(old, new, 1)
-wf_path.write_text(wf, encoding='utf-8')
-
 print('Founder i18n patch applied')

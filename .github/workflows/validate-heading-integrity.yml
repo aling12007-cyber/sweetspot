@@ -55,7 +55,7 @@ jobs:
               assert x in s, 'Required unified heading copy missing: '+x
 
           required_nav=[
-            "version='20260908-contact-work-with-us-i18n-v6-'+lang",
+            "version='20260908-contact-simple-v7-'+lang",
             "var navCopies={",
             "en:{home:'HOME',introduction:'INTRODUCTION',foundation:'FOUNDATION / PURPOSE'",
             "ja:{home:'ホーム',introduction:'会社紹介',foundation:'創立 / 理念'",
@@ -86,11 +86,11 @@ jobs:
             "閱讀更多創辦人的職涯",
             "創業者の経歴をもっと見る",
             "function patchWorkWithUs(){",
-            "block.className='work-with-us-inline'",
-            "heading:'When to Talk to Sweet Spot'",
-            "heading:'Sweet Spotにご相談いただきたいとき'",
-            "heading:'適合與 Sweet Spot 洽談的時機'",
-            "heading:'适合与 Sweet Spot 洽谈的时机'",
+            "document.querySelectorAll('#contact .work-with-us-inline')",
+            "If you’re exploring opportunities in Japan, building partnerships or looking for an experienced local perspective, let’s start a conversation.",
+            "日本でのビジネス機会を検討している方、パートナーシップの構築を進めている方、または経験に基づく現地の視点を求めている方は、ぜひお話ししましょう。",
+            "如果您正在探索日本市場的機會、建立合作夥伴關係，或尋求具經驗的在地觀點，歡迎與我們聊聊。",
+            "如果您正在探索日本市场的机会、建立合作伙伴关系，或寻求有经验的本地视角，欢迎与我们聊聊。",
             "function patchFounderIdentity(){",
             "zhtw:{role:'創辦人',location:'東京，日本'}",
             "zhcn:{role:'创办人',location:'东京，日本'}"
@@ -99,6 +99,9 @@ jobs:
               assert x in j, 'Required localized navigation/content token missing: '+x
           assert "{href:'#work-with-us'" not in j, 'Standalone Work With Us navigation returned'
           assert "section.id='work-with-us'" not in j, 'Standalone Work With Us section returned'
+          assert 'work-with-us-inline-title' not in j, 'Redundant Contact subheading returned'
+          assert 'work-with-us-item' not in j, 'Redundant Contact item list returned'
+          assert 'When to Talk to Sweet Spot' not in j, 'Redundant Work With Us heading returned'
           assert 'FUNDATION/PURPOSE' not in j, 'Misspelled Foundation label returned'
 
           m=re.search(r'<script id="ss-single-heading-script">(.*?)</script>',block,re.S)

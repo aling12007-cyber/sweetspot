@@ -64,7 +64,7 @@
       zhcn:{home:'首页',introduction:'公司简介',foundation:'创立 / 理念',nameLogo:'名称 / LOGO',standFor:'核心理念',difference:'差异化优势',founder:'创办人',career:'职业经历',network:'行业网络',caseStudy:'案例研究',insights:'洞察',contact:'联系我们',submenu:'子菜单'}
     };
     var c=navCopies[lang]||navCopies.en;
-    var version='20260908-contact-work-with-us-i18n-v6-'+lang;
+    var version='20260908-contact-simple-v7-'+lang;
     var groups=[
       {href:'#home',label:c.home,classes:'nav-home nav-level-1'},
       {href:'#company',label:c.introduction,classes:'nav-level-1 nav-parent',children:[
@@ -226,10 +226,10 @@
       zhcn:'来聊聊吧！'
     };
     var bodyLabels={
-      en:'Whether you’re exploring the market, looking for the right partner or need a local perspective, let’s start a conversation!',
-      ja:'市場進出を検討している方も、最適なパートナーを探している方も、現地の視点が必要な方も、まずは気軽にお話ししましょう！',
-      zhtw:'無論您正在探索市場、尋找合適的合作夥伴，或需要在地觀點，都歡迎與我們聊聊！',
-      zhcn:'无论您正在探索市场、寻找合适的合作伙伴，或需要本地视角，都欢迎与我们聊聊！'
+      en:'If you’re exploring opportunities in Japan, building partnerships or looking for an experienced local perspective, let’s start a conversation.',
+      ja:'日本でのビジネス機会を検討している方、パートナーシップの構築を進めている方、または経験に基づく現地の視点を求めている方は、ぜひお話ししましょう。',
+      zhtw:'如果您正在探索日本市場的機會、建立合作夥伴關係，或尋求具經驗的在地觀點，歡迎與我們聊聊。',
+      zhcn:'如果您正在探索日本市场的机会、建立合作伙伴关系，或寻求有经验的本地视角，欢迎与我们聊聊。'
     };
 
     heading.textContent=headingLabels[lang]||headingLabels.en;
@@ -549,67 +549,9 @@ function patchIntroduction(){
 
 
 function patchWorkWithUs(){
-  var contact=document.querySelector('#contact');
-  if(!contact)return;
-
-  var inner=contact.querySelector('.contact-inner');
-  if(!inner)return;
-
   var legacy=document.querySelector('#work-with-us');
-  if(legacy&&legacy!==contact)legacy.remove();
-
-  var lang=currentLanguage();
-  var copies={
-    en:{htmlLang:'en',heading:'When to Talk to Sweet Spot',intro:'You may want to speak with Sweet Spot if you are:',items:['Exploring opportunities in Japan','Looking for the right local partners','Developing a sports or entertainment partnership','Seeking access to relevant industry stakeholders','Evaluating sponsorship strategy or activation','Looking for an experienced local perspective before making a decision']},
-    ja:{htmlLang:'ja',heading:'Sweet Spotにご相談いただきたいとき',intro:'以下のようなご要望がある場合は、ぜひ Sweet Spot にご相談ください。',items:['日本でのビジネス機会を検討している','最適な現地パートナーを探している','スポーツまたはエンターテインメント分野のパートナーシップを構築したい','関連する業界関係者との接点を求めている','スポンサーシップ戦略やアクティベーションを検討している','意思決定の前に、経験に基づく現地視点を得たい']},
-    zhtw:{htmlLang:'zh-Hant',heading:'適合與 Sweet Spot 洽談的時機',intro:'如果您有以下需求，歡迎與 Sweet Spot 洽談：',items:['探索日本市場的商業機會','尋找合適的在地合作夥伴','規劃體育或娛樂領域的合作關係','希望接觸相關產業的關鍵利害關係人','評估贊助策略或贊助活化方案','在做出決策前，希望獲得具經驗的在地觀點']},
-    zhcn:{htmlLang:'zh-Hans',heading:'适合与 Sweet Spot 洽谈的时机',intro:'如果您有以下需求，欢迎与 Sweet Spot 洽谈：',items:['探索日本市场的商业机会','寻找合适的本地合作伙伴','规划体育或娱乐领域的合作关系','希望接触相关行业的关键利益相关方','评估赞助策略或赞助激活方案','在做出决策前，希望获得有经验的本地视角']}
-  };
-  var copy=copies[lang]||copies.en;
-
-  var block=inner.querySelector('.work-with-us-inline');
-  if(!block){
-    block=document.createElement('div');
-    block.className='work-with-us-inline';
-    block.id='contact-work-with-us';
-    block.setAttribute('aria-labelledby','contact-work-with-us-title');
-    var buttons=inner.querySelector('.contact-buttons');
-    if(buttons)buttons.insertAdjacentElement('beforebegin',block);
-    else inner.appendChild(block);
-  }
-
-  block.setAttribute('lang',copy.htmlLang);
-  if(block.getAttribute('data-ss-work-lang')===lang)return;
-  block.setAttribute('data-ss-work-lang',lang);
-  block.textContent='';
-
-  var heading=document.createElement('h3');
-  heading.id='contact-work-with-us-title';
-  heading.className='work-with-us-inline-title';
-  heading.textContent=copy.heading;
-  block.appendChild(heading);
-
-  var intro=document.createElement('p');
-  intro.className='work-with-us-intro';
-  intro.textContent=copy.intro;
-  block.appendChild(intro);
-
-  var list=document.createElement('ul');
-  list.className='work-with-us-list';
-  copy.items.forEach(function(text){
-    var item=document.createElement('li');
-    item.className='work-with-us-item';
-    var marker=document.createElement('span');
-    marker.className='work-with-us-marker';
-    marker.setAttribute('aria-hidden','true');
-    var label=document.createElement('span');
-    label.className='work-with-us-item-text';
-    label.textContent=text;
-    item.appendChild(marker);
-    item.appendChild(label);
-    list.appendChild(item);
-  });
-  block.appendChild(list);
+  if(legacy)legacy.remove();
+  document.querySelectorAll('#contact .work-with-us-inline').forEach(function(block){block.remove();});
 }
 
 function patchFounderIdentity(){

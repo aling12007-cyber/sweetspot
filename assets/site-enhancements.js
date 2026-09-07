@@ -390,7 +390,9 @@
     }
     welcome.setAttribute('lang',copy.htmlLang);
     welcome.textContent=copy.closing;
-    list.insertAdjacentElement('afterend',welcome);
+    var mergedDifference=company.querySelector('.difference-grid[data-ss-merged-introduction="1"]');
+    if(mergedDifference)mergedDifference.insertAdjacentElement('afterend',welcome);
+    else list.insertAdjacentElement('afterend',welcome);
   }
 
 

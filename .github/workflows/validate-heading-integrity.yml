@@ -31,6 +31,7 @@ jobs:
           assert 'Reference major heading fallback START' not in s, 'Legacy heading fallback returned'
           assert 'var ssHeadingCopy={' not in s, 'Misplaced legacy heading copy returned'
           assert '<!-- Section hierarchy navigation -->' not in s, 'Legacy navigation hierarchy script returned'
+          assert 'nav.hasAttribute("data-ss-nav-version")' in s, 'Legacy top-navigation observer guard missing'
 
           a=s.index(start); b=s.index(end,a); block=s[a:b]
           required_heading=[
@@ -55,10 +56,10 @@ jobs:
               assert x in s, 'Required unified heading copy missing: '+x
 
           required_nav=[
-            "version='20260908-nav-hierarchy-v8-'+lang",
+            "version='20260908-nav-hierarchy-v9-'+lang",
             "var navCopies={",
             "en:{home:'HOME',introduction:'INTRODUCTION',foundation:'FOUNDATION / PURPOSE'",
-            "ja:{home:'ホーム',introduction:'会社紹介',foundation:'創立 / 理念'",
+            "ja:{home:'ホーム',introduction:'会社',foundation:'創立 / 理念'",
             "zhtw:{home:'首頁',introduction:'公司簡介',foundation:'創立 / 理念'",
             "zhcn:{home:'首页',introduction:'公司简介',foundation:'创立 / 理念'",
             "industryAccess:'INDUSTRY ACCESS'",

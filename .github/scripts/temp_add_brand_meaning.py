@@ -40,9 +40,9 @@ subprocess.run(['node', '--check', str(js_path)], check=True)
 index_path = Path('index.html')
 index = index_path.read_text(encoding='utf-8')
 index, count = re.subn(r'assets/site-enhancements\.js\?v=[^\"\']+', 'assets/site-enhancements.js?v=brand-meaning-20260908', index)
-assert count == 1, f'Expected exactly one site-enhancements cache reference, found {count}'
+assert count == 2, f'Expected exactly two site-enhancements cache references, found {count}'
 index_path.write_text(index, encoding='utf-8')
 
 assert 'Together, they reflect Sweet Spot’s belief in bringing the right people and opportunities together to create meaningful partnerships in sport and business.' in js
 assert "appendStoryParagraph(originCopy,copy.summary)" in js
-print('Brand meaning summary added in all four languages and JS cache key updated.')
+print('Brand meaning summary added in all four languages and both JS cache references updated.')

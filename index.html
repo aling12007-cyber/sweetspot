@@ -2125,7 +2125,14 @@ react/cjs/react-jsx-runtime.production.js:
 <!-- SS FOUR LANGUAGE SWITCH END -->
 
 
-<!-- Section hierarchy navigation is handled by assets/site-enhancements.js?v=brand-meaning-20260908'.timeline-body');
+<!-- Section hierarchy navigation is handled by assets/site-enhancements.js?v=story-subheads-20260907 -->
+
+
+<!-- Career Playbook accordion JS START -->
+<script>
+(function(){
+  function setCareerRowState(row, open){
+    var body = row.querySelector('.timeline-body');
     row.setAttribute('aria-expanded', open ? 'true' : 'false');
     row.classList.toggle('career-expanded', open);
     if(body) body.setAttribute('aria-hidden', open ? 'false' : 'true');

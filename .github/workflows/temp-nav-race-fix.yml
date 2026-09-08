@@ -1,0 +1,35 @@
+name: Temporary navigation race fix
+on:
+  push:
+    branches:
+      - fix/ja-nav-root-cause-20260908
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: fix/ja-nav-root-cause-20260908
+      - name: Apply navigation race fix
+        run: python .github/scripts/temp_nav_race_fix.py
+      - name: Check enhancement JavaScript
+        run: node --check assets/site-enhancements.js
+      - name: Verify navigation invariants
+        run: |
+          grep -F "introduction:'会社'" assets/site-enhancements.js
+          grep -F "nav-hierarchy-v9" assets/site-enhancements.js
+          grep -F 'nav.hasAttribute("data-ss-nav-version")' index.html
+          grep -F 'site-enhancements.js?v=ja-nav-stable-20260908' index.html
+      - name: Commit patch
+        shell: bash
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html assets/site-enhancements.js
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "fix: stop Japanese navigation rewrite loop"
+          git push

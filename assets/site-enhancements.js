@@ -705,6 +705,22 @@ function patchFounderCareer(){
     attributeFilter:['lang','href','data-ss-lang-mode']
   });
 
+  /* Desktop anchor fallback: handle section navigation before legacy React handlers can swallow Japanese/localized clicks. */
+  document.addEventListener('click',function(e){
+    if(!window.matchMedia||!window.matchMedia('(min-width:1051px)').matches)return;
+    if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
+    var link=e.target.closest&&e.target.closest('.site-header nav a[href^="#"]');
+    if(!link)return;
+    var href=link.getAttribute('href');
+    if(!href||href.charAt(0)!=='#')return;
+    var target=document.querySelector(href);
+    if(!target)return;
+    e.preventDefault();
+    e.stopPropagation();
+    target.scrollIntoView({behavior:'smooth',block:'start'});
+    if(window.history&&history.replaceState)history.replaceState(null,'',href);
+  },true);
+
   document.addEventListener('click',function(e){
     if(e.target.closest&&e.target.closest('.site-header nav a, .site-header nav button')){
       setTimeout(closeMobileMenu,0);

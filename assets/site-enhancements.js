@@ -318,6 +318,7 @@
         logoPrefix:'The logo brings together an ancient quartz crystal in the center of a traditional Mexican ',
         nameTerm:'serape',
         nameSuffix:'.',
+        summary:'Together, they reflect Sweet Spot’s belief in bringing the right people and opportunities together to create meaningful partnerships in sport and business.',
         closing:'Welcome to the Sweet Spot!'
       },
       ja:{
@@ -333,6 +334,7 @@
         logoPrefix:'ロゴは、古代の水晶をメキシコの伝統的なサラペ（',
         nameTerm:'serape',
         nameSuffix:'）の中央に配置したデザインです。',
+        summary:'この二つには、スポーツとビジネスにおいて適切な人と機会を結びつけ、意義あるパートナーシップを生み出すという Sweet Spot の信念が込められています。',
         closing:'Sweet Spotへようこそ！'
       },
       zhtw:{
@@ -348,6 +350,7 @@
         logoPrefix:'品牌 LOGO 將一顆古老的石英水晶置於墨西哥傳統 ',
         nameTerm:'serape',
         nameSuffix:' 織品的中央。',
+        summary:'兩者共同體現了 Sweet Spot 的信念：連結合適的人與機會，在運動與商業領域創造有意義的合作夥伴關係。',
         closing:'歡迎來到 Sweet Spot！'
       },
       zhcn:{
@@ -363,6 +366,7 @@
         logoPrefix:'品牌 LOGO 将一颗古老的石英水晶置于墨西哥传统 ',
         nameTerm:'serape',
         nameSuffix:' 织物的中央。',
+        summary:'两者共同体现了 Sweet Spot 的信念：连接合适的人与机会，在体育与商业领域创造有意义的合作伙伴关系。',
         closing:'欢迎来到 Sweet Spot！'
       }
     };
@@ -453,6 +457,10 @@
     logoParagraph.appendChild(serape);
     logoParagraph.appendChild(document.createTextNode(copy.nameSuffix));
     originCopy.appendChild(logoParagraph);
+
+    var summaryParagraph=appendStoryParagraph(originCopy,copy.summary);
+    summaryParagraph.className='company-story-origin-copy';
+
     originLayout.appendChild(originCopy);
     origin.appendChild(originLayout);
     story.appendChild(origin);

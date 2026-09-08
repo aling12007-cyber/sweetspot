@@ -1,0 +1,39 @@
+name: Temp repair brand meaning index
+on:
+  push:
+    branches:
+      - content/add-brand-meaning-summary-20260908
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: content/add-brand-meaning-summary-20260908
+          fetch-depth: 0
+      - name: Restore index and update only runtime cache key
+        shell: bash
+        run: |
+          git show 6e1f38406c85a0b60d38012051ab853143377c63:index.html > index.html
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='<script src="assets/site-enhancements.js?v=ja-nav-stable-20260908" defer></script>'
+          new='<script src="assets/site-enhancements.js?v=brand-meaning-20260908" defer></script>'
+          assert s.count(old)==1, f'Expected one runtime enhancement script reference, found {s.count(old)}'
+          s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+          git diff --check
+      - name: Commit repaired index
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "fix: repair cache-key update scope"
+          git push

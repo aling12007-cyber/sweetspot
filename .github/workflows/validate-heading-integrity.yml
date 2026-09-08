@@ -55,12 +55,16 @@ jobs:
               assert x in s, 'Required unified heading copy missing: '+x
 
           required_nav=[
-            "version='20260908-contact-simple-v7-'+lang",
+            "version='20260908-nav-hierarchy-v8-'+lang",
             "var navCopies={",
             "en:{home:'HOME',introduction:'INTRODUCTION',foundation:'FOUNDATION / PURPOSE'",
             "ja:{home:'ホーム',introduction:'会社紹介',foundation:'創立 / 理念'",
             "zhtw:{home:'首頁',introduction:'公司簡介',foundation:'創立 / 理念'",
             "zhcn:{home:'首页',introduction:'公司简介',foundation:'创立 / 理念'",
+            "industryAccess:'INDUSTRY ACCESS'",
+            "industryAccess:'業界アクセス'",
+            "industryAccess:'產業資源與連結'",
+            "industryAccess:'行业资源与连接'",
             "caseStudy:'CASE STUDY',insights:'INSIGHTS',contact:'CONTACT'",
             "caseStudy:'ケーススタディ',insights:'インサイト',contact:'お問い合わせ'",
             "caseStudy:'案例研究',insights:'洞察',contact:'聯絡我們'",
@@ -71,12 +75,14 @@ jobs:
             "{href:'#name-logo',label:c.nameLogo}",
             "{href:'#what-we-stand-for',label:c.standFor}",
             "{href:'#difference',label:c.difference}",
-            "{href:'#founder',label:c.founder,classes:'nav-level-1 nav-parent',children:[",
-            "{href:'#experience',label:c.career}",
+            "{href:'#founder',label:c.founder,classes:'nav-level-1'}",
             "{href:'#network',label:c.network,classes:'nav-level-1 nav-parent',children:[",
+            "{href:'#network-access',label:c.industryAccess}",
             "{href:'#capabilities',label:c.caseStudy}",
             "{href:'#insights',label:c.insights,classes:'nav-level-1'}",
             "{href:'#contact',label:c.contact,classes:'nav-level-1 contact-mini'}",
+            "function patchNetworkAccessAnchor(){",
+            "heading.id='network-access'",
             "foundation.id='foundation-purpose'",
             "origin.id='name-logo'",
             "focusHeading.id='what-we-stand-for'",
@@ -97,6 +103,7 @@ jobs:
           ]
           for x in required_nav:
               assert x in j, 'Required localized navigation/content token missing: '+x
+          assert "{href:'#experience',label:c.career}" not in j, 'CAREER submenu returned under Founder'
           assert "{href:'#work-with-us'" not in j, 'Standalone Work With Us navigation returned'
           assert "section.id='work-with-us'" not in j, 'Standalone Work With Us section returned'
           assert 'work-with-us-inline-title' not in j, 'Redundant Contact subheading returned'

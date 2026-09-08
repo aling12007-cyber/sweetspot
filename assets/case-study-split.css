@@ -1159,3 +1159,44 @@
     font-size:13px!important;
   }
 }
+
+
+/* Desktop navigation hover/click reliability — 20260908 */
+@media(min-width:1051px){
+  /* Keep top-level navigation labels clickable above decorative/hover layers. */
+  .site-header nav,
+  .site-header nav a.nav-level-1{
+    position:relative;
+  }
+  .site-header nav a.nav-level-1{
+    z-index:3;
+    pointer-events:auto!important;
+  }
+
+  /* Bridge the visual gap so the submenu stays open while the pointer moves into it. */
+  .site-header nav .ss-nav-group::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    top:100%;
+    height:13px;
+    z-index:1;
+  }
+
+  .site-header nav .ss-nav-group>.nav-parent{
+    z-index:3;
+    pointer-events:auto!important;
+  }
+
+  .site-header nav .ss-nav-submenu{
+    top:calc(100% + 8px)!important;
+    z-index:90!important;
+  }
+
+  .site-header nav .ss-nav-submenu .nav-level-2{
+    position:relative;
+    z-index:91;
+    pointer-events:auto!important;
+  }
+}

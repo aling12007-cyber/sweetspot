@@ -1018,3 +1018,34 @@
     font-size:46px!important;
   }
 }
+
+
+/* Mobile Name / Logo square-image safeguard — 20260908 */
+#company .company-story-origin-layout .company-story-logo-stage{
+  min-height:0!important;
+  height:auto!important;
+}
+#company .company-story-origin-layout .company-story-logo{
+  display:block!important;
+  width:clamp(150px,16vw,205px)!important;
+  height:clamp(150px,16vw,205px)!important;
+  max-width:100%!important;
+  aspect-ratio:1 / 1!important;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+@media(max-width:760px){
+  #company .company-story-origin-layout .company-story-logo-stage{
+    min-height:0!important;
+    height:auto!important;
+    margin:0 0 18px!important;
+  }
+  #company .company-story-origin-layout .company-story-logo{
+    width:min(50vw,174px)!important;
+    height:min(50vw,174px)!important;
+    max-width:174px!important;
+    max-height:174px!important;
+    aspect-ratio:1 / 1!important;
+    object-fit:contain!important;
+  }
+}
